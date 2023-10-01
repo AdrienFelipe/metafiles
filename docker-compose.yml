@@ -8,4 +8,8 @@ services:
       target: dev
     volumes:
       - ./src:/app
+      - ./data:/data
       - .:/workspace
+    ports:
+      - 5678:5678
+    command: ["python", "-m", "debugpy", "--wait-for-client", "--listen", "0.0.0.0:5678", "main.py"]

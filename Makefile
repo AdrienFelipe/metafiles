@@ -30,6 +30,14 @@ ca:
 cs:
 	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) black src tests
 
+# Enter container
+bash:
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) /bin/bash
+
 # Run the actual application
 run:
-	$(DOCKER_COMPOSE) run --service-ports $(SERVICE_NAME) python main.py
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) python /app/main.py
+
+# Run the actual application
+xrun:
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) python -m debugpy --listen 0.0.0.0:5678 --wait-for-client /app/main.py

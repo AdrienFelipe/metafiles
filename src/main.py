@@ -1,9 +1,25 @@
 import yaml
+from dotenv import load_dotenv
+from registry import action_registry
+from openai_chat import OpenAIChat
+from prompts.prompt import Prompt
+
 
 def orchestrate_conversation(task, step):
     print(f"Executing task: {task} under step: {step}")
-    # The existing orchestrate_conversation function
-    # Here, you'll implement the logic of the conversations among the agents as required.
+    
+    # Initialize OpenAI Chat and Prompt classes
+    openai_chat = OpenAIChat()
+    
+    available_actions = action_registry.get_registered_actions()
+    prompt = Prompt(task, step, available_actions)
+    messages = prompt.generate_messages()
+    
+    response = openai_chat.create_chat_completion(messages=messages)
+
+    # Handle the response as necessary
+    print(response.choices[0].message['content'])
+
 
 def execute_goal(goal):
     context = goal['context']
@@ -15,11 +31,16 @@ def execute_goal(goal):
         for task in step['tasks']:
             orchestrate_conversation(task, step_name)
 
+
 def main():
+    load_dotenv()
+    action_registry.register_actions()
+    
     with open('/data/steps.yaml', 'r') as file:
         data = yaml.safe_load(file)
     
     execute_goal(data['goal'])
+
 
 if __name__ == "__main__":
     main()
