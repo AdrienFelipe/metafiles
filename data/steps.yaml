@@ -1,0 +1,16 @@
+goal:
+  name: "Create Summarized TEI Files"
+  context: "Create new TEI files that summarize user-shared documents, allowing for quick, machine-friendly overviews with varying levels of detail."
+  steps:
+    - name: "Preliminary Step"
+      tasks:
+        - "Create a base TEI file with the file info and add the defined rules as per ${rules_description}."
+
+    - name: "Identify Document"
+      tasks:
+        - "Print the first 4000 characters of the original file."
+        - "Determine the document type and propose necessary TEI customizations."
+        - "Update the document with necessary TEI customizations."
+        - "Validate the updated document."
+        
+    # Other steps continue here...

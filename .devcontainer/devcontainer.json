@@ -1,0 +1,13 @@
+{
+	"name": "Metafiles-dev",
+	"dockerComposeFile": "../docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			}
+		}
+	}
+}

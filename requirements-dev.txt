@@ -1,0 +1,3 @@
+black  # For applying code styles (make cs)
+flake8  # For running code checks (make ca)
+pytest
