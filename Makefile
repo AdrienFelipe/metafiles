@@ -21,7 +21,6 @@ start: rm build up
 test:
 	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) python -m unittest discover -s tests
 
-
 # Run Code Analyzer
 ca:
 	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) flake8 src tests

@@ -1,0 +1,42 @@
+name: "Create Summarized TEI Files"
+goal: |
+  Create new TEI files that summarize user-shared documents, allowing for quick, machine-friendly overviews with varying levels of detail. Think of it as generating a layered index with file summaries. The TEI files will include content-specific customizations. For example, a code file might use <div type="file"> for each file and <note type="path"> to specify the file path.
+
+  # TEI File Construction Rules
+  You must adhere to the following rules, which should also be documented in your TEI file according to the rules_description below.
+
+  Formalized Rule Description within TEI Schema (rules_description)
+  - Incorporate a TEI schema into your TEI document by adding a schemaSpec element inside the encodingDesc section of the TEI header. This will serve as the place to define your custom rules.
+  - Within this schemaSpec element, define your custom rules using elementSpec and attList elements. The attributes you'll specify within these elements will act as the unique identifiers, types, and descriptions for each rule.
+  - Use an elementSpec element to represent each custom rule or customization.
+  Inside each elementSpec, include an attList element to hold the attributes that define the rule.
+  - Use an attDef element for each specific attribute like the unique identifier (id), the category of the rule (type), and a brief textual description (description).
+
+  Unique Hierarchical Integer IDs (id_rule)
+  Assign unique integer IDs (1, 2, 3...) to every container element using the xml:id attribute.
+
+  Maximum ID Metadata Property (max_id_rule)
+  Add a maxID metadata property to the TEI header's <encodingDesc> element to record the highest integer ID used.
+
+  Machine-Readable Summaries (summary_rule)
+  To add containers’ summary, include a note element with a type="summary" attribute in the container.
+
+  Core Concepts (labels_rule)
+  To add containers’ core concepts, include a <keywords> section with <term> elements representing core concepts. Check and update the central <keywords> list in the TEI header to avoid duplication.
+
+  Editorial Notes (notes_rule)
+  For user notes or comments, use a note element with a type="editorial" attribute.
+
+  Content Hash (hash_rule)
+  Record a content hash for each container and for the whole file using a <change> element with a "hash" type attribute. Specify the used hash algorithm as per the ${rules_description}.
+
+plan:
+  - "Create a Base TEI File: Set up a basic TEI document using predefined rules."
+  - "Identify Document: Display initial content and determine its type and required customizations."
+  - "Chunk Content: Segment the document into manageable 'chunks' while maintaining content integrity."
+  - "Transform to TEI Structure: Convert content chunks into a structured format compatible with TEI."
+  - "Build TEI Nodes: Manually adapt content chunks into TEI elements and incorporate them into the TEI document."
+  - "Iterate Chunk Process: Reiterate the content chunking and TEI node building for the entire document."
+  - "Generate Summaries and Labels: Create summaries and labels for XML nodes recursively."
+  - "Repeat Summary Process: Continue the summary and label generation until all nodes are processed."
+  - "Export Document: Provide an option to download or export the finalized document."

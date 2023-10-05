@@ -1,0 +1,27 @@
+messages:
+  - role: system
+    content: |
+      Imagine a specialized text-based agent has to complete the task "{{ name }}" for which the only options to complete the task is to choose one of the following actions:
+      {% for action in actions %}
+      - {{ loop.index }}: {{ action }}
+      {% endfor %}
+      You must respond by a single number and nothing else. Do not add any other text.
+      
+  - role: user
+    content: |
+      task: "{{ name }}", for which requirements are:
+      {{ goal | indent(6) }}
+
+functions:
+  - name: apply_action
+    description: Apply the chosen action
+    parameters:
+      - name: action_id
+        type: integer
+        description: The ID of the chosen action
+      - name: reason
+        type: string
+        description: The reason of the choice
+    required:
+      - action_id
+      - reason
