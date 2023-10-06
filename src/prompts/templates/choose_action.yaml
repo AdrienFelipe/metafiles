@@ -3,13 +3,12 @@ messages:
     content: |
       Imagine a specialized text-based agent assigned to "{{ name }}".
       To address this, select one of the available actions:
-      {% for action in actions %}
-      - {{ loop.index }}: {{ action }}
+      {% for key, value in actions.items() %}
+      - {{ key }}: {{ value }}
       {% endfor %}
       Consider if the task needs further clarification, requires reasoning, can be executed by code, or should be divided.
       Respond with the chosen action's id and explain your decision.
 
-      
   - role: user
     content: |
       Requirements are:
@@ -19,12 +18,16 @@ functions:
   - name: apply_action
     description: Apply the chosen action
     parameters:
-      - name: action_id
-        type: integer
-        description: The ID of the chosen action
+      - name: action_key
+        type: string
+        description: The key of the chosen action
+        enum:
+          {% for key in actions.keys() %}
+          - {{ key }}
+          {% endfor %}
       - name: reason
         type: string
         description: The reason of the choice
     required:
-      - action_id
+      - action_key
       - reason

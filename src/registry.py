@@ -1,7 +1,6 @@
-# registry.py
-
 import os
 import importlib
+from action import Action
 
 ACTIONS_DIR = "/app/actions"
 
@@ -11,6 +10,9 @@ class ActionRegistry:
 
     def register_action(self, name, action_class):
         self._actions[name] = action_class()
+
+    def get_action(self, name: str) -> Action:
+        return self._actions[name]
 
     def get_registered_actions(self):
         return {name: action.description for name, action in self._actions.items()}

@@ -2,32 +2,26 @@ from jinja2 import Environment, FileSystemLoader
 from typing import Dict, List, Optional
 from task import Task
 import yaml
+from prompts.prompt_strategy import IPromptStrategy
 
 class Prompt:
-    def __init__(self, task: Task, available_actions: Dict[str, str]):
+    def __init__(self, task: Task, strategy: IPromptStrategy):
         self.task = task
-        self.available_actions = available_actions
+        self.strategy = strategy
 
-        # Initialize Jinja2 environment
-        self.env = Environment(loader=FileSystemLoader('/app/prompts'))
-        self.template = self.env.get_template('choose_action.yaml')
-        self.rendered_content = self._render_template()
+        self.env = Environment(loader=FileSystemLoader('/app/prompts/templates'))
+        self.template = self.env.get_template(self.strategy.get_template_name())
+        self.parsed_content = yaml.safe_load(self._render_template())
 
     def _render_template(self) -> str:
-        return self.template.render(
-            name=self.task.name, 
-            goal=self.task.goal, 
-            actions=self.available_actions.values()
-        )
+        render_args = self.strategy.get_render_args(self.task)
+        return self.template.render(**render_args)
 
     def generate_messages(self) -> List[Dict[str, str]]:
-        parsed_content = yaml.safe_load(self.rendered_content)
-        return parsed_content.get("messages", [])
+        return self.parsed_content.get("messages", [])
 
     def extract_functions(self) -> Optional[List[Dict[str, Dict]]]:
-        rendered_content = self._render_template()
-        parsed_content = yaml.safe_load(rendered_content)
-        yaml_functions = parsed_content.get("functions", [])
+        yaml_functions = self.parsed_content.get("functions", [])
 
         if not yaml_functions:
             return []
