@@ -12,10 +12,9 @@ class Task:
 
     @staticmethod
     def from_yaml(file_path: str) -> Task:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             data = yaml.safe_load(file)
-        return Task(data['name'], data['goal'], data.get('plan', None), data.get('action', None))
+        return Task(data["name"], data["goal"], data.get("plan", None), data.get("action", None))
 
     def __str__(self) -> str:
         return f"Name: {self.name}, Goal: {self.goal}, Plan: {', '.join(self.plan)}"
-    

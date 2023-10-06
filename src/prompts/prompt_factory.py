@@ -4,12 +4,12 @@ from prompts.prompt_strategy import IPromptStrategy
 from prompts.strategies.choose_action import ChooseActionStrategy
 from prompts.strategies.choose_agent import ChooseAgentStrategy
 
-class PromptFactory:
 
+class PromptFactory:
     @staticmethod
     def create(task: Task, strategy: IPromptStrategy) -> Prompt:
         return Prompt(task, strategy)
-    
+
     @staticmethod
     def choose_action(task: Task) -> Prompt:
         return PromptFactory.create(task, ChooseActionStrategy())

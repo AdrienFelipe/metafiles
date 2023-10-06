@@ -3,9 +3,10 @@ from action import Action
 from action_result import ActionResult
 from task import Task
 
+
 class DivideTask(Action):
     description = "Subdivide the task into smaller tasks"
-    
+
     def apply(self, task: Task, reason: str) -> ActionResult:
         # Prompt which agents would best know about the task to know what to do
         # For each agent role
@@ -14,4 +15,5 @@ class DivideTask(Action):
         # Update task with plan
         pass
 
-action_registry.register_action('divide_task', DivideTask)
+
+action_registry.register_action("divide_task", DivideTask)

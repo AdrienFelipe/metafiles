@@ -3,8 +3,9 @@ from task import Task
 from prompts.prompt_strategy import IPromptStrategy
 from registry import action_registry
 
+
 class ChooseActionStrategy(IPromptStrategy):
-    TEMPLATE_NAME = 'choose_action.yaml'
+    TEMPLATE_NAME = "choose_action.yaml"
 
     def get_template_name(self) -> str:
         return self.TEMPLATE_NAME
@@ -13,5 +14,5 @@ class ChooseActionStrategy(IPromptStrategy):
         return {
             "name": task.name,
             "goal": task.goal,
-            "actions": action_registry.get_registered_actions()
+            "actions": action_registry.get_registered_actions(),
         }

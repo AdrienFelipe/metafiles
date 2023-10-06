@@ -30,5 +30,7 @@ RUN apt-get install -y git
 COPY requirements-dev.txt /tmp/
 RUN pip install -r /tmp/requirements-dev.txt && rm -f /tmp/requirements-dev.txt
 
+WORKDIR /workspace
+
 # Keep container up.
 CMD ["tail", "-f", "/dev/null"]

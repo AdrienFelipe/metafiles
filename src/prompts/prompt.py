@@ -4,12 +4,13 @@ from task import Task
 import yaml
 from prompts.prompt_strategy import IPromptStrategy
 
+
 class Prompt:
     def __init__(self, task: Task, strategy: IPromptStrategy):
         self.task = task
         self.strategy = strategy
 
-        self.env = Environment(loader=FileSystemLoader('/app/prompts/templates'))
+        self.env = Environment(loader=FileSystemLoader("/app/prompts/templates"))
         self.template = self.env.get_template(self.strategy.get_template_name())
         self.parsed_content = yaml.safe_load(self._render_template())
 
@@ -34,19 +35,21 @@ class Prompt:
                 "parameters": {
                     "type": "object",
                     "properties": {},
-                    "required": func["required"]
-                }
+                    "required": func["required"],
+                },
             }
 
             for param in func["parameters"]:  # Now we iterate over the list
-                if "name" in param and "type" in param: 
+                if "name" in param and "type" in param:
                     param_name = param["name"]
                     function_dict["parameters"]["properties"][param_name] = {
                         "type": param["type"],
-                        "description": param["description"]
+                        "description": param["description"],
                     }
                     if "enum" in param:
-                        function_dict["parameters"]["properties"][param_name]["enum"] = param["enum"]
+                        function_dict["parameters"]["properties"][param_name]["enum"] = param[
+                            "enum"
+                        ]
                 else:
                     print(f"Unexpected parameter format: {param}")
 

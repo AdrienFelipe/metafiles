@@ -1,9 +1,11 @@
 from enum import Enum, auto
 
+
 class ActionResultStatus(Enum):
     SUCCESS = auto()
     FAILURE = auto()
     PENDING = auto()
+
 
 class ActionResult:
     def __init__(self, status: ActionResultStatus, message: str = "", data: dict = None):
@@ -27,8 +29,4 @@ class ActionResult:
 
     def to_dict(self) -> dict:
         """Convert the result into a dictionary format."""
-        return {
-            "status": self.status.name,
-            "message": self.message,
-            "data": self.data
-        }
+        return {"status": self.status.name, "message": self.message, "data": self.data}
