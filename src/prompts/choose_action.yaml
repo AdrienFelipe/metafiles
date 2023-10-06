@@ -1,15 +1,18 @@
 messages:
   - role: system
     content: |
-      Imagine a specialized text-based agent has to complete the task "{{ name }}" for which the only options to complete the task is to choose one of the following actions:
+      Imagine a specialized text-based agent assigned to "{{ name }}".
+      To address this, select one of the available actions:
       {% for action in actions %}
       - {{ loop.index }}: {{ action }}
       {% endfor %}
-      You must respond by a single number and nothing else. Do not add any other text.
+      Consider if the task needs further clarification, requires reasoning, can be executed by code, or should be divided.
+      Respond with the chosen action's id and explain your decision.
+
       
   - role: user
     content: |
-      task: "{{ name }}", for which requirements are:
+      Requirements are:
       {{ goal | indent(6) }}
 
 functions:
