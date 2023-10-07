@@ -13,7 +13,7 @@ def apply_task(task: Task) -> None:
         reason = None
     else:
         agent_proxy = AgentProxy(OpenAIChat())
-        action_key, reason = agent_proxy.ask_to_choose_action(task).values()
+        action_key, reason = agent_proxy.ask_to_choose_action(task)
 
     # Now with task type, execute it's action
     action_registry.get_action(action_key).execute(task, reason)

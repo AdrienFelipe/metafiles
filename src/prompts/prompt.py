@@ -20,6 +20,11 @@ class Prompt:
         render_args = self.strategy.get_render_args(self.task)
         return self.template.render(**render_args)
 
+    def add_message(self, role: str, message: str):
+        if "messages" not in self.parsed_content:
+            self.parsed_content["messages"] = []
+        self.parsed_content["messages"].append({"role": role, "content": message})
+
     def messages(self) -> List[Dict[str, str]]:
         return self.parsed_content.get("messages", [])
 
@@ -34,14 +39,17 @@ class Prompt:
             function_dict = {
                 "name": func["name"],
                 "description": func["description"],
-                "parameters": {
+                "parameters": {  # initialize an empty parameters dictionary
                     "type": "object",
                     "properties": {},
-                    "required": func["required"],
+                    "required": func.get(
+                        "required", []
+                    ),  # using get in case 'required' is also optional
                 },
             }
 
-            for param in func["parameters"]:  # Now we iterate over the list
+            # Only iterate and populate if parameters are provided
+            for param in func.get("parameters", []):  # Now we iterate over the list
                 if "name" in param and "type" in param:
                     param_name = param["name"]
                     function_dict["parameters"]["properties"][param_name] = {

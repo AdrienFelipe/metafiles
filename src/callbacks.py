@@ -1,24 +1,45 @@
-from typing import List
+from typing import List, NamedTuple
 
 from task import Task
 
 
-def choose_action_callback(task: Task, action_key: str, reason: str) -> (str, str):
-    """
-    Returns:
-    - action_key: The key or identifier for the chosen action
-    - reason: The reason or justification for the chosen action
-    """
-    return action_key, reason
+class ChooseActionResponse(NamedTuple):
+    action_key: str
+    reason: str
 
 
-def choose_agent_roles_callback(task: Task, roles: str) -> List[str]:
-    return [role.strip() for role in roles.split(",") if role.strip() != ""]
+def choose_action_callback(task: Task, action_key: str, reason: str) -> ChooseActionResponse:
+    return ChooseActionResponse(action_key, reason)
 
 
-def create_plan_parse_callback(task: Task, plan: str) -> List[str]:
-    return plan.splitlines()
+class ChooseAgentResponse(NamedTuple):
+    roles: List[str]
 
 
-def query_user_callback(task: Task, query: str) -> str:
-    return query
+def choose_agent_roles_callback(task: Task, roles: str) -> ChooseAgentResponse:
+    roles_list = [role.strip() for role in roles.split(",") if role.strip() != ""]
+    return ChooseAgentResponse(roles_list)
+
+
+class CreatePlanResponse(NamedTuple):
+    plan_lines: List[str]
+
+
+def create_plan_parse_callback(task: Task, plan: str) -> CreatePlanResponse:
+    return CreatePlanResponse(plan.splitlines())
+
+
+class QueryUserResponse(NamedTuple):
+    query: str
+
+
+def query_user_callback(task: Task, query: str) -> QueryUserResponse:
+    return QueryUserResponse(query)
+
+
+class ValidatePlanResponse(NamedTuple):
+    pass
+
+
+def validate_plan_callback(task: Task) -> ValidatePlanResponse:
+    return ValidatePlanResponse()

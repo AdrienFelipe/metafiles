@@ -3,7 +3,7 @@ import os
 
 import openai
 
-from prompt_result import PromptResult, PromptStatus
+from prompt_result import PromptResponse, PromptStatus
 from prompts.prompt import Prompt
 
 
@@ -15,6 +15,8 @@ class OpenAIChat:
         return self._handle(prompt, self._send(prompt))
 
     def _send(self, prompt: Prompt):
+        print("-------")
+        print(prompt.messages())
         return openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=prompt.messages(),
@@ -24,7 +26,7 @@ class OpenAIChat:
             max_tokens=2048,
         )
 
-    def _handle(self, prompt: Prompt, response) -> PromptResult:
+    def _handle(self, prompt: Prompt, response) -> PromptResponse:
         message = response.choices[0].message
         if message.get("function_call"):
             function_name = message["function_call"]["name"]
@@ -35,8 +37,8 @@ class OpenAIChat:
                 return handler(prompt.task, **function_arguments)
             else:
                 print("Agent chose a non-defined function:", function_name)
-                return PromptResult(
+                return PromptResponse(
                     PromptStatus.FAILURE, f"Agent chose a non-defined function: {function_name}"
                 )
         else:
-            return PromptResult(PromptStatus.SUCCESS, message["content"])
+            return PromptResponse(PromptStatus.SUCCESS, message["content"])

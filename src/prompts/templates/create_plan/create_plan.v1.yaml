@@ -14,12 +14,20 @@ messages:
 
 functions:
   - name: update_plan
-    description: Set the plan to the task.
+    description: Set the plan to the task
     parameters:
       - name: plan
         type: string
-        description: A block of text detailing the plan, with one task per line.
+        description: A text block detailing the plan, with each task described on a separate line
     required:
       - plan
-
-callback: update_plan
+  - name: validate_plan
+    description: Accept the plan as is
+  - name: ask_user
+    description: Solicit more information or clarity from the user
+    parameters:
+      - name: query
+        type: string
+        description: The question or clarification needed from the user
+    required:
+      - query

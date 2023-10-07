@@ -7,7 +7,7 @@ class PromptStatus(Enum):
     PENDING = auto()
 
 
-class PromptResult:
+class PromptResponse:
     def __init__(self, status: PromptStatus, message: str = "", data: dict = None):
         self.status = status
         self.message = message
@@ -21,3 +21,8 @@ class PromptResult:
 
     def to_dict(self) -> dict:
         return {"status": self.status.name, "message": self.message, "data": self.data}
+
+
+class PromptMessageResponse(PromptResponse):
+    def __init__(self, message: str):
+        super().__init__(PromptStatus.SUCCESS, message, None)

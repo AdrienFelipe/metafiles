@@ -16,11 +16,16 @@ class DivideTask(Action):
         roles = agent_proxy.ask_for_agent_roles(task)
 
         # For each agent role
-        for role in roles:
-            # Prompt acting like agent to list first level of sub tasks to divide or refine it
-            plan = agent_proxy.ask_to_create_plan(task, role)
+        while True:
+            initial_plan = task.plan
+            for role in roles:
+                # Prompt acting like agent to list first level of sub tasks to divide or refine it
+                plan = agent_proxy.ask_to_create_plan(task, role)
+                # validate plan is valid
+                task.plan = plan
 
-            ff = 33
+            if task.plan == initial_plan:
+                break
         # Validate the answer is what was expected
         # Update task with plan
 
