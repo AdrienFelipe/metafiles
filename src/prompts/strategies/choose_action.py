@@ -1,14 +1,16 @@
-from typing import Any, Callable, Dict, Optional
-from callbacks import execute_action
-from task import Task
+from typing import Any, Callable, Dict
+
+from callbacks import choose_action_callback
+from prompt_result import PromptResult
 from prompts.prompt_strategy import IPromptStrategy
 from registry import action_registry
+from task import Task
 
 
 class ChooseActionStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "choose_action.yaml"
     _HANDLER_FUNCTIONS = {
-        "apply_action": execute_action,
+        "apply_action": choose_action_callback,
     }
 
     def get_template_name(self) -> str:
@@ -21,5 +23,5 @@ class ChooseActionStrategy(IPromptStrategy):
             "actions": action_registry.get_registered_actions(),
         }
 
-    def get_handler_function(self, function_name: str) -> Optional[Callable]:
-        return self._HANDLER_FUNCTIONS.get(function_name)
+    def handler_functions(self) -> Dict[str, Callable[[Task], PromptResult]]:
+        return self._HANDLER_FUNCTIONS

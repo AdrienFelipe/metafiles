@@ -1,8 +1,10 @@
-from jinja2 import Environment, FileSystemLoader
 from typing import Dict, List, Optional
-from task import Task
+
 import yaml
+from jinja2 import Environment, FileSystemLoader
+
 from prompts.prompt_strategy import IPromptStrategy
+from task import Task
 
 
 class Prompt:
@@ -60,5 +62,6 @@ class Prompt:
     def function_names(self) -> List[str]:
         return [func["name"] for func in self.functions()]
 
-    def callback(self) -> Optional[str]:
-        return self.parsed_content.get("callback", None)
+    def callback(self) -> Optional[Dict]:
+        callback_name = self.parsed_content.get("callback")
+        return {"name": callback_name} if callback_name else "auto"

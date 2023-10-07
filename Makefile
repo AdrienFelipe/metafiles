@@ -27,6 +27,8 @@ ca:
 
 # Apply Code Styles
 cs:
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) autoflake --remove-all-unused-imports --recursive --in-place src tests
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) isort src tests
 	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) black src tests
 
 # Enter container

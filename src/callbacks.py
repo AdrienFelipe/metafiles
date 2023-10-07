@@ -1,17 +1,24 @@
 from typing import List
-from registry import action_registry
-from action_result import ActionResult
+
 from task import Task
 
 
-def execute_action(task: Task, action_key: str, reason: str) -> ActionResult:
-    return action_registry.get_action(action_key).execute(task, reason)
+def choose_action_callback(task: Task, action_key: str, reason: str) -> (str, str):
+    """
+    Returns:
+    - action_key: The key or identifier for the chosen action
+    - reason: The reason or justification for the chosen action
+    """
+    return action_key, reason
 
 
-def ask_agents(task: Task, roles: str) -> List[str]:
+def choose_agent_roles_callback(task: Task, roles: str) -> List[str]:
     return [role.strip() for role in roles.split(",") if role.strip() != ""]
 
 
-def update_plan(task: Task, plan: str) -> List[str]:
-    print(plan)
-    return plan
+def create_plan_parse_callback(task: Task, plan: str) -> List[str]:
+    return plan.splitlines()
+
+
+def query_user_callback(task: Task, query: str) -> str:
+    return query

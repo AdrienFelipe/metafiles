@@ -1,7 +1,8 @@
-from registry import action_registry
 from action import Action
 from action_result import ActionResult
-from prompts.prompt_factory import PromptFactory
+from agent_proxy import AgentProxy
+from openai_chat import OpenAIChat
+from registry import action_registry
 from task import Task
 
 
@@ -9,15 +10,15 @@ class DivideTask(Action):
     description = "Subdivide the task into smaller tasks"
 
     def execute(self, task: Task, reason: str) -> ActionResult:
+        agent_proxy = AgentProxy(OpenAIChat())
+
         # Prompt which agents would best know about the task to know what to do
-        role_prompt = PromptFactory.choose_agent(task)
-        roles = self.agent.ask(role_prompt)
+        roles = agent_proxy.ask_for_agent_roles(task)
 
         # For each agent role
         for role in roles:
             # Prompt acting like agent to list first level of sub tasks to divide or refine it
-            plan_prompt = PromptFactory.create_plan(task)
-            plan = self.agent.ask(plan_prompt)
+            plan = agent_proxy.ask_to_create_plan(task, role)
 
             ff = 33
         # Validate the answer is what was expected
