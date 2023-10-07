@@ -1,19 +1,27 @@
 from registry import action_registry
 from action import Action
 from action_result import ActionResult
+from prompts.prompt_factory import PromptFactory
 from task import Task
 
 
 class DivideTask(Action):
     description = "Subdivide the task into smaller tasks"
 
-    def apply(self, task: Task, reason: str) -> ActionResult:
+    def execute(self, task: Task, reason: str) -> ActionResult:
         # Prompt which agents would best know about the task to know what to do
+        role_prompt = PromptFactory.choose_agent(task)
+        roles = self.agent.ask(role_prompt)
+
         # For each agent role
-        # Prompt acting like agent to list first level of sub tasks to divide or refine it
+        for role in roles:
+            # Prompt acting like agent to list first level of sub tasks to divide or refine it
+            plan_prompt = PromptFactory.create_plan(task)
+            plan = self.agent.ask(plan_prompt)
+
+            ff = 33
         # Validate the answer is what was expected
         # Update task with plan
-        pass
 
 
 action_registry.register_action("divide_task", DivideTask)

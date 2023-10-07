@@ -18,10 +18,10 @@ class Prompt:
         render_args = self.strategy.get_render_args(self.task)
         return self.template.render(**render_args)
 
-    def generate_messages(self) -> List[Dict[str, str]]:
+    def messages(self) -> List[Dict[str, str]]:
         return self.parsed_content.get("messages", [])
 
-    def extract_functions(self) -> Optional[List[Dict[str, Dict]]]:
+    def functions(self) -> Optional[List[Dict[str, Dict]]]:
         yaml_functions = self.parsed_content.get("functions", [])
 
         if not yaml_functions:
@@ -56,3 +56,9 @@ class Prompt:
             functions.append(function_dict)
 
         return functions
+
+    def function_names(self) -> List[str]:
+        return [func["name"] for func in self.functions()]
+
+    def callback(self) -> Optional[str]:
+        return self.parsed_content.get("callback", None)

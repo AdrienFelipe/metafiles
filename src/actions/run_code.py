@@ -7,7 +7,7 @@ from task import Task
 class RunCode(Action):
     description = "Execute a single atomic code function"
 
-    def apply(self, task: Task, reason: str) -> ActionResult:
+    def execute(self, task: Task, reason: str) -> ActionResult:
         """Apply the action given a task and a reason."""
         pass
 

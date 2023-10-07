@@ -3,6 +3,7 @@ from prompts.prompt import Prompt
 from prompts.prompt_strategy import IPromptStrategy
 from prompts.strategies.choose_action import ChooseActionStrategy
 from prompts.strategies.choose_agent import ChooseAgentStrategy
+from prompts.strategies.create_plan import CreatePlanStrategy
 
 
 class PromptFactory:
@@ -17,3 +18,7 @@ class PromptFactory:
     @staticmethod
     def choose_agent(task: Task) -> Prompt:
         return PromptFactory.create(task, ChooseAgentStrategy())
+
+    @staticmethod
+    def create_plan(task: Task) -> Prompt:
+        return PromptFactory.create(task, CreatePlanStrategy())

@@ -31,3 +31,5 @@ functions:
     required:
       - action_key
       - reason
+
+callback: apply_action
