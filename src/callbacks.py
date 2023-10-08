@@ -26,7 +26,17 @@ class CreatePlanResponse(NamedTuple):
 
 
 def create_plan_parse_callback(task: Task, plan: str) -> CreatePlanResponse:
-    return CreatePlanResponse(plan.splitlines())
+    lines = [line.strip() for line in plan.splitlines() if line.strip()]
+    return CreatePlanResponse(lines)
+
+
+class ValidatePlanResponse(NamedTuple):
+    plan_lines: List[str]
+
+
+def validate_plan_callback(task: Task, plan: str) -> ValidatePlanResponse:
+    lines = [line.strip() for line in plan.splitlines() if line.strip()]
+    return CreatePlanResponse(lines)
 
 
 class QueryUserResponse(NamedTuple):
@@ -35,11 +45,3 @@ class QueryUserResponse(NamedTuple):
 
 def query_user_callback(task: Task, query: str) -> QueryUserResponse:
     return QueryUserResponse(query)
-
-
-class ValidatePlanResponse(NamedTuple):
-    pass
-
-
-def validate_plan_callback(task: Task) -> ValidatePlanResponse:
-    return ValidatePlanResponse()

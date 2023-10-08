@@ -48,11 +48,17 @@ functions:
     parameters:
       - name: plan
         type: string
-        description: A text block detailing the plan, with each task described on a separate line
+        description: A text block detailing the plan with each task described on a separate line, without numeration, final punctuation, or indentation.
     required:
       - plan
   - name: validate_plan
-    description: Accept the plan as is
+    description: Accept the original plan without modifying it
+    parameters:
+      - name: plan
+        type: string
+        description: A text block detailing the plan with each task described on a separate line, without numeration, final punctuation, or indentation.
+    required:
+      - plan
   - name: ask_user
     description: Solicit more information or clarity from the user
     parameters:

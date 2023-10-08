@@ -4,29 +4,16 @@ from agent_proxy import AgentProxy
 from openai_chat import OpenAIChat
 from registry import action_registry
 from task import Task
-
-
-def apply_task(task: Task) -> None:
-    # If no task type, generate task type
-    if task.action:
-        action_key = task.action
-        reason = None
-    else:
-        agent_proxy = AgentProxy(OpenAIChat())
-        action_key, reason = agent_proxy.ask_to_choose_action(task)
-
-    # Now with task type, execute it's action
-    action_registry.get_action(action_key).execute(task, reason)
-    # check task result status (success, pending, error, ...)
-    # maybe re-loop
+from task_execute import execute_task
 
 
 def main() -> None:
     load_dotenv()
     action_registry.register_actions()
+    agent_proxy = AgentProxy(OpenAIChat())
 
     task = Task.from_yaml("/data/file_index.yaml")
-    apply_task(task)
+    execute_task(task, agent_proxy)
 
 
 if __name__ == "__main__":

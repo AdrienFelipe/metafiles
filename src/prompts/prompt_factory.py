@@ -3,6 +3,7 @@ from prompts.prompt_strategy import IPromptStrategy
 from prompts.strategies.choose_action import ChooseActionStrategy
 from prompts.strategies.choose_agent import ChooseAgentStrategy
 from prompts.strategies.create_plan import CreatePlanStrategy
+from prompts.strategies.filter_requirements import FilterRequirementsStrategy
 from task import Task
 
 
@@ -22,3 +23,7 @@ class PromptFactory:
     @staticmethod
     def create_plan(task: Task, role: str) -> Prompt:
         return PromptFactory._create(task, CreatePlanStrategy(role))
+
+    @staticmethod
+    def filter_requirements(task: Task, sub_goal: str) -> Prompt:
+        return PromptFactory._create(task, FilterRequirementsStrategy(sub_goal))

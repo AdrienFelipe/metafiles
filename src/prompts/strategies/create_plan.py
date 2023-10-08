@@ -7,7 +7,7 @@ from task import Task
 
 
 class CreatePlanStrategy(IPromptStrategy):
-    _TEMPLATE_NAME = "create_plan/create_plan.v2.yaml"
+    _TEMPLATE_NAME = "create_plan.yaml"
     _HANDLER_FUNCTIONS = {
         "update_plan": create_plan_parse_callback,
         "validate_plan": validate_plan_callback,
@@ -24,8 +24,8 @@ class CreatePlanStrategy(IPromptStrategy):
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
             "role": self.agent_role,
-            "task": task.name,
-            "goal": task.goal,
+            "task": task.goal,
+            "goal": task.requirements,
             "plan": task.plan,
         }
 

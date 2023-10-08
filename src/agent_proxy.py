@@ -46,6 +46,12 @@ class AgentProxy:
             else:
                 raise UnexpectedResponseTypeError(type(response))
 
+    def ask_to_filter_requirements(self, task: Task, sub_goal: str) -> str:
+        response = self.agent.ask(PromptFactory.filter_requirements(task, sub_goal))
+        if isinstance(response, PromptMessageResponse):
+            return response.message
+        raise UnexpectedResponseTypeError(type(response))
+
     def ask_user(self, query: str) -> str:
         return input(query)
 
