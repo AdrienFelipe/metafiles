@@ -20,6 +20,9 @@ class Prompt:
         render_args = self.strategy.get_render_args(self.task)
         return self.template.render(**render_args)
 
+    def ask(self) -> str:
+        return self.strategy.get_agent().ask(self)
+
     def add_message(self, role: str, message: str):
         if "messages" not in self.parsed_content:
             self.parsed_content["messages"] = []

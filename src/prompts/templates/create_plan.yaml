@@ -22,6 +22,7 @@ messages:
       Now, take a deep breath, and act as a "{{ role }}". Deliberate each step and detail them comprehensively.
       Every task must be on one line without numerotation. This plan should consist of direct sublevel tasks.
       Note: Further breakdown will occur later, so focus only on the immediate subtasks.
+      Note: The plan should be maximium 15 steps, if you have more, group the subtasks into higher-level tasks.
 
   - role: user
     content: |

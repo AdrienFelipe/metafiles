@@ -3,23 +3,27 @@ import os
 
 import openai
 
+from agent_interface import AgentInterface
 from prompt_result import PromptMessageResponse, PromptResponse, PromptStatus
 from prompts.prompt import Prompt
 
 
-class OpenAIChat:
-    def __init__(self):
+class OpenAIAgent(AgentInterface):
+    def __init__(self, model: str, max_tokens: int = 2048, temperature: int = 0):
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        self._model = model
+        self._max_tokens = max_tokens
+        self._temperature = temperature
 
     def ask(self, prompt: Prompt):
         return self._handle(prompt, self._send(prompt))
 
     def _send(self, prompt: Prompt):
         args = {
-            "model": "gpt-3.5-turbo",
+            "model": self._model,
             "messages": prompt.messages(),
-            "temperature": 0,
-            "max_tokens": 2048,
+            "temperature": self._temperature,
+            "max_tokens": self._max_tokens,
         }
 
         functions_value = prompt.functions()
