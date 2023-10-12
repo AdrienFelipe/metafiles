@@ -3,6 +3,7 @@ from typing import List
 from callbacks import (
     ChooseActionResponse,
     ChooseAgentResponse,
+    CreateCodeResponse,
     CreatePlanResponse,
     QueryUserResponse,
     ValidatePlanResponse,
@@ -49,6 +50,13 @@ class AgentProxy:
     def ask_to_filter_requirements(task: Task, sub_goal: str) -> str:
         response = PromptFactory.filter_requirements(task, sub_goal).ask()
         if isinstance(response, PromptMessageResponse):
+            return response.message
+        raise UnexpectedResponseTypeError(type(response))
+
+    @staticmethod
+    def ask_for_code(task: Task, reason: str) -> str:
+        response = PromptFactory.ask_for_code(task, reason).ask()
+        if isinstance(response, CreateCodeResponse):
             return response.message
         raise UnexpectedResponseTypeError(type(response))
 

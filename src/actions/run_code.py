@@ -11,12 +11,11 @@ class RunCode(Action):
     def execute(self, task: Task, reason: str = "") -> ActionResult:
         if not task.plan:
             code = AgentProxy.ask_for_code(task, reason)
-            
+
         # TODO: validate code is not harmful
         # TODO: test the code on test data
-        
+
         # Eval run code
-        
 
 
 action_registry.register_action("run_code", RunCode)

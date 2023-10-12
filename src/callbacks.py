@@ -45,3 +45,11 @@ class QueryUserResponse(NamedTuple):
 
 def query_user_callback(task: Task, query: str) -> QueryUserResponse:
     return QueryUserResponse(query)
+
+
+class CreateCodeResponse(NamedTuple):
+    message: str
+
+
+def create_code_callback(task: Task, code: str) -> CreateCodeResponse:
+    return CreateCodeResponse(code)

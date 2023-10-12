@@ -34,7 +34,7 @@ class DivideTask(Action):
             sub_task = Task(sub_goal, sub_requirements, task)
             sub_result = execute_task(sub_task)
             # TODO: check sub result and advise what to do next <---------
-        
+
         # TODO: this should check the sub results
         return ActionResult(ActionResultStatus.SUCCESS, "Task was divided")
 
