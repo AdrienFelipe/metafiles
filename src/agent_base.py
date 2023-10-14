@@ -7,15 +7,12 @@ from prompts.prompt import Prompt
 
 
 class BaseAgent(AgentInterface, ABC):
-    def __init__(self, config: AgentConfig):
-        self.config = config
+    def ask(self, config: AgentConfig, prompt: Prompt):
+        response = self.send(config, prompt)
+        parsed_response = self.parse_response(response)
+        return self._handle_response(prompt, parsed_response)
 
-    def ask(self, prompt: Prompt):
-        response = self.send(prompt)
-        parsed_response = self.parseResponse(response)
-        return self._handle(prompt, parsed_response)
-
-    def _handle(self, prompt: Prompt, parsed_response: PromptResponse) -> PromptResponse:
+    def _handle_response(self, prompt: Prompt, parsed_response: PromptResponse) -> PromptResponse:
         if isinstance(parsed_response, PromptCallbackResponse):
             handler = prompt.strategy.handler_functions().get(parsed_response.get_function_name())
             if handler:

@@ -1,19 +1,19 @@
 import importlib
 import os
+from typing import Dict
 
-from action import Action
+from action import Action, ActionName
 
 ACTIONS_DIR = "/app/actions"
 
 
 class ActionRegistry:
-    def __init__(self):
-        self._actions = {}
+    _actions: Dict[ActionName, Action] = {}
 
-    def register_action(self, name, action_class):
+    def register_action(self, name: ActionName, action_class):
         self._actions[name] = action_class()
 
-    def get_action(self, name: str) -> Action:
+    def get_action(self, name: ActionName) -> Action:
         return self._actions[name]
 
     def get_registered_actions(self):

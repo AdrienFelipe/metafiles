@@ -2,7 +2,6 @@ from typing import Any, Callable, Dict
 
 from agent_config import AgentConfig, ModelType
 from callbacks import create_code_callback
-from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
 
@@ -28,7 +27,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "plan": task.plan,
         }
 
-    def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
+    def handler_functions(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

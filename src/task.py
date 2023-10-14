@@ -4,15 +4,17 @@ from typing import List, Optional
 
 import yaml
 
+from action import ActionName
+
 
 class Task:
     def __init__(
         self,
         goal: str,
         requirements: str,
-        parent_task: Task = None,
+        parent_task: Optional[Task] = None,
         plan: List[str] = [],
-        action: str = None,
+        action: Optional[ActionName] = None,
     ):
         self.id = Task.__build_id(parent_task)
         self.goal = goal
@@ -22,15 +24,23 @@ class Task:
         self.action = action
 
     @staticmethod
-    def from_yaml(file_path: str, parent_task: Task = None) -> Task:
+    def from_yaml(file_path: str, parent_task: Optional[Task] = None) -> Task:
         with open(file_path, "r") as file:
             data = yaml.safe_load(file)
+
+        try:
+            action_name = data.get("action", None)
+            action = ActionName(action_name) if action_name else None
+        except ValueError:
+            print(f"Loaded task with invalid action name (file: {file_path}, action: {action_name}")
+            action = None
+
         return Task(
-            data["goal"],
-            data["requirements"],
-            parent_task,
-            data.get("plan", None),
-            data.get("action", None),
+            goal=data["goal"],
+            requirements=data["requirements"],
+            parent_task=parent_task,
+            plan=data.get("plan", None),
+            action=action,
         )
 
     def __str__(self) -> str:

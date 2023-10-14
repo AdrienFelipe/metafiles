@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict
 from action_registry import action_registry
 from agent_config import AgentConfig, ModelType
 from callbacks import choose_action_callback
-from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
 
@@ -24,7 +23,7 @@ class ChooseActionStrategy(IPromptStrategy):
             "actions": action_registry.get_registered_actions(),
         }
 
-    def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
+    def handler_functions(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

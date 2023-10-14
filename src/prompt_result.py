@@ -8,7 +8,7 @@ class PromptStatus(Enum):
 
 
 class PromptResponse:
-    def __init__(self, status: PromptStatus, message: str = "", data: dict = None):
+    def __init__(self, status: PromptStatus, message: str = "", data: dict = {}):
         self.status = status
         self.message = message
         self.data = data or {}

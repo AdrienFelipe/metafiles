@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict
 
 from agent_config import AgentConfig
-from prompt_result import PromptResponse
 from task import Task
 
 
@@ -16,7 +15,7 @@ class IPromptStrategy(ABC):
         pass
 
     @abstractmethod
-    def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
+    def handler_functions(self) -> Dict[str, Callable]:
         pass
 
     @abstractmethod

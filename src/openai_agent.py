@@ -15,16 +15,16 @@ class OpenAIAgent(BaseAgent):
         ModelType.CAPABLE: "gpt-4",
     }
 
-    def __init__(self, config: AgentConfig):
+    def __init__(self):
         openai.api_key = os.getenv("OPENAI_API_KEY")
-        super().__init__(config)
+        super().__init__()
 
-    def send(self, prompt: Prompt) -> PromptResponse:
+    def send(self, config: AgentConfig, prompt: Prompt) -> PromptResponse:
         args = {
-            "model": OpenAIAgent.MODEL_MAP[self.config.model],
+            "model": OpenAIAgent.MODEL_MAP[config.model],
             "messages": prompt.messages(),
-            "temperature": self.config.temperature,
-            "max_tokens": self.config.max_tokens,
+            "temperature": config.temperature,
+            "max_tokens": config.max_tokens,
         }
 
         functions_value = prompt.functions()
@@ -34,7 +34,7 @@ class OpenAIAgent(BaseAgent):
 
         return openai.ChatCompletion.create(**args)
 
-    def parseResponse(self, response) -> PromptResponse:
+    def parse_response(self, response) -> PromptResponse:
         message = response.choices[0].message
         if message.get("function_call"):
             function_name = message["function_call"]["name"]

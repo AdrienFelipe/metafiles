@@ -36,7 +36,7 @@ class ValidatePlanResponse(NamedTuple):
 
 def validate_plan_callback(task: Task, plan: str) -> ValidatePlanResponse:
     lines = [line.strip() for line in plan.splitlines() if line.strip()]
-    return CreatePlanResponse(lines)
+    return ValidatePlanResponse(lines)
 
 
 class QueryUserResponse(NamedTuple):

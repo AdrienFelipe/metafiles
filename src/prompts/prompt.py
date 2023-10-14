@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -22,11 +22,7 @@ class Prompt:
         return self.template.render(**render_args)
 
     def ask(self, agent: AgentInterface) -> str:
-        agent_config = self.strategy.agent_config()
-        return agent.ask(agent_config)
-
-    def __get_agent(self) -> AgentInterface:
-        agent_config = self.strategy.agent_config()
+        return agent.send(self.strategy.agent_config(), self)
 
     def add_message(self, role: str, message: str):
         if "messages" not in self.parsed_content:
@@ -75,9 +71,13 @@ class Prompt:
 
         return functions
 
-    def function_names(self) -> List[str]:
-        return [func["name"] for func in self.functions()]
+    def function_names(self) -> List[dict[Any, Any]]:
+        functions = self.functions()
+        if functions is None:
+            return []
 
-    def callback(self) -> Optional[Dict]:
+        return [func["name"] for func in functions]
+
+    def callback(self) -> Union[Dict[Any, Any], str]:
         callback_name = self.parsed_content.get("callback")
         return {"name": callback_name} if callback_name else "auto"

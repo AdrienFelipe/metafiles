@@ -1,14 +1,13 @@
 from typing import Any, Callable, Dict
 
 from agent_config import AgentConfig, ModelType
-from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
 
 
 class FilterRequirementsStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "filter_requirements.yaml"
-    _HANDLER_FUNCTIONS = {}
+    _HANDLER_FUNCTIONS: Dict[str, Callable] = {}
 
     def __init__(self, sub_goal: str) -> None:
         super().__init__()
@@ -25,7 +24,7 @@ class FilterRequirementsStrategy(IPromptStrategy):
             "subtask": self.sub_goal,
         }
 
-    def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
+    def handler_functions(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

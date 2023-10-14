@@ -8,7 +8,7 @@ class ActionResultStatus(Enum):
 
 
 class ActionResult:
-    def __init__(self, status: ActionResultStatus, message: str = "", data: dict = None):
+    def __init__(self, status: ActionResultStatus, message: str = "", data: dict = {}):
         """
         Initialize an ActionResult instance.
 

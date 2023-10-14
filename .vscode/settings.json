@@ -1,3 +1,9 @@
 {
-    "python.analysis.extraPaths": ["./src"]
+    "python.analysis.extraPaths": [
+        "./src"
+    ],
+    "python.linting.mypyEnabled": true,
+    "files.exclude": {
+        "**/.mypy_cache": true
+    }
 }
