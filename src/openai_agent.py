@@ -4,21 +4,27 @@ import os
 import openai
 
 from agent_base import BaseAgent
+from agent_config import AgentConfig, ModelType
 from prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
 from prompts.prompt import Prompt
 
 
 class OpenAIAgent(BaseAgent):
-    def __init__(self, model: str, max_tokens: int = 2048, temperature: int = 0):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        super().__init__(model, max_tokens, temperature)
+    MODEL_MAP = {
+        ModelType.FAST: "gpt-3.5-turbo",
+        ModelType.CAPABLE: "gpt-4",
+    }
 
-    def send(self, prompt: Prompt):
+    def __init__(self, config: AgentConfig):
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        super().__init__(config)
+
+    def send(self, prompt: Prompt) -> PromptResponse:
         args = {
-            "model": self._model,
+            "model": OpenAIAgent.MODEL_MAP[self.config.model],
             "messages": prompt.messages(),
-            "temperature": self._temperature,
-            "max_tokens": self._max_tokens,
+            "temperature": self.config.temperature,
+            "max_tokens": self.config.max_tokens,
         }
 
         functions_value = prompt.functions()
@@ -28,7 +34,7 @@ class OpenAIAgent(BaseAgent):
 
         return openai.ChatCompletion.create(**args)
 
-    def parseResponse(self, response) -> "PromptResponse":
+    def parseResponse(self, response) -> PromptResponse:
         message = response.choices[0].message
         if message.get("function_call"):
             function_name = message["function_call"]["name"]

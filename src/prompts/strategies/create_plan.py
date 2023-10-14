@@ -1,8 +1,7 @@
 from typing import Any, Callable, Dict
 
-from agent_interface import AgentInterface
+from agent_config import AgentConfig, ModelType
 from callbacks import create_plan_parse_callback, query_user_callback, validate_plan_callback
-from openai_agent import OpenAIAgent
 from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
@@ -34,5 +33,5 @@ class CreatePlanStrategy(IPromptStrategy):
     def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
         return self._HANDLER_FUNCTIONS
 
-    def get_agent(self) -> AgentInterface:
-        return OpenAIAgent("gpt-3.5-turbo", 2048, 0)
+    def agent_config(self) -> AgentConfig:
+        return AgentConfig(ModelType.FAST, 2048, 0)

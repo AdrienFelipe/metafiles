@@ -1,9 +1,8 @@
 from typing import Any, Callable, Dict
 
 from action_registry import action_registry
-from agent_interface import AgentInterface
+from agent_config import AgentConfig, ModelType
 from callbacks import choose_action_callback
-from openai_agent import OpenAIAgent
 from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
@@ -28,5 +27,5 @@ class ChooseActionStrategy(IPromptStrategy):
     def handler_functions(self) -> Dict[str, Callable[[Task], PromptResponse]]:
         return self._HANDLER_FUNCTIONS
 
-    def get_agent(self) -> AgentInterface:
-        return OpenAIAgent("gpt-3.5-turbo", 512, 0)
+    def agent_config(self) -> AgentConfig:
+        return AgentConfig(ModelType.FAST, 512, 0)

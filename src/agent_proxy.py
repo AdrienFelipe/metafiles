@@ -14,26 +14,26 @@ from task import Task
 
 
 class AgentProxy:
-    @staticmethod
-    def ask_for_agent_roles(task: Task) -> List[str]:
-        response = PromptFactory.choose_agent(task).ask()
+    def __init__(self, agent):
+        self.agent = agent
+
+    def ask_for_agent_roles(self, task: Task) -> List[str]:
+        response = PromptFactory.choose_agent(task).ask(self.agent)
         if isinstance(response, ChooseAgentResponse):
             return response.roles
         raise UnexpectedResponseTypeError(type(response))
 
-    @staticmethod
-    def ask_to_choose_action(task: Task) -> (str, str):
-        response = PromptFactory.choose_action(task).ask()
+    def ask_to_choose_action(self, task: Task) -> (str, str):
+        response = PromptFactory.choose_action(task).ask(self.agent)
         if isinstance(response, ChooseActionResponse):
             return response.action_key, response.reason
         raise UnexpectedResponseTypeError(type(response))
 
-    @staticmethod
-    def ask_to_create_plan(task: Task, role: str) -> List[str]:
+    def ask_to_create_plan(self, task: Task, role: str) -> List[str]:
         prompt = PromptFactory.create_plan(task, role)
 
         while True:
-            response = prompt.ask()
+            response = prompt.ask(self.agent)
 
             if isinstance(response, (CreatePlanResponse, ValidatePlanResponse)):
                 return response.plan_lines
@@ -46,16 +46,14 @@ class AgentProxy:
             else:
                 raise UnexpectedResponseTypeError(type(response))
 
-    @staticmethod
-    def ask_to_filter_requirements(task: Task, sub_goal: str) -> str:
-        response = PromptFactory.filter_requirements(task, sub_goal).ask()
+    def ask_to_filter_requirements(self, task: Task, sub_goal: str) -> str:
+        response = PromptFactory.filter_requirements(task, sub_goal).ask(self.agent)
         if isinstance(response, PromptMessageResponse):
             return response.message
         raise UnexpectedResponseTypeError(type(response))
 
-    @staticmethod
-    def ask_for_code(task: Task, reason: str) -> str:
-        response = PromptFactory.create_code(task, reason).ask()
+    def ask_for_code(self, task: Task, reason: str) -> str:
+        response = PromptFactory.create_code(task, reason).ask(self.agent)
         if isinstance(response, CreateCodeResponse):
             return response.message
         raise UnexpectedResponseTypeError(type(response))

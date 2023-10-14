@@ -1,15 +1,14 @@
 from abc import ABC
 
+from agent_config import AgentConfig
 from agent_interface import AgentInterface
 from prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
 from prompts.prompt import Prompt
 
 
 class BaseAgent(AgentInterface, ABC):
-    def __init__(self, model: str, max_tokens: int = 2048, temperature: int = 0):
-        self._model = model
-        self._max_tokens = max_tokens
-        self._temperature = temperature
+    def __init__(self, config: AgentConfig):
+        self.config = config
 
     def ask(self, prompt: Prompt):
         response = self.send(prompt)

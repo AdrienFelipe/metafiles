@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict
 
-from agent_interface import AgentInterface
+from agent_config import AgentConfig
 from prompt_result import PromptResponse
 from task import Task
 
@@ -20,5 +20,5 @@ class IPromptStrategy(ABC):
         pass
 
     @abstractmethod
-    def get_agent(self) -> AgentInterface:
+    def agent_config(self) -> AgentConfig:
         pass

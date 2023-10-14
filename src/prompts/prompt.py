@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from agent_interface import AgentInterface
 from prompts.prompt_strategy import IPromptStrategy
 from task import Task
 
@@ -20,8 +21,12 @@ class Prompt:
         render_args = self.strategy.get_render_args(self.task)
         return self.template.render(**render_args)
 
-    def ask(self) -> str:
-        return self.strategy.get_agent().ask(self)
+    def ask(self, agent: AgentInterface) -> str:
+        agent_config = self.strategy.agent_config()
+        return agent.ask(agent_config)
+
+    def __get_agent(self) -> AgentInterface:
+        agent_config = self.strategy.agent_config()
 
     def add_message(self, role: str, message: str):
         if "messages" not in self.parsed_content:

@@ -2,5 +2,7 @@ black
 isort
 autoflake
 flake8
+mypy
+types-PyYAML # For mypy
 pytest
 debugpy

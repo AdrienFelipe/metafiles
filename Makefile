@@ -23,6 +23,7 @@ test:
 
 # Run Code Analyzer
 ca:
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) mypy --explicit-package-bases src tests
 	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) flake8 src tests
 
 # Apply Code Styles
