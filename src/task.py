@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import yaml
 
-from action import ActionName
+from action.action import ActionName
 
 
 class Task:

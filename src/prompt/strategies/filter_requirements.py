@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict
 
-from agent_config import AgentConfig, ModelType
-from prompts.prompt_strategy import IPromptStrategy
+from agent.agent_config import AgentConfig, ModelType
+from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 
 

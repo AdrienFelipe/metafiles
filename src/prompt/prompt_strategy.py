@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict
 
-from agent_config import AgentConfig
+from agent.agent_config import AgentConfig
 from task import Task
 
 

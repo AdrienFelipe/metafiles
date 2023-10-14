@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
-from action_registry import action_registry
-from openai_agent import OpenAIAgent
+from action.action_registry import action_registry
+from agent.agents.openai_agent import OpenAIAgent
 from task import Task
 from task_execute import execute_task
 

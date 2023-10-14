@@ -3,10 +3,10 @@ import os
 
 import openai
 
-from agent_base import BaseAgent
-from agent_config import AgentConfig, ModelType
-from prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
-from prompts.prompt import Prompt
+from agent.agent_base import BaseAgent
+from agent.agent_config import AgentConfig, ModelType
+from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
+from prompt.prompt import Prompt
 
 
 class OpenAIAgent(BaseAgent):

@@ -1,9 +1,10 @@
 from typing import Any, Callable, Dict
 
-from action_registry import action_registry
-from agent_config import AgentConfig, ModelType
-from callbacks import choose_action_callback
-from prompts.prompt_strategy import IPromptStrategy
+from action.action_registry import action_registry
+
+from agent.agent_config import AgentConfig, ModelType
+from prompt.prompt_callbacks import choose_action_callback
+from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 
 

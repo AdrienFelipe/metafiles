@@ -1,9 +1,9 @@
 from abc import ABC
 
-from agent_config import AgentConfig
-from agent_interface import AgentInterface
-from prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
-from prompts.prompt import Prompt
+from agent.agent_config import AgentConfig
+from agent.agent_interface import AgentInterface
+from prompt.prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
+from prompt.prompt import Prompt
 
 
 class BaseAgent(AgentInterface, ABC):

@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from agent_config import AgentConfig
-from prompt_result import PromptResponse
-from prompts.prompt import Prompt
+from agent.agent_config import AgentConfig
+from prompt.prompt import Prompt
+from prompt.prompt_result import PromptResponse
 
 
 class AgentInterface(ABC):

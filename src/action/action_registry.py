@@ -2,7 +2,7 @@ import importlib
 import os
 from typing import Dict
 
-from action import Action, ActionName
+from action.action import Action, ActionName
 
 ACTIONS_DIR = "/app/actions"
 

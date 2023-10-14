@@ -1,15 +1,21 @@
 from typing import Any, Callable, Dict
 
-from agent_config import AgentConfig, ModelType
-from callbacks import create_code_callback
-from prompts.prompt_strategy import IPromptStrategy
+from agent.agent_config import AgentConfig, ModelType
+from prompt.prompt_callbacks import (
+    create_plan_parse_callback,
+    query_user_callback,
+    validate_plan_callback,
+)
+from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 
 
-class CreateCodeStrategy(IPromptStrategy):
-    _TEMPLATE_NAME = "create_code.yaml"
+class CreatePlanStrategy(IPromptStrategy):
+    _TEMPLATE_NAME = "create_plan.yaml"
     _HANDLER_FUNCTIONS = {
-        "execute_code": create_code_callback,
+        "update_plan": create_plan_parse_callback,
+        "validate_plan": validate_plan_callback,
+        "ask_user": query_user_callback,
     }
 
     def __init__(self, agent_role: str) -> None:
@@ -31,4 +37,4 @@ class CreateCodeStrategy(IPromptStrategy):
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:
-        return AgentConfig(ModelType.CAPABLE, 4096, 0)
+        return AgentConfig(ModelType.FAST, 2048, 0)

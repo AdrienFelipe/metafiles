@@ -1,10 +1,10 @@
-from prompts.prompt import Prompt
-from prompts.prompt_strategy import IPromptStrategy
-from prompts.strategies.choose_action import ChooseActionStrategy
-from prompts.strategies.choose_agent import ChooseAgentStrategy
-from prompts.strategies.create_code import CreateCodeStrategy
-from prompts.strategies.create_plan import CreatePlanStrategy
-from prompts.strategies.filter_requirements import FilterRequirementsStrategy
+from prompt.prompt import Prompt
+from prompt.prompt_strategy import IPromptStrategy
+from prompt.strategies.choose_action import ChooseActionStrategy
+from prompt.strategies.choose_agent import ChooseAgentStrategy
+from prompt.strategies.create_code import CreateCodeStrategy
+from prompt.strategies.create_plan import CreatePlanStrategy
+from prompt.strategies.filter_requirements import FilterRequirementsStrategy
 from task import Task
 
 

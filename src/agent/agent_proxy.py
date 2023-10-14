@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-from action import ActionName
-from callbacks import (
+from action.action import ActionName
+from prompt.prompt_callbacks import (
     ChooseActionResponse,
     ChooseAgentResponse,
     CreateCodeResponse,
@@ -9,8 +9,8 @@ from callbacks import (
     QueryUserResponse,
     ValidatePlanResponse,
 )
-from prompt_result import PromptMessageResponse
-from prompts.prompt_factory import PromptFactory
+from prompt.prompt_factory import PromptFactory
+from prompt.prompt_result import PromptMessageResponse
 from task import Task
 
 

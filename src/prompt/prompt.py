@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Optional, Union
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from agent_interface import AgentInterface
-from prompts.prompt_strategy import IPromptStrategy
+from agent.agent_interface import AgentInterface
+from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 
 

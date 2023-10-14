@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from action_result import ActionResult
-from agent_interface import AgentInterface
+from action.action_result import ActionResult
+
+from agent.agent_interface import AgentInterface
 from task import Task
 
 
