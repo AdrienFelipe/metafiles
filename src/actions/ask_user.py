@@ -1,6 +1,6 @@
 from action import Action
+from action_registry import action_registry
 from action_result import ActionResult
-from registry import action_registry
 from task import Task
 
 

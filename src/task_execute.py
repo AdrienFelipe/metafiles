@@ -1,5 +1,5 @@
+from action_registry import action_registry
 from agent_proxy import AgentProxy
-from registry import action_registry
 from task import Task
 
 

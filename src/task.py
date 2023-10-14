@@ -40,5 +40,5 @@ class Task:
     def __build_id(parent_task: Optional[Task]) -> str:
         if parent_task is None:
             return "0"
-        
+
         return f"{parent_task.id}.{len(parent_task.plan)}"

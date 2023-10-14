@@ -55,7 +55,7 @@ class AgentProxy:
 
     @staticmethod
     def ask_for_code(task: Task, reason: str) -> str:
-        response = PromptFactory.ask_for_code(task, reason).ask()
+        response = PromptFactory.create_code(task, reason).ask()
         if isinstance(response, CreateCodeResponse):
             return response.message
         raise UnexpectedResponseTypeError(type(response))

@@ -1,11 +1,11 @@
 from typing import Any, Callable, Dict
 
+from action_registry import action_registry
 from agent_interface import AgentInterface
 from callbacks import choose_action_callback
 from openai_agent import OpenAIAgent
 from prompt_result import PromptResponse
 from prompts.prompt_strategy import IPromptStrategy
-from registry import action_registry
 from task import Task
 
 

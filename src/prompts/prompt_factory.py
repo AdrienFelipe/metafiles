@@ -30,5 +30,5 @@ class PromptFactory:
         return PromptFactory._create(task, FilterRequirementsStrategy(sub_goal))
 
     @staticmethod
-    def ask_for_code(task: Task, reason: str) -> Prompt:
+    def create_code(task: Task, reason: str) -> Prompt:
         return PromptFactory._create(task, CreateCodeStrategy(reason))

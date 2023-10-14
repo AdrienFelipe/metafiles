@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-from registry import action_registry
+from action_registry import action_registry
 from task import Task
 from task_execute import execute_task
 

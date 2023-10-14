@@ -25,4 +25,15 @@ class PromptResponse:
 
 class PromptMessageResponse(PromptResponse):
     def __init__(self, message: str):
-        super().__init__(PromptStatus.SUCCESS, message, None)
+        super().__init__(PromptStatus.SUCCESS, message)
+
+
+class PromptCallbackResponse(PromptResponse):
+    def __init__(self, function_name: str, function_arguments: dict):
+        super().__init__(PromptStatus.SUCCESS, function_name, function_arguments)
+
+    def get_function_name(self) -> str:
+        return self.message
+
+    def get_function_arguments(self) -> dict:
+        return self.data

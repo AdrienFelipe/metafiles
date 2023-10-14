@@ -1,7 +1,7 @@
 from action import Action
+from action_registry import action_registry
 from action_result import ActionResult, ActionResultStatus
 from agent_proxy import AgentProxy
-from registry import action_registry
 from task import Task
 from task_execute import execute_task
 

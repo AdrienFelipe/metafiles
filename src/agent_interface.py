@@ -1,7 +1,13 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
+
+from prompt_result import PromptResponse
 
 
-class AgentInterface:
+class AgentInterface(ABC):
     @abstractmethod
-    def ask(self, prompt: str) -> str:
-        """Ask a question to the agent and return the response."""
+    def send(self, prompt: str):
+        pass
+
+    @abstractmethod
+    def parseResponse(self, response) -> PromptResponse:
+        pass
