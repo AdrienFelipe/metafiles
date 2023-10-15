@@ -1,13 +1,16 @@
 from abc import ABC, abstractmethod
 
-from agent.agent_config import AgentConfig
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptResponse
 
 
 class AgentInterface(ABC):
     @abstractmethod
-    def send(self, config: AgentConfig, prompt: Prompt):
+    def ask(self, prompt: Prompt):
+        pass
+
+    @abstractmethod
+    def send_query(self, prompt: Prompt):
         pass
 
     @abstractmethod

@@ -6,3 +6,4 @@ mypy
 types-PyYAML # For mypy
 pytest
 debugpy
+pylint

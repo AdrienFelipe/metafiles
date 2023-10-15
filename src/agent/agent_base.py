@@ -1,16 +1,14 @@
 from abc import ABC
 
-from agent.agent_config import AgentConfig
 from agent.agent_interface import AgentInterface
-from prompt.prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
 from prompt.prompt import Prompt
+from prompt.prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
 
 
 class BaseAgent(AgentInterface, ABC):
-    def ask(self, config: AgentConfig, prompt: Prompt):
-        response = self.send(config, prompt)
-        parsed_response = self.parse_response(response)
-        return self._handle_response(prompt, parsed_response)
+    def ask(self, prompt: Prompt):
+        response = self.parse_response(self.send_query(prompt))
+        return self._handle_response(prompt, response)
 
     def _handle_response(self, prompt: Prompt, parsed_response: PromptResponse) -> PromptResponse:
         if isinstance(parsed_response, PromptCallbackResponse):

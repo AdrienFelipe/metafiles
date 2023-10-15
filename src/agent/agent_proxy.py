@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 from action.action import ActionName
+from agent.agent_interface import AgentInterface
 from prompt.prompt_callbacks import (
     ChooseActionResponse,
     ChooseAgentResponse,
@@ -15,17 +16,17 @@ from task import Task
 
 
 class AgentProxy:
-    def __init__(self, agent):
+    def __init__(self, agent: AgentInterface):
         self.agent = agent
 
     def ask_for_agent_roles(self, task: Task) -> List[str]:
-        response = PromptFactory.choose_agent(task).ask(self.agent)
+        response = self.agent.ask(PromptFactory.choose_agent(task))
         if isinstance(response, ChooseAgentResponse):
             return response.roles
         raise UnexpectedResponseTypeException(type(response))
 
     def ask_to_choose_action(self, task: Task) -> Tuple[ActionName, str]:
-        response = PromptFactory.choose_action(task).ask(self.agent)
+        response = self.agent.ask(PromptFactory.choose_action(task))
         if isinstance(response, ChooseActionResponse):
             if response.action_key not in ActionName._value2member_map_:
                 raise InvalidResponseArgumentException(f"action name: {response.action_key}")
@@ -37,12 +38,12 @@ class AgentProxy:
         prompt = PromptFactory.create_plan(task, role)
 
         while True:
-            response = prompt.ask(self.agent)
+            response = self.agent.ask(prompt)
 
             if isinstance(response, (CreatePlanResponse, ValidatePlanResponse)):
                 return response.plan_lines
             elif isinstance(response, QueryUserResponse):
-                user_response = AgentProxy.ask_user(response.query)
+                user_response = self.ask_user(response.query)
                 prompt.add_message("assistant", response.query)
                 prompt.add_message("user", user_response)
             elif isinstance(response, PromptMessageResponse):
@@ -51,13 +52,13 @@ class AgentProxy:
                 raise UnexpectedResponseTypeException(type(response))
 
     def ask_to_filter_requirements(self, task: Task, sub_goal: str) -> str:
-        response = PromptFactory.filter_requirements(task, sub_goal).ask(self.agent)
+        response = self.agent.ask(PromptFactory.filter_requirements(task, sub_goal))
         if isinstance(response, PromptMessageResponse):
             return response.message
         raise UnexpectedResponseTypeException(type(response))
 
     def ask_for_code(self, task: Task, reason: str) -> str:
-        response = PromptFactory.create_code(task, reason).ask(self.agent)
+        response = self.agent.ask(PromptFactory.create_code(task, reason))
         if isinstance(response, CreateCodeResponse):
             return response.message
         raise UnexpectedResponseTypeException(type(response))

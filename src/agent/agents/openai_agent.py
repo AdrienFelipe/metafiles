@@ -4,9 +4,9 @@ import os
 import openai
 
 from agent.agent_base import BaseAgent
-from agent.agent_config import AgentConfig, ModelType
-from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
+from agent.agent_config import ModelType
 from prompt.prompt import Prompt
+from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
 
 
 class OpenAIAgent(BaseAgent):
@@ -19,7 +19,8 @@ class OpenAIAgent(BaseAgent):
         openai.api_key = os.getenv("OPENAI_API_KEY")
         super().__init__()
 
-    def send(self, config: AgentConfig, prompt: Prompt) -> PromptResponse:
+    def send_query(self, prompt: Prompt) -> PromptResponse:
+        config = prompt.strategy.agent_config()
         args = {
             "model": OpenAIAgent.MODEL_MAP[config.model],
             "messages": prompt.messages(),

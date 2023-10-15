@@ -1,9 +1,16 @@
 {
     "python.analysis.extraPaths": [
-        "./src"
+        "./src",
+        "./tests"
     ],
-    "python.linting.mypyEnabled": true,
     "files.exclude": {
-        "**/.mypy_cache": true
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true
+    },
+    "python.testing.pytestArgs": ["tests"],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "./src"
     }
 }

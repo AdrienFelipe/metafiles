@@ -1,7 +1,6 @@
+from action.action import Action, ActionName
 from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
-
-from action.action import Action, ActionName
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task import Task
