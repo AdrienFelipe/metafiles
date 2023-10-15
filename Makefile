@@ -19,7 +19,7 @@ start: rm build up
 
 # Run project tests
 test:
-	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) bash -c "PYTHONPATH=src pytest tests"
+	$(DOCKER_COMPOSE) exec $(SERVICE_NAME) pytest tests
 
 # Run Code Analyzer
 ca:

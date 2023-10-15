@@ -6,20 +6,15 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"terminal.integrated.shell.linux": "/bin/bash",
-				"python.pythonPath": "/usr/local/bin/python"
+				"terminal.integrated.shell.linux": "/bin/bash"
 			},
 			"extensions": [
-         //       "ms-python.python",
-         //       "ms-python.vscode-pylance",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
                 "GitHub.copilot",
 				"GitHub.copilot-chat",
-		//		"ms-python.mypy-type-checker",
-				"ms-vscode.makefile-tools"
-			],
-			"env": {
-				"PYTHONPATH": "src"
-			}
+				"ms-python.mypy-type-checker"
+			]
 		}
 	}
 }

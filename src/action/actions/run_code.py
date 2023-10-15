@@ -1,4 +1,5 @@
-from action.action import Action, ActionName
+from action.action import Action
+from action.action_name import ActionName
 from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface

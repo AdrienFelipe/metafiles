@@ -1,16 +1,8 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 
 from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from task import Task
-
-
-class ActionName(Enum):
-    ASK_AGENT = "ask_agent"
-    ASK_USER = "ask_user"
-    RUN_CODE = "run_code"
-    DIVIDE_TASK = "divide_task"
 
 
 class Action(ABC):

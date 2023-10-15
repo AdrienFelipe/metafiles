@@ -1,2 +1,7 @@
+from task import Task
+
+
 def test_choose_action_callback():
-    assert True
+    task = Task("test", "test")
+
+    ff = 4

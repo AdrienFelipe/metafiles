@@ -12,7 +12,7 @@ class Prompt:
         self.task = task
         self.strategy = strategy
 
-        self.env = Environment(loader=FileSystemLoader("/app/prompts/templates"))
+        self.env = Environment(loader=FileSystemLoader("/app/prompt/templates"))
         self.template = self.env.get_template(self.strategy.get_template_name())
         self.parsed_content = yaml.safe_load(self._render_template())
 

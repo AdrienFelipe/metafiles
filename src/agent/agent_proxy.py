@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from action.action import ActionName
+from action.action_name import ActionName
 from agent.agent_interface import AgentInterface
 from prompt.prompt_callbacks import (
     ChooseActionResponse,
