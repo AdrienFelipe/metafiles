@@ -6,7 +6,7 @@ from prompt.prompt_result import PromptCallbackResponse, PromptResponse, PromptS
 
 
 class BaseAgent(AgentInterface, ABC):
-    def ask(self, prompt: Prompt):
+    def ask(self, prompt: Prompt) -> PromptResponse:
         response = self.parse_response(self.send_query(prompt))
         return self._handle_response(prompt, response)
 

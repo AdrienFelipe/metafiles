@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import Optional
 
 
 class PromptStatus(Enum):
@@ -8,7 +9,7 @@ class PromptStatus(Enum):
 
 
 class PromptResponse:
-    def __init__(self, status: PromptStatus, message: str = "", data: dict = {}):
+    def __init__(self, status: PromptStatus, message: str = "", data: Optional[dict] = None):
         self.status = status
         self.message = message
         self.data = data or {}

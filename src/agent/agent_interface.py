@@ -6,7 +6,7 @@ from prompt.prompt_result import PromptResponse
 
 class AgentInterface(ABC):
     @abstractmethod
-    def ask(self, prompt: Prompt):
+    def ask(self, prompt: Prompt) -> PromptResponse:
         pass
 
     @abstractmethod

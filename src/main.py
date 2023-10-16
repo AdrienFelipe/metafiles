@@ -6,9 +6,13 @@ from task import Task
 from task_execute import execute_task
 
 
-def main() -> None:
+def bootstrap() -> None:
     load_dotenv()
     action_registry.register_actions()
+
+
+def main() -> None:
+    bootstrap()
 
     agent = OpenAIAgent()
     task = Task.from_yaml("/data/file_index.yaml")

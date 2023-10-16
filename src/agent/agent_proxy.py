@@ -2,8 +2,8 @@ from typing import List, Tuple
 
 from action.action_name import ActionName
 from agent.agent_interface import AgentInterface
+from prompt.callbacks.choose_action import ChooseActionResponse
 from prompt.prompt_callbacks import (
-    ChooseActionResponse,
     ChooseAgentResponse,
     CreateCodeResponse,
     CreatePlanResponse,
@@ -28,9 +28,7 @@ class AgentProxy:
     def ask_to_choose_action(self, task: Task) -> Tuple[ActionName, str]:
         response = self.agent.ask(PromptFactory.choose_action(task))
         if isinstance(response, ChooseActionResponse):
-            if response.action_key not in ActionName._value2member_map_:
-                raise InvalidResponseArgumentException(f"action name: {response.action_key}")
-            return ActionName(response.action_key), response.reason
+            return response.get_action(), response.get_reason()
 
         raise UnexpectedResponseTypeException(type(response))
 

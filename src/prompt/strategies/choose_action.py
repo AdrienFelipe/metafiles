@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict
 
 from action.action_registry import action_registry
 from agent.agent_config import AgentConfig, ModelType
-from prompt.prompt_callbacks import choose_action_callback
+from prompt.callbacks.choose_action import choose_action_callback
 from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 

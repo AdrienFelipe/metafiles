@@ -1,15 +1,12 @@
 from typing import List, NamedTuple
 
+from prompt.prompt_result import PromptResponse, PromptStatus
 from task import Task
 
 
-class ChooseActionResponse(NamedTuple):
-    action_key: str
-    reason: str
-
-
-def choose_action_callback(task: Task, action_key: str, reason: str) -> ChooseActionResponse:
-    return ChooseActionResponse(action_key, reason)
+class InvalidPromptResponse(PromptResponse):
+    def __init__(self, message: str):
+        super().__init__(PromptStatus.FAILURE, message)
 
 
 class ChooseAgentResponse(NamedTuple):
