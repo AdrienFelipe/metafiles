@@ -4,7 +4,7 @@ from prompt.prompt_factory import PromptFactory
 from task import Task
 
 
-def test_choose_action_callbacks():
+def test_create_code_callbacks():
     task = Task("test", "test")
-    prompt = PromptFactory.choose_action(task)
+    prompt = PromptFactory.create_plan(task, "role")
     assert_prompt_callbacks_are_valid(TestAgent(), prompt)

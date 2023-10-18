@@ -1,11 +1,8 @@
 from typing import Any, Callable, Dict
 
 from agent.agent_config import AgentConfig, ModelType
-from prompt.prompt_callbacks import (
-    create_plan_parse_callback,
-    query_user_callback,
-    validate_plan_callback,
-)
+from prompt.callbacks.plan import create_plan_callback, validate_plan_callback
+from prompt.callbacks.query_user import query_user_callback
 from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 
@@ -13,7 +10,7 @@ from task import Task
 class CreatePlanStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "create_plan.yaml"
     _HANDLER_FUNCTIONS = {
-        "update_plan": create_plan_parse_callback,
+        "update_plan": create_plan_callback,
         "validate_plan": validate_plan_callback,
         "ask_user": query_user_callback,
     }

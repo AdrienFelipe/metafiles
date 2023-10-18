@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict
 
 from agent.agent_config import AgentConfig, ModelType
-from prompt.prompt_callbacks import choose_agent_roles_callback
+from prompt.callbacks.choose_agent import choose_agent_roles_callback
 from prompt.prompt_strategy import IPromptStrategy
 from task import Task
 

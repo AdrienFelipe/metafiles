@@ -38,3 +38,8 @@ class PromptCallbackResponse(PromptResponse):
 
     def get_function_arguments(self) -> dict:
         return self.data
+
+
+class InvalidPromptResponse(PromptResponse):
+    def __init__(self, message: str):
+        super().__init__(PromptStatus.FAILURE, message)

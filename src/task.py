@@ -15,6 +15,7 @@ class Task:
         parent_task: Optional[Task] = None,
         plan: List[str] = [],
         action: Optional[ActionName] = None,
+        tasks: List[Task] = [],
     ):
         self.id = Task.__build_id(parent_task)
         self.goal = goal
@@ -22,6 +23,7 @@ class Task:
         self.parent_task = parent_task
         self.plan = plan
         self.action = action
+        self.tasks = tasks
 
     @staticmethod
     def from_yaml(file_path: str, parent_task: Optional[Task] = None) -> Task:
@@ -52,3 +54,13 @@ class Task:
             return "0"
 
         return f"{parent_task.id}.{len(parent_task.plan)}"
+
+    def add_to_parent(self) -> None:
+        if self.parent_task is not None:
+            self.parent_task.tasks.append(self)
+
+    def get_parent_tasks(self) -> List[Task]:
+        if self.parent_task is None or self.parent_task.tasks is None:
+            return []
+
+        return self.parent_task.tasks

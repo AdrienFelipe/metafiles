@@ -1,8 +1,7 @@
 from typing import Union
 
 from action.action_name import ActionName
-from prompt.prompt_callbacks import InvalidPromptResponse
-from prompt.prompt_result import PromptResponse, PromptStatus
+from prompt.prompt_result import InvalidPromptResponse, PromptResponse, PromptStatus
 from task import Task
 
 

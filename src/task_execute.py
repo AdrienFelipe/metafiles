@@ -18,5 +18,6 @@ def execute_task(agent: AgentInterface, task: Task) -> ActionResult:
     # TODO: check task result status (success, pending, error, ...)
 
     # TODO: is goal complete?
+    task.add_to_parent()
 
     return ActionResult(ActionResultStatus.PENDING)
