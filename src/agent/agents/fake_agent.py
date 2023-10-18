@@ -5,7 +5,7 @@ from prompt.prompt import Prompt
 from prompt.prompt_result import PromptResponse
 
 
-class TestAgent(BaseAgent):
+class FakeAgent(BaseAgent):
     def __init__(self, responses: Optional[List[PromptResponse]] = None):
         self.responses = responses if responses is not None else []
 

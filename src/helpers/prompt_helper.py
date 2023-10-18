@@ -1,4 +1,4 @@
-from agent.agents.test_agent import TestAgent
+from agent.agents.fake_agent import FakeAgent
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptCallbackResponse
 
@@ -29,7 +29,7 @@ def prompt_function_to_callback_arguments(func: dict) -> dict:
     return test_values
 
 
-def assert_prompt_callbacks_are_valid(agent: TestAgent, prompt: Prompt) -> None:
+def assert_prompt_callbacks_are_valid(agent: FakeAgent, prompt: Prompt) -> None:
     functions = prompt.functions()
     if functions is None:
         return
