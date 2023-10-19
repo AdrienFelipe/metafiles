@@ -14,6 +14,9 @@ class PromptResponse:
         self.message = message
         self.data = data or {}
 
+    def get_message(self) -> str:
+        return self.message
+
     def is_successful(self) -> bool:
         return self.status == PromptStatus.SUCCESS
 

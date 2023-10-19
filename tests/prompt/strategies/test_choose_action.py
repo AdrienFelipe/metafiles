@@ -22,7 +22,7 @@ def test_choose_action_agent_proxy_success():
 
     response = agent_proxy.ask_to_choose_action(task)
     assert isinstance(response, ChooseActionResponse)
-    assert response.is_successful(), "Response is not successful"
+    assert response.is_successful(), "Response should be successful"
     assert response.get_action_name() == action, "Action is not correct"
     assert response.get_reason() == reason, "Reason is not correct"
 

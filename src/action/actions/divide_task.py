@@ -15,7 +15,8 @@ class DivideTask(Action):
         agent_proxy = AgentProxy(agent)
 
         # Prompt which agents would best know about the task to know what to do
-        roles = agent_proxy.ask_for_agent_roles(task)
+        roles = agent_proxy.ask_for_agent_roles(task).get_roles()
+        # TODO: what happens if roles is empty?
 
         # For each agent role
         # TODO: limit the amount of iterations
@@ -23,7 +24,7 @@ class DivideTask(Action):
             initial_plan = task.plan
             for role in roles:
                 # Prompt acting like agent to list first level of sub tasks to divide or refine it
-                plan = agent_proxy.ask_to_create_plan(task, role)
+                plan = agent_proxy.ask_to_create_plan(task, role).get_plan()
                 # TODO: validate plan is valid
                 task.plan = plan
 

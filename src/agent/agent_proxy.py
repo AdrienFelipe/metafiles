@@ -1,13 +1,13 @@
-from typing import List, Union
-
+from action.action_name import ActionName
+from action.action_registry import action_registry
 from agent.agent_interface import AgentInterface
 from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
-from prompt.callbacks.choose_agent import ChooseAgentResponse
+from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
 from prompt.callbacks.code import CreateCodeResponse
-from prompt.callbacks.plan import CreatePlanResponse, ValidatePlanResponse
+from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse, ValidatePlanResponse
 from prompt.callbacks.query_user import QueryUserResponse
 from prompt.prompt_factory import PromptFactory
-from prompt.prompt_result import PromptMessageResponse
+from prompt.prompt_result import PromptMessageResponse, PromptResponse
 from task import Task
 
 
@@ -15,38 +15,42 @@ class AgentProxy:
     def __init__(self, agent: AgentInterface):
         self.agent = agent
 
-    def ask_for_agent_roles(self, task: Task) -> List[str]:
+    def __error_message(self, response: PromptResponse) -> str:
+        return f"Unexpected response type: {type(response)} - {response.message}"
+
+    def ask_for_agent_roles(self, task: Task) -> ChooseAgentResponse:
         response = self.agent.ask(PromptFactory.choose_agent(task))
         if isinstance(response, ChooseAgentResponse):
-            return response.get_roles()
-        raise UnexpectedResponseTypeException(type(response))
+            return response
 
-    def ask_to_choose_action(
-        self, task: Task
-    ) -> Union[ChooseActionResponse, FailedChooseActionResponse]:
+        return FailedChooseAgentResponse(self.__error_message(response))
+
+    def ask_to_choose_action(self, task: Task) -> ChooseActionResponse:
         response = self.agent.ask(PromptFactory.choose_action(task))
         if isinstance(response, ChooseActionResponse):
             return response
 
-        print(f"Unexpected response type: {type(response)} - {response.message}")
-        return FailedChooseActionResponse(response.message)
+        return FailedChooseActionResponse(self.__error_message(response))
 
-    def ask_to_create_plan(self, task: Task, role: str) -> List[str]:
+    def ask_to_create_plan(self, task: Task, role: str) -> CreatePlanResponse:
         prompt = PromptFactory.create_plan(task, role)
 
+        # TODO: add maximum number of retries
         while True:
             response = self.agent.ask(prompt)
 
             if isinstance(response, (CreatePlanResponse, ValidatePlanResponse)):
-                return response.get_plan()
+                return response
             elif isinstance(response, QueryUserResponse):
-                user_response = self.ask_user(response.get_query())
+                action = action_registry.get_action(ActionName.ASK_USER)
+                user_response = action.execute(self.agent, task, response.get_query())
+
                 prompt.add_message("assistant", response.get_query())
-                prompt.add_message("user", user_response)
+                prompt.add_message("user", user_response.message)
             elif isinstance(response, PromptMessageResponse):
                 prompt.add_message("assistant", response.message)
             else:
-                raise UnexpectedResponseTypeException(type(response))
+                return FailedCreatePlanResponse(self.__error_message(response))
 
     def ask_to_filter_requirements(self, task: Task, sub_goal: str) -> str:
         response = self.agent.ask(PromptFactory.filter_requirements(task, sub_goal))
@@ -59,9 +63,6 @@ class AgentProxy:
         if isinstance(response, CreateCodeResponse):
             return response.get_code()
         raise UnexpectedResponseTypeException(type(response))
-
-    def ask_user(self, query: str) -> str:
-        return input(query)
 
 
 class UnexpectedResponseTypeException(Exception):

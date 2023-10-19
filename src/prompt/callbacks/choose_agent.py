@@ -5,11 +5,18 @@ from task import Task
 
 
 class ChooseAgentResponse(PromptResponse):
-    def __init__(self, roles: List[str]):
-        super().__init__(PromptStatus.SUCCESS, "", {"roles": roles})
+    def __init__(
+        self, roles: List[str], status: PromptStatus = PromptStatus.SUCCESS, message: str = ""
+    ):
+        super().__init__(status, message, {"roles": roles})
 
     def get_roles(self) -> List[str]:
         return self.data["roles"]
+
+
+class FailedChooseAgentResponse(ChooseAgentResponse):
+    def __init__(self, message: str):
+        super().__init__([], PromptStatus.FAILURE, message)
 
 
 def choose_agent_roles_callback(task: Task, roles: str) -> ChooseAgentResponse:

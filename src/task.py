@@ -11,7 +11,7 @@ class Task:
     def __init__(
         self,
         goal: str,
-        requirements: str,
+        requirements: str = "",
         parent_task: Optional[Task] = None,
         plan: List[str] = [],
         action: Optional[ActionName] = None,
