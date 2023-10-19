@@ -40,6 +40,6 @@ class PromptCallbackResponse(PromptResponse):
         return self.data
 
 
-class InvalidPromptResponse(PromptResponse):
+class FailedPromptResponse(PromptResponse):
     def __init__(self, message: str):
         super().__init__(PromptStatus.FAILURE, message)

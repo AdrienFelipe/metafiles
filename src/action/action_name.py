@@ -6,3 +6,4 @@ class ActionName(Enum):
     ASK_USER = "ask_user"
     RUN_CODE = "run_code"
     DIVIDE_TASK = "divide_task"
+    NO_ACTION = "no_action"

@@ -2,7 +2,7 @@ from abc import ABC
 
 from agent.agent_interface import AgentInterface
 from prompt.prompt import Prompt
-from prompt.prompt_result import PromptCallbackResponse, PromptResponse, PromptStatus
+from prompt.prompt_result import FailedPromptResponse, PromptCallbackResponse, PromptResponse
 
 
 class BaseAgent(AgentInterface, ABC):
@@ -14,12 +14,15 @@ class BaseAgent(AgentInterface, ABC):
         if isinstance(parsed_response, PromptCallbackResponse):
             handler = prompt.strategy.handler_functions().get(parsed_response.get_function_name())
             if handler:
-                return handler(prompt.task, **parsed_response.get_function_arguments())
+                try:
+                    return handler(prompt.task, **parsed_response.get_function_arguments())
+                except Exception as e:
+                    return FailedPromptResponse(f"Error in callback function: {e}")
             else:
-                print(f"Agent chose a non-defined function: {parsed_response.get_function_name()}")
-                return PromptResponse(
-                    PromptStatus.FAILURE,
-                    f"Agent chose a non-defined function: {parsed_response.get_function_name()}",
+                message = (
+                    f"Agent chose a non-defined function: {parsed_response.get_function_name()}"
                 )
+                print(message)
+                return FailedPromptResponse(message)
 
         return parsed_response

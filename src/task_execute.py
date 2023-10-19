@@ -11,7 +11,10 @@ def execute_task(agent: AgentInterface, task: Task) -> ActionResult:
     if task.action:
         action_name, reason = task.action, ""
     else:
-        action_name, reason = agent_proxy.ask_to_choose_action(task)
+        response = agent_proxy.ask_to_choose_action(task)
+        action_name, reason = response.get_action_name(), response.get_reason()
+
+    # TODO: validate action is valid (not NO_ACTION)
 
     # Now with task type, execute it's action
     action_registry.get_action(action_name).execute(agent, task, reason)

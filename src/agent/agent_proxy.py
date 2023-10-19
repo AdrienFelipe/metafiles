@@ -1,8 +1,7 @@
-from typing import List, Tuple
+from typing import List, Union
 
-from action.action_name import ActionName
 from agent.agent_interface import AgentInterface
-from prompt.callbacks.choose_action import ChooseActionResponse
+from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
 from prompt.callbacks.choose_agent import ChooseAgentResponse
 from prompt.callbacks.code import CreateCodeResponse
 from prompt.callbacks.plan import CreatePlanResponse, ValidatePlanResponse
@@ -22,12 +21,15 @@ class AgentProxy:
             return response.get_roles()
         raise UnexpectedResponseTypeException(type(response))
 
-    def ask_to_choose_action(self, task: Task) -> Tuple[ActionName, str]:
+    def ask_to_choose_action(
+        self, task: Task
+    ) -> Union[ChooseActionResponse, FailedChooseActionResponse]:
         response = self.agent.ask(PromptFactory.choose_action(task))
         if isinstance(response, ChooseActionResponse):
-            return response.get_action(), response.get_reason()
+            return response
 
-        raise UnexpectedResponseTypeException(type(response))
+        print(f"Unexpected response type: {type(response)} - {response.message}")
+        return FailedChooseActionResponse(response.message)
 
     def ask_to_create_plan(self, task: Task, role: str) -> List[str]:
         prompt = PromptFactory.create_plan(task, role)
