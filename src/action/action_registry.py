@@ -18,7 +18,11 @@ class ActionRegistry:
         return self._actions[name]
 
     def get_registered_actions(self):
-        return {name.value: action.description for name, action in self._actions.items()}
+        return {
+            name.value: action.description
+            for name, action in self._actions.items()
+            if name != ActionName.NO_ACTION
+        }
 
     def register_actions(self):
         for filename in os.listdir(ACTIONS_DIR):

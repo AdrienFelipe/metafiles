@@ -69,9 +69,3 @@ class UnexpectedResponseTypeException(Exception):
     def __init__(self, actual_type):
         super().__init__(f"Unexpected response type: {actual_type}")
         self.actual_type = actual_type
-
-
-class InvalidResponseArgumentException(Exception):
-    def __init__(self, argument_name):
-        super().__init__(f"Invalid response argument: {argument_name}")
-        self.argument_name = argument_name
