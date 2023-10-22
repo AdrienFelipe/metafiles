@@ -1,7 +1,7 @@
 from typing import List
 
 from prompt.prompt_result import PromptResponse, PromptStatus
-from task import Task
+from task.task import Task
 
 
 class CreatePlanResponse(PromptResponse):

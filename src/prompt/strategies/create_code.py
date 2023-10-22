@@ -9,7 +9,7 @@ from prompt.callbacks.task import (
     get_tasks_results_callback,
 )
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class CreateCodeStrategy(IPromptStrategy):

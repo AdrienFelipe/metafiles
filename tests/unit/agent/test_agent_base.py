@@ -1,7 +1,7 @@
 from agent.agents.fake_agent import FakeAgent
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptCallbackResponse
-from task import Task
+from task.task import Task
 
 
 def test_agent_base_undefined_callback():

@@ -5,7 +5,7 @@ from prompt.strategies.choose_agent import ChooseAgentStrategy
 from prompt.strategies.create_code import CreateCodeStrategy
 from prompt.strategies.create_plan import CreatePlanStrategy
 from prompt.strategies.filter_requirements import FilterRequirementsStrategy
-from task import Task
+from task.task import Task
 
 
 class PromptFactory:

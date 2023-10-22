@@ -8,7 +8,7 @@ from helpers.prompt_helper import assert_prompt_callbacks_are_valid
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse
-from task import Task
+from task.task import Task
 
 
 def test_create_plan_callbacks():

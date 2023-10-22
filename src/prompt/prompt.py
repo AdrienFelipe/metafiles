@@ -4,7 +4,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class Prompt:

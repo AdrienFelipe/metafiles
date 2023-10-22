@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict
 from agent.agent_config import AgentConfig, ModelType
 from prompt.callbacks.choose_agent import choose_agent_roles_callback
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class ChooseAgentStrategy(IPromptStrategy):

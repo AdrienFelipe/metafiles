@@ -3,12 +3,12 @@ from action.action_registry import action_registry
 from agent.agent_interface import AgentInterface
 from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
 from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
-from prompt.callbacks.code import CreateCodeResponse
+from prompt.callbacks.code import CreateCodeResponse, FailedCreateCodeResponse
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse, ValidatePlanResponse
 from prompt.callbacks.query_user import QueryUserResponse
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptMessageResponse, PromptResponse
-from task import Task
+from task.task import Task
 
 
 class AgentProxy:
@@ -44,7 +44,6 @@ class AgentProxy:
             elif isinstance(response, QueryUserResponse):
                 action = action_registry.get_action(ActionName.ASK_USER)
                 user_response = action.execute(self.agent, task, response.get_query())
-
                 prompt.add_message("assistant", response.get_query())
                 prompt.add_message("user", user_response.message)
             elif isinstance(response, PromptMessageResponse):
@@ -58,11 +57,12 @@ class AgentProxy:
             return response.message
         raise UnexpectedResponseTypeException(type(response))
 
-    def ask_for_code(self, task: Task, reason: str) -> str:
+    def ask_for_code(self, task: Task, reason: str = "") -> CreateCodeResponse:
         response = self.agent.ask(PromptFactory.create_code(task, reason))
         if isinstance(response, CreateCodeResponse):
-            return response.get_code()
-        raise UnexpectedResponseTypeException(type(response))
+            return response
+
+        return FailedCreateCodeResponse(self.__error_message(response))
 
 
 class UnexpectedResponseTypeException(Exception):

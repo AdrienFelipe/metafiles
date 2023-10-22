@@ -2,13 +2,20 @@ import json
 from typing import List
 
 from prompt.prompt_result import PromptResponse, PromptStatus
-from task import Task
+from task.task import Task
 
 
 class CreateCodeResponse(PromptResponse):
-    def __init__(self, code: str, test_args: dict, tasks_ids: List[str], update_reason: str):
+    def __init__(
+        self,
+        code: str,
+        test_args: dict,
+        tasks_ids: List[str],
+        update_reason: str,
+        status: PromptStatus = PromptStatus.SUCCESS,
+    ):
         data = {"test_args": test_args, "tasks_ids": tasks_ids, "update_reason": update_reason}
-        super().__init__(PromptStatus.SUCCESS, code, data)
+        super().__init__(status, code, data)
 
     def get_code(self) -> str:
         return self.message
@@ -41,3 +48,8 @@ class ValidateCodeResponse(PromptResponse):
 
 def validate_code_callback(task: Task) -> ValidateCodeResponse:
     return ValidateCodeResponse("\n\n".join(task.plan))
+
+
+class FailedCreateCodeResponse(CreateCodeResponse):
+    def __init__(self, message: str):
+        super().__init__(message, {}, [], "", PromptStatus.FAILURE)

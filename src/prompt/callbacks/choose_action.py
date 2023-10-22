@@ -2,7 +2,7 @@ from typing import Union
 
 from action.action_name import ActionName
 from prompt.prompt_result import FailedPromptResponse, PromptResponse, PromptStatus
-from task import Task
+from task.task import Task
 
 
 class ChooseActionResponse(PromptResponse):

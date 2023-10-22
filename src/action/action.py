@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
-from task import Task
+from task.task import Task
 
 
 class Action(ABC):

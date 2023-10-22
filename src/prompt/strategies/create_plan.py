@@ -4,7 +4,7 @@ from agent.agent_config import AgentConfig, ModelType
 from prompt.callbacks.plan import create_plan_callback, validate_plan_callback
 from prompt.callbacks.query_user import query_user_callback
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class CreatePlanStrategy(IPromptStrategy):

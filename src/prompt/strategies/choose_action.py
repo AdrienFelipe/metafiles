@@ -4,7 +4,7 @@ from action.action_registry import action_registry
 from agent.agent_config import AgentConfig, ModelType
 from prompt.callbacks.choose_action import choose_action_callback
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class ChooseActionStrategy(IPromptStrategy):

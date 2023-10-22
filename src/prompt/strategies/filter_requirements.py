@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict
 
 from agent.agent_config import AgentConfig, ModelType
 from prompt.prompt_strategy import IPromptStrategy
-from task import Task
+from task.task import Task
 
 
 class FilterRequirementsStrategy(IPromptStrategy):

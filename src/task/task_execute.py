@@ -2,7 +2,7 @@ from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
-from task import Task
+from task.task import Task
 
 
 def execute_task(agent: AgentInterface, task: Task) -> ActionResult:

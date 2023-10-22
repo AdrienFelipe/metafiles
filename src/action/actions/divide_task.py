@@ -4,8 +4,8 @@ from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
-from task import Task
-from task_execute import execute_task
+from task.task import Task
+from task.task_execute import execute_task
 
 
 class DivideTask(Action):
