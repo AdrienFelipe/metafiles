@@ -1,3 +1,6 @@
+import io
+import sys
+
 from action.action import Action
 from action.action_name import ActionName
 from action.action_registry import action_registry
@@ -14,14 +17,26 @@ class RunCode(Action):
         agent_proxy = AgentProxy(agent)
 
         if not task.plan:
-            code = agent_proxy.ask_for_code(task, reason)
+            task.plan = [agent_proxy.ask_for_code(task, reason).get_code()]
 
         # TODO: validate code is not harmful
         # TODO: test the code on test data
 
         # Eval run code
+        result = self.run_code("\n\n".join(task.plan))
 
-        return ActionResult(ActionResultStatus.PENDING)
+        # TODO: validate output is what was expected
+
+        return ActionResult(ActionResultStatus.SUCCESS, result)
+
+    def run_code(self, code: str) -> str:
+        buffer = io.StringIO()
+        sys.stdout = buffer
+        try:
+            eval(code)
+            return buffer.getvalue().strip()
+        finally:
+            sys.stdout = sys.__stdout__
 
 
 action_registry.register_action(ActionName.RUN_CODE, RunCode)

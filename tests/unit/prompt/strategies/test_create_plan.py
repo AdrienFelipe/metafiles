@@ -51,7 +51,7 @@ def test_create_plan_agent_proxy_scenario():
     agent = FakeAgent(responses)
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
-    with patch("builtins.input", side_effect="user response"):
+    with patch("builtins.input", return_value="user response"):
         response = agent_proxy.ask_to_create_plan(task, "some role")
 
     assert isinstance(response, CreatePlanResponse)

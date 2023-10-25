@@ -31,7 +31,7 @@ class CreateCodeResponse(PromptResponse):
 
 
 def create_code_callback(
-    task: Task, code: str, test_args: str, tasks_ids: str, update_reason: str
+    task: Task, code: str, test_args: str, tasks_ids: str = "", update_reason: str = ""
 ) -> CreateCodeResponse:
     test_args_dict = json.loads(test_args)
     tasks_ids_list = [task_id.strip() for task_id in tasks_ids.split(",")]

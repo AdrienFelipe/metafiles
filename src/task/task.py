@@ -5,9 +5,12 @@ from typing import List, Optional
 import yaml
 
 from action.action_name import ActionName
+from action.action_result import ActionResult
 
 
 class Task:
+    result: Optional[ActionResult] = None
+
     def __init__(
         self,
         goal: str,

@@ -37,7 +37,7 @@ class DivideTask(Action):
         for sub_goal in task.plan:
             sub_requirements = agent_proxy.ask_to_filter_requirements(task, sub_goal)
             sub_task = Task(sub_goal, sub_requirements, task)
-            sub_result = execute_task(agent, sub_task)
+            execute_task(agent, sub_task)
             # TODO: check sub result and advise what to do next <---------
 
         # TODO: this should check the sub results
