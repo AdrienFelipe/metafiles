@@ -23,9 +23,9 @@ class CreateCodeStrategy(IPromptStrategy):
         "tasks_results": get_tasks_results_callback,
     }
 
-    def __init__(self, agent_role: str) -> None:
+    def __init__(self, reason: str) -> None:
         super().__init__()
-        self.agent_role = agent_role
+        self.reason = reason
 
     def get_template_name(self) -> str:
         return self._TEMPLATE_NAME

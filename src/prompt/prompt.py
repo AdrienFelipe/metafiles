@@ -1,14 +1,14 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Generic, List, Optional, Union
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from prompt.prompt_strategy import IPromptStrategy
+from prompt.prompt_strategy import TStrategy
 from task.task import Task
 
 
-class Prompt:
-    def __init__(self, task: Task, strategy: IPromptStrategy):
+class Prompt(Generic[TStrategy]):
+    def __init__(self, task: Task, strategy: TStrategy):
         self.task = task
         self.strategy = strategy
 
