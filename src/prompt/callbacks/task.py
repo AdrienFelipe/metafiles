@@ -1,4 +1,4 @@
-from typing import List
+from typing import Set
 
 from prompt.prompt_result import PromptResponse, PromptStatus
 from task.task import Task
@@ -8,7 +8,7 @@ class DivideTaskResponse(PromptResponse):
     def __init__(self, reason: str):
         super().__init__(PromptStatus.SUCCESS, reason)
 
-    def get_reason(self) -> str:
+    def reason(self) -> str:
         return self.message
 
 
@@ -17,28 +17,32 @@ def divide_task_callback(task: Task, reason: str) -> DivideTaskResponse:
 
 
 class ExecuteTaskResponse(PromptResponse):
-    def __init__(self, task_id: str, reason: str):
-        super().__init__(PromptStatus.SUCCESS, reason, {"id": task_id})
+    def __init__(self, task: Task, reason: str):
+        super().__init__(PromptStatus.SUCCESS, reason, {"task": task})
 
-    def get_reason(self) -> str:
+    def reason(self) -> str:
         return self.message
 
-    def get_task_id(self) -> str:
-        return self.data[id]
+    def task(self) -> Task:
+        return self.data["task"]
 
 
 def execute_task_callback(task: Task, task_id: str, reason: str) -> ExecuteTaskResponse:
-    return ExecuteTaskResponse(task_id, reason)
+    # TODO: add id safe check
+    target_task = task.index[task_id]
+    return ExecuteTaskResponse(target_task, reason)
 
 
 class GetTasksResultsResponse(PromptResponse):
-    def __init__(self, task_ids: List[str]):
-        super().__init__(PromptStatus.SUCCESS, "", {"ids": task_ids})
+    def __init__(self, tasks: Set[Task]):
+        super().__init__(PromptStatus.SUCCESS, "", {"tasks": tasks})
 
-    def get_task_ids(self) -> str:
-        return self.data["ids"]
+    def tasks(self) -> Set[Task]:
+        return self.data["tasks"]
 
 
 def get_tasks_results_callback(task: Task, tasks_ids: str) -> GetTasksResultsResponse:
-    tasks_ids_list = [task_id.strip() for task_id in tasks_ids.split(",")]
-    return GetTasksResultsResponse(tasks_ids_list)
+    # TODO: Add id safe check
+    tasks_ids_list = set(task_id.strip() for task_id in tasks_ids.split(","))
+    tasks = task.get_tasks_by_ids(tasks_ids_list)
+    return GetTasksResultsResponse(tasks)

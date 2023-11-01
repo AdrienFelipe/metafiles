@@ -12,10 +12,10 @@ class ChooseActionResponse(PromptResponse):
         data = {"action": action, "reason": reason}
         super().__init__(status, action.value, data)
 
-    def get_action_name(self) -> ActionName:
+    def action_name(self) -> ActionName:
         return self.data["action"]
 
-    def get_reason(self) -> str:
+    def reason(self) -> str:
         return self.data["reason"]
 
 

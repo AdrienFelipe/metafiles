@@ -4,7 +4,6 @@ from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
 from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
-from prompt.callbacks.code import CreateCodeResponse, FailedCreateCodeResponse
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse, ValidatePlanResponse
 from prompt.callbacks.query_user import QueryUserResponse
 from prompt.prompt_factory import PromptFactory
@@ -43,8 +42,8 @@ class AgentProxy:
             if isinstance(response, (CreatePlanResponse, ValidatePlanResponse)):
                 return response
             elif isinstance(response, QueryUserResponse):
-                user_response = self.query_user(task, response.get_query())
-                prompt.add_message("assistant", response.get_query())
+                user_response = self.query_user(task, response.query())
+                prompt.add_message("assistant", response.query())
                 prompt.add_message("user", user_response.message)
             elif isinstance(response, PromptMessageResponse):
                 prompt.add_message("assistant", response.message)
@@ -56,20 +55,6 @@ class AgentProxy:
         if isinstance(response, PromptMessageResponse):
             return response.message
         raise UnexpectedResponseTypeException(type(response))
-
-    def ask_for_code(self, task: Task, reason: str = "") -> CreateCodeResponse:
-        prompt = PromptFactory.create_code(task, reason)
-        # TODO: add maximum number of retries
-        while True:
-            response = self.agent.ask(prompt)
-            if isinstance(response, CreateCodeResponse):
-                return response
-            elif isinstance(response, QueryUserResponse):
-                user_response = self.query_user(task, response.get_query())
-                prompt.add_message("assistant", response.message)
-                prompt.add_message("user", user_response.message)
-            else:
-                return FailedCreateCodeResponse(self.__error_message(response))
 
     def query_user(self, task: Task, query: str) -> ActionResult:
         action = action_registry.get_action(ActionName.ASK_USER)

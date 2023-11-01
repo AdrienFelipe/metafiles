@@ -6,7 +6,7 @@ class QueryUserResponse(PromptResponse):
     def __init__(self, query: str):
         super().__init__(PromptStatus.SUCCESS, query)
 
-    def get_query(self) -> str:
+    def query(self) -> str:
         return self.message
 
 

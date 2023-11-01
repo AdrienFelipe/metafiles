@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import yaml
 
@@ -15,18 +15,20 @@ class Task:
         self,
         goal: str,
         requirements: str = "",
-        parent_task: Optional[Task] = None,
-        plan: List[str] = [],
+        parent: Optional[Task] = None,
+        plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
-        tasks: List[Task] = [],
     ):
-        self.id = Task.__build_id(parent_task)
+        self.id = Task._build_id(parent)
         self.goal = goal
         self.requirements = requirements
-        self.parent_task = parent_task
-        self.plan = plan
+        self.plan = plan or []
         self.action = action
-        self.tasks = tasks
+        self.parent = parent
+        self.children: List[Task] = []
+        self.index: Dict[str, Task] = {} if parent is None else parent.index
+
+        self.add_to_parent()
 
     @staticmethod
     def from_yaml(file_path: str, parent_task: Optional[Task] = None) -> Task:
@@ -43,7 +45,7 @@ class Task:
         return Task(
             goal=data["goal"],
             requirements=data["requirements"],
-            parent_task=parent_task,
+            parent=parent_task,
             plan=data.get("plan", None),
             action=action,
         )
@@ -52,18 +54,25 @@ class Task:
         return f"Goal: {self.goal}, Requirements: {self.requirements}, Plan: {', '.join(self.plan)}"
 
     @staticmethod
-    def __build_id(parent_task: Optional[Task]) -> str:
-        if parent_task is None:
+    def _build_id(parent: Optional[Task]) -> str:
+        if parent is None:
             return "0"
 
-        return f"{parent_task.id}.{len(parent_task.plan)}"
+        return f"{parent.id}.{len(parent.children)}"
 
     def add_to_parent(self) -> None:
-        if self.parent_task is not None:
-            self.parent_task.tasks.append(self)
+        if self.parent is not None:
+            self.parent.children.append(self)
 
-    def get_parent_tasks(self) -> List[Task]:
-        if self.parent_task is None or self.parent_task.tasks is None:
-            return []
+        self.index[self.id] = self
 
-        return self.parent_task.tasks
+    def remove_from_parent(self) -> None:
+        if self.parent is not None:
+            self.parent.children.remove(self)
+        del self.index[self.id]
+
+    def get_siblings(self) -> List[Task]:
+        return [] if self.parent is None else self.parent.children
+
+    def get_tasks_by_ids(self, ids: List[str]) -> List[Task]:
+        return [self.index[id] for id in ids]

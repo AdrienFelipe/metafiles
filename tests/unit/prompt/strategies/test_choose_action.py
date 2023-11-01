@@ -23,8 +23,8 @@ def test_choose_action_agent_proxy_success():
     response = agent_proxy.ask_to_choose_action(task)
     assert isinstance(response, ChooseActionResponse)
     assert response.is_successful(), "Response should be successful"
-    assert response.get_action_name() == action, "Action is not correct"
-    assert response.get_reason() == reason, "Reason is not correct"
+    assert response.action_name() == action, "Action is not correct"
+    assert response.reason() == reason, "Reason is not correct"
 
 
 def test_choose_action_agent_proxy_invalid_callback():
@@ -36,8 +36,8 @@ def test_choose_action_agent_proxy_invalid_callback():
     response = agent_proxy.ask_to_choose_action(task)
     assert isinstance(response, FailedChooseActionResponse)
     assert not response.is_successful(), "Response should not be successful"
-    assert response.get_action_name() == ActionName.NO_ACTION, "Action is not correct"
-    assert response.get_reason(), "Expected non-empty reason"
+    assert response.action_name() == ActionName.NO_ACTION, "Action is not correct"
+    assert response.reason(), "Expected non-empty reason"
 
 
 def test_choose_action_agent_proxy_invalid_action():
@@ -49,8 +49,8 @@ def test_choose_action_agent_proxy_invalid_action():
     response = agent_proxy.ask_to_choose_action(task)
     assert isinstance(response, FailedChooseActionResponse)
     assert not response.is_successful(), "Response should not be successful"
-    assert response.get_action_name() == ActionName.NO_ACTION, "Action is not correct"
-    assert response.get_reason(), "Expected non-empty reason"
+    assert response.action_name() == ActionName.NO_ACTION, "Action is not correct"
+    assert response.reason(), "Expected non-empty reason"
 
 
 def test_choose_action_agent_proxy_invalid_arguments():
@@ -61,5 +61,5 @@ def test_choose_action_agent_proxy_invalid_arguments():
     response = agent_proxy.ask_to_choose_action(task)
     assert isinstance(response, FailedChooseActionResponse)
     assert not response.is_successful(), "Response should not be successful"
-    assert response.get_action_name() == ActionName.NO_ACTION, "Action is not correct"
-    assert response.get_reason(), "Expected non-empty reason"
+    assert response.action_name() == ActionName.NO_ACTION, "Action is not correct"
+    assert response.reason(), "Expected non-empty reason"

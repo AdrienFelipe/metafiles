@@ -1,9 +1,11 @@
+from typing import Optional
+
 from agent.agents.fake_agent import FakeAgent
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptCallbackResponse
 
 
-def prompt_function_to_callback_arguments(func: dict) -> dict:
+def prompt_function_to_callback_arguments(func: dict, specials: Optional[dict] = None) -> dict:
     test_values_map = {
         "string": "test_string",
         "number": 123,
@@ -22,7 +24,10 @@ def prompt_function_to_callback_arguments(func: dict) -> dict:
         elif "description" in details and "json" in details["description"].lower():
             test_value = '{"key": "value"}'
         else:
-            test_value = test_values_map.get(param_type, "UnknownType")
+            if specials is not None and param_name in specials:
+                test_value = specials[param_name]
+            else:
+                test_value = test_values_map.get(param_type, "UnknownType")
 
         test_values[param_name] = test_value
 

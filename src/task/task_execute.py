@@ -4,14 +4,14 @@ from agent.agent_proxy import AgentProxy
 from task.task import Task
 
 
-def execute_task(agent: AgentInterface, task: Task) -> None:
+def execute_task(agent: AgentInterface, task: Task, reason: str = "") -> None:
     agent_proxy = AgentProxy(agent)
 
     if task.action:
-        action_name, reason = task.action, ""
+        action_name = task.action
     else:
         response = agent_proxy.ask_to_choose_action(task)
-        action_name, reason = response.get_action_name(), response.get_reason()
+        action_name, reason = response.action_name(), response.reason()
 
     # TODO: validate action is valid (not NO_ACTION)
 
@@ -20,4 +20,3 @@ def execute_task(agent: AgentInterface, task: Task) -> None:
     # TODO: check task result status (success, pending, error, ...)
 
     # TODO: is goal complete?
-    task.add_to_parent()
