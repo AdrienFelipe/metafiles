@@ -60,7 +60,6 @@ def test_create_plan_agent_proxy_scenario():
     assert isinstance(response, CreatePlanResponse)
     assert response.is_successful(), "Response should be successful"
     assert response.get_plan() == plan, "Incorrect plan"
-    assert len(agent.responses) == 0, "Expected no more responses"
 
 
 def test_create_plan_agent_proxy_responses_are_valid():

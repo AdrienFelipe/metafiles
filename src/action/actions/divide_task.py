@@ -1,7 +1,7 @@
 from action.action import Action
 from action.action_name import ActionName
 from action.action_registry import action_registry
-from action.action_result import ActionResult, ActionResultStatus
+from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task.task import Task
@@ -41,7 +41,8 @@ class DivideTask(Action):
             # TODO: check sub result and advise what to do next <---------
 
         # TODO: this should check the sub results
-        return ActionResult(ActionResultStatus.SUCCESS, "Task was divided")
+        # TODO: update prompt and rest of code as division result comes from last task
+        return sub_task.result
 
 
 action_registry.register_action(ActionName.DIVIDE_TASK, DivideTask)

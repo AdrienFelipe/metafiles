@@ -10,7 +10,8 @@ class FakeAgent(BaseAgent):
     default_response = PromptMessageResponse("Default response")
     responses: Dict[Type[IPromptStrategy], List[PromptResponse]] = {}
 
-    def __init__(self, responses: Optional[List[PromptResponse]] = None):
+    def __init__(self, responses: Optional[List[PromptResponse]] = None, keep_last: bool = False):
+        self.keep_last = keep_last
         if responses is not None:
             self.add_responses(responses)
 
@@ -28,7 +29,7 @@ class FakeAgent(BaseAgent):
         if not responses:
             return self.default_response
 
-        return responses.pop(0) if len(responses) > 1 else responses[0]
+        return responses.pop(0) if not self.keep_last or len(responses) > 1 else responses[0]
 
     def parse_response(self, response) -> PromptResponse:
         return response

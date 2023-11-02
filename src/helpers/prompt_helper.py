@@ -35,6 +35,7 @@ def prompt_function_to_callback_arguments(func: dict, specials: Optional[dict] =
 
 
 def assert_prompt_callbacks_are_valid(agent: FakeAgent, prompt: Prompt) -> None:
+    specials = {"code": "print('ok')"}
     functions = prompt.functions()
     if functions is None:
         return
@@ -42,7 +43,7 @@ def assert_prompt_callbacks_are_valid(agent: FakeAgent, prompt: Prompt) -> None:
     for function in functions:
         callback = function["name"]
         assert isinstance(callback, str), "function name should be a string"
-        arguments = prompt_function_to_callback_arguments(function)
+        arguments = prompt_function_to_callback_arguments(function, specials)
         agent.add_responses([PromptCallbackResponse(callback, arguments)])
 
         assert agent.ask(

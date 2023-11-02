@@ -45,9 +45,10 @@ def test_create_code_agent_proxy_success():
         "task_id": sub_task1.id,
         "tasks_ids": f"{sub_task1.id}, {sub_task2.id}",
         "update_reason": "some reason",
+        "code": code,
     }
 
-    agent = FakeAgent()
+    agent = FakeAgent(keep_last=True)
     prompt = PromptFactory.create_code(task, "reason")
 
     for function in prompt.functions():
