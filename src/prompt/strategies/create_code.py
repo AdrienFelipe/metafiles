@@ -28,6 +28,7 @@ class CreateCodeStrategy(IPromptStrategy):
         self.reason = reason
         self.queries: List[Query] = []
         self.dependencies: List[Task] = []
+        self.execution_results: List[str] = []
 
     def get_template_name(self) -> str:
         return self._TEMPLATE_NAME
@@ -35,13 +36,13 @@ class CreateCodeStrategy(IPromptStrategy):
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
             "task_id": task.id,
-            "task": task.goal,
+            "goal": task.goal,
             "requirements": task.requirements,
             "code": "\n\n".join(task.plan),
-            "tasks": task.get_siblings(),
-            "clarifications": self.queries,
-            "dependencies": self.dependencies,
-            "issues": ["issue1", "issue2", "issue3"],
+            "sibling_tasks": task.get_siblings(),
+            "user_queries": self.queries,
+            "dependencies_tasks": self.dependencies,
+            "execution_results": self.execution_results,
         }
 
     def handler_functions(self) -> Dict[str, Callable]:
