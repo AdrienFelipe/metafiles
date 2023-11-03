@@ -24,7 +24,13 @@ from task.task import Task
 def test_create_code_callbacks():
     task = Task("test", "test")
     prompt = PromptFactory.create_code(task, "reason")
-    assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
+
+    specials = {
+        "code": "print('ok')",
+        "tasks_ids": f"{task.id},{task.id}",
+        "task_id": task.id,
+    }
+    assert_prompt_callbacks_are_valid(FakeAgent(), prompt, specials)
 
 
 def test_create_code_agent_proxy_success():

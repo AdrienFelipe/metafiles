@@ -1,5 +1,6 @@
 import io
 import sys
+from typing import Any, Dict
 
 from action.action import Action
 from action.action_name import ActionName
@@ -31,7 +32,7 @@ class RunCode(Action):
         buffer = io.StringIO()
         sys.stdout = buffer
 
-        context = {}
+        context: Dict[str, Any] = {}
         try:
             exec(code, context)
             printed_output = buffer.getvalue().strip()

@@ -5,11 +5,11 @@ from typing import Dict, List, Optional
 import yaml
 
 from action.action_name import ActionName
-from action.action_result import ActionResult
+from action.action_result import ActionResult, ActionResultStatus
 
 
 class Task:
-    result: Optional[ActionResult] = None
+    result: ActionResult = ActionResult(ActionResultStatus.PENDING, "Task not executed yet")
 
     def __init__(
         self,
@@ -75,4 +75,4 @@ class Task:
         return [] if self.parent is None else self.parent.children
 
     def get_tasks_by_ids(self, ids: List[str]) -> List[Task]:
-        return [self.index[id] for id in ids]
+        return [self.index[task_id] for task_id in ids if self.index.get(task_id)]

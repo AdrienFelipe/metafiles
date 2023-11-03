@@ -5,10 +5,12 @@ from prompt.prompt import Prompt
 from prompt.prompt_result import PromptMessageResponse, PromptResponse
 from prompt.prompt_strategy import IPromptStrategy
 
+DEFAULT_STRATEGY_KEY = object()
+
 
 class FakeAgent(BaseAgent):
     default_response = PromptMessageResponse("Default response")
-    responses: Dict[Type[IPromptStrategy], List[PromptResponse]] = {}
+    responses: Dict[object, List[PromptResponse]] = {}
 
     def __init__(self, responses: Optional[List[PromptResponse]] = None, keep_last: bool = False):
         self.keep_last = keep_last
@@ -16,7 +18,7 @@ class FakeAgent(BaseAgent):
             self.add_responses(responses)
 
     def add_responses(self, responses: List[PromptResponse]) -> None:
-        self.responses.setdefault(IPromptStrategy, []).extend(responses)
+        self.responses.setdefault(DEFAULT_STRATEGY_KEY, []).extend(responses)
 
     def add_strategy_responses(
         self, responses: Dict[Type[IPromptStrategy], List[PromptResponse]]
@@ -25,7 +27,9 @@ class FakeAgent(BaseAgent):
             self.responses.setdefault(strategy, []).extend(strategy_responses)
 
     def send_query(self, prompt: Prompt) -> PromptResponse:
-        responses = self.responses.get(type(prompt.strategy), self.responses.get(IPromptStrategy))
+        responses = self.responses.get(
+            type(prompt.strategy), self.responses.get(DEFAULT_STRATEGY_KEY)
+        )
         if not responses:
             return self.default_response
 

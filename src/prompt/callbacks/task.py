@@ -1,7 +1,12 @@
-from typing import Set
+from typing import List, Union
 
 from prompt.prompt_result import PromptResponse, PromptStatus
 from task.task import Task
+
+
+class FailedTaskResponse(PromptResponse):
+    def __init__(self, message: str):
+        super().__init__(PromptStatus.FAILURE, message)
 
 
 class DivideTaskResponse(PromptResponse):
@@ -27,22 +32,29 @@ class ExecuteTaskResponse(PromptResponse):
         return self.data["task"]
 
 
-def execute_task_callback(task: Task, task_id: str, reason: str) -> ExecuteTaskResponse:
-    # TODO: add id safe check
-    target_task = task.index[task_id]
-    return ExecuteTaskResponse(target_task, reason)
+def execute_task_callback(
+    task: Task, task_id: str, reason: str
+) -> Union[ExecuteTaskResponse, FailedTaskResponse]:
+    target_task = task.index.get(task_id)
+    if target_task:
+        return ExecuteTaskResponse(target_task, reason)
+    return FailedTaskResponse(f"Task with id {task_id} not found")
 
 
 class GetTasksResultsResponse(PromptResponse):
-    def __init__(self, tasks: Set[Task]):
+    def __init__(self, tasks: List[Task]):
         super().__init__(PromptStatus.SUCCESS, "", {"tasks": tasks})
 
-    def tasks(self) -> Set[Task]:
+    def tasks(self) -> List[Task]:
         return self.data["tasks"]
 
 
-def get_tasks_results_callback(task: Task, tasks_ids: str) -> GetTasksResultsResponse:
+def get_tasks_results_callback(
+    task: Task, tasks_ids: str
+) -> Union[GetTasksResultsResponse, FailedTaskResponse]:
     # TODO: Add id safe check
-    tasks_ids_list = set(task_id.strip() for task_id in tasks_ids.split(","))
+    tasks_ids_list = list(set(task_id.strip() for task_id in tasks_ids.split(",")))
     tasks = task.get_tasks_by_ids(tasks_ids_list)
-    return GetTasksResultsResponse(tasks)
+    if tasks:
+        return GetTasksResultsResponse(tasks)
+    return FailedTaskResponse(f"Tasks with ids {tasks_ids} not found")
