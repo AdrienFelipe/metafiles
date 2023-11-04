@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from agent.agent_proxy import AgentProxy
 from agent.agents.fake_agent import FakeAgent
 from helpers.prompt_helper import (
@@ -18,12 +16,14 @@ def test_create_plan_callbacks():
     task = Task("test", "test")
     prompt = PromptFactory.create_plan(task, "role")
     assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
-    
+
+
 def test_create_plan_callbacks_with_plan():
     task = Task("test", "test")
     task.plan = ["step 1", "step 2"]
     prompt = PromptFactory.create_plan(task, "role")
     assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
+
 
 def test_create_plan_agent_proxy_success():
     plan = ["step 1", "step 2"]

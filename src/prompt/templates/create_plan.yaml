@@ -24,7 +24,7 @@ messages:
       3. Review the task methodically, step by step.
       4. Define or refine the plan with iterative improvements.
 
-      As "{{ role }}", thoughtfully break down the task into direct sublevel tasks without numbering.
+      As a "{{ role }}", thoughtfully break down the task into direct sublevel tasks without numbering.
       Each step must be clear and concise.
       The plan should have no more than 15 steps; group subtasks into overarching tasks if you exceed this number.
 
@@ -38,25 +38,28 @@ messages:
 {% if plan|length > 0 %}
   - role: user
     content: |
-      This is the current plan.
-      Carefully review each step, ensuring it adheres to the above constraints.
-      Think deeply about its effectiveness: does it optimally address the task at hand?
-      Should any steps be refined or added to achieve a better outcome?
+      Below is the current plan, formatted as a sequence of tasks.
+      Each task outlines the goal to be achieved and specifications necessary to achieve it.
+      If a task is contingent on the completion of previous tasks, this is indicated by 'depends on,' followed by the indices of the prerequisite tasks.
+      Review each task and its components, considering the constraints outlined previously.
+      Evaluate the plan's effectiveness and its alignment with the task objectives, and consider if any refinements or additions are necessary.
       
-      Plan:
+      Plan steps:
       {% for item in plan %}
-      {{ item | indent(6) }}
+      - {{ item | indent(8) }}
       {% endfor %}
+
+      If the plan is acceptable, select 'validate_plan' to proceed
 {% endif %}
 
 functions:
   - name: update_plan
-    description: Define the task plan as a JSON array
+    description: Define the task plan as a stringified JSON array
     parameters:
       - name: plan
         type: string
         description: >
-          A JSON array of tasks, where each task is an object with 'goal', 'specifications', and an optional 'depends_on' property.
+          A stringified JSON array of tasks, where each task is an object with 'goal', 'specifications', and an optional 'depends_on' property.
           'goal': A string that describes the aim of the task.
           'specifications': A string or array that outlines the precise steps and conditions for the task's execution.
           'depends_on': An optional array of indices referring to other tasks in this array whose outputs are prerequisites for the current task.

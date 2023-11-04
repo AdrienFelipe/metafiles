@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from agent.agents.openai_agent import OpenAIAgent
 from task.task import Task
 from task.task_execute import execute_task
@@ -29,6 +27,7 @@ def test_task_execute_ask_user_print_string():
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == "Hello, World User!", "Incorrect result"
+
 
 def test_task_execute_ask_two_steps_code():
     task = Task(
