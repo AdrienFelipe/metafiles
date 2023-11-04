@@ -10,10 +10,10 @@ DEFAULT_STRATEGY_KEY = object()
 
 class FakeAgent(BaseAgent):
     default_response = PromptMessageResponse("Default response")
-    responses: Dict[object, List[PromptResponse]] = {}
 
     def __init__(self, responses: Optional[List[PromptResponse]] = None, keep_last: bool = False):
         self.keep_last = keep_last
+        self.responses: Dict[object, List[PromptResponse]] = {}
         if responses is not None:
             self.add_responses(responses)
 

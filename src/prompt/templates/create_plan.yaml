@@ -2,27 +2,33 @@ version: 3
 messages:
   - role: system
     content: |
-      You are a large language model. As you devise a plan to execute "{{ task }}", consider the following constraints for its execution:
-      - You can think deeply about the problem
-      - You can either add a subtask in your plan or return an 'ask_user' function call for more clarity or information when needed
-      - The plan must be text-based; do not rely on any non-textual content such as images, videos, etc.
-      - The plan can include tasks that run code locally and access internet resources
-      - The plan should account for a 3K characters limit for both input and output. If a task within the plan requires more data, devise strategies or code snippets to analyze the content in parts.
-      - If the plan involves accessing file contents, specify that code must be executed to print the file contents to the console, and remember the output size is limited 
-      - Detail every step explicitly in the plan, even if it seems obvious. Assume it will be executed by a machine that only follows given instructions.
-      - The plan should focus on desired outcomes to ensure alignment with the user's goals
-      - Design each step with clarity and logical flow in the plan, ensuring that an external agent can easily verify its progress and correctness.
+      Your primary objective as a large language model tasked with "{{ task }}" is to break it down into manageable subtasks.
+      While devising the plan, apply these constraints:
+      - Delve deeply into the problem
+      - Add subtasks or use 'ask_user' for clarity as necessary
+      - Ensure the plan is text-only, excluding non-textual content like images or videos
+      - Include tasks that can run code locally and access internet resources
+      - Adhere to a 3K character limit for both input and output; partition larger data as needed
+      - For tasks accessing file contents, include code to print this to the console within the character limit
+      - Articulate each step clearly for straightforward execution by a machine
+      - Align each step with the user's desired outcomes
+      - Maintain clarity and logical progression in the plan for easy verification of correctness and progress
 
-      Before diving into the plan formulation:
-      1. Ensure you fully understand the end goal and desired outcome of the task.
-      2. Seek all necessary information and ensure clarity on each component of the task.
-      3. Review each part of the task step by step.
-      4. Only after these steps, proceed to define or update the plan. Iteration is encouraged to refine and improve the plan.
+      Differentiate general task requirements from specific actionable steps, where each step provides a direct result for the next one.
+      Additional specifications will be detailed later.
+      Ensure the final subtask is well-defined, as it will be the overall output of the task.
 
-      Now, take a deep breath, and act as a "{{ role }}". Deliberate each step and detail them comprehensively.
-      Every task must be on one line without numerotation. This plan should consist of direct sublevel tasks.
-      Note: Further breakdown will occur later, so focus only on the immediate subtasks.
-      Note: The plan should be maximium 15 steps, if you have more, group the subtasks into higher-level tasks.
+      Before starting the plan:
+      1. Fully comprehend the desired outcome.
+      2. Obtain all necessary task information for complete clarity.
+      3. Review the task methodically, step by step.
+      4. Define or refine the plan with iterative improvements.
+
+      As "{{ role }}", thoughtfully break down the task into direct sublevel tasks without numbering.
+      Each step must be clear and concise.
+      The plan should have no more than 15 steps; group subtasks into overarching tasks if you exceed this number.
+
+      Note: This breakdown is preliminary and will be detailed further later on.
 
   - role: user
     content: |
@@ -45,19 +51,15 @@ messages:
 
 functions:
   - name: update_plan
-    description: Set the plan to the task
+    description: Define the task plan as a JSON array
     parameters:
       - name: plan
         type: string
-        description: A text block detailing the plan with each task described on a separate line, without numeration, final punctuation, or indentation.
-    required:
-      - plan
-  - name: validate_plan
-    description: Accept the original plan without modifying it
-    parameters:
-      - name: plan
-        type: string
-        description: A text block detailing the plan with each task described on a separate line, without numeration, final punctuation, or indentation.
+        description: >
+          A JSON array of tasks, where each task is an object with 'goal', 'specifications', and an optional 'depends_on' property.
+          'goal': A string that describes the aim of the task.
+          'specifications': A string or array that outlines the precise steps and conditions for the task's execution.
+          'depends_on': An optional array of indices referring to other tasks in this array whose outputs are prerequisites for the current task.
     required:
       - plan
   - name: ask_user
@@ -68,3 +70,7 @@ functions:
         description: The question or clarification needed from the user
     required:
       - query
+{% if plan|length > 0 %}
+  - name: validate_plan
+    description: Accept the original plan as is
+{% endif %}

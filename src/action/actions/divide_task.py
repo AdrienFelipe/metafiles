@@ -28,7 +28,7 @@ class DivideTask(Action):
                 # TODO: validate plan is valid
                 task.plan = plan
 
-            if task.plan == initial_plan or len(roles) == 1:
+            if task.plan == initial_plan:
                 break
         # TODO: Validate the answer is what was expected
         # TODO: should it be able to update the whole plan?

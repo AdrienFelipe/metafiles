@@ -18,13 +18,17 @@ def test_create_plan_callbacks():
     task = Task("test", "test")
     prompt = PromptFactory.create_plan(task, "role")
     assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
+    
+def test_create_plan_callbacks_with_plan():
+    task = Task("test", "test")
+    task.plan = ["step 1", "step 2"]
+    prompt = PromptFactory.create_plan(task, "role")
+    assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
 
-
-@pytest.mark.parametrize("callback", ["update_plan", "validate_plan"])
-def test_create_plan_agent_proxy_success(callback):
+def test_create_plan_agent_proxy_success():
     plan = ["step 1", "step 2"]
     arguments = {"plan": "\n".join(plan)}
-    agent = FakeAgent([PromptCallbackResponse(callback, arguments)])
+    agent = FakeAgent([PromptCallbackResponse("update_plan", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_to_create_plan(task, "role")
