@@ -1,8 +1,6 @@
 import json
 from typing import List
 
-import yaml
-
 from prompt.prompt_result import PromptResponse, PromptStatus
 from task.task import Task
 
@@ -18,7 +16,12 @@ class CreatePlanResponse(PromptResponse):
 
 
 def create_plan_callback(task: Task, plan: str) -> CreatePlanResponse:
-    text_plan = [yaml.dump(step, sort_keys=False, width=999).strip() for step in json.loads(plan)]
+    plan_data = json.loads(plan)
+    text_plan = [
+        Task.step_to_string(step["goal"], step["specifications"], step.get("depends_on"))
+        for step in plan_data
+    ]
+
     return CreatePlanResponse(text_plan)
 
 

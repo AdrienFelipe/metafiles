@@ -19,15 +19,14 @@ def prompt_function_to_callback_arguments(func: dict, specials: Optional[dict] =
     for param_name, details in func["parameters"]["properties"].items():
         param_type = details["type"]
 
-        if "enum" in details:
+        if specials is not None and param_name in specials:
+            test_value = specials[param_name]
+        elif "enum" in details:
             test_value = details["enum"][0]
         elif "description" in details and "json" in details["description"].lower():
             test_value = '{"key": "value"}'
         else:
-            if specials is not None and param_name in specials:
-                test_value = specials[param_name]
-            else:
-                test_value = test_values_map.get(param_type, "UnknownType")
+            test_value = test_values_map.get(param_type, "UnknownType")
 
         test_values[param_name] = test_value
 

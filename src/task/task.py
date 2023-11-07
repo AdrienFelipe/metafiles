@@ -18,6 +18,7 @@ class Task:
         parent: Optional[Task] = None,
         plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
+        depends_on: Optional[List[str]] = None,
     ):
         self.id = Task._build_id(parent)
         self.goal = goal
@@ -27,6 +28,7 @@ class Task:
         self.parent = parent
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
+        self.depends_on = depends_on or []
 
         self.add_to_parent()
 
@@ -48,6 +50,30 @@ class Task:
             parent=parent_task,
             plan=data.get("plan", None),
             action=action,
+        )
+
+    @staticmethod
+    def step_to_string(
+        goal: str, specifications: List[str], depends_on: Optional[List[str]] = None
+    ) -> str:
+        step = {"goal": goal, "specifications": specifications}
+        if depends_on is not None:
+            step["depends_on"] = depends_on
+
+        return yaml.dump(step, sort_keys=False, width=999).strip()
+
+    @staticmethod
+    def from_string(step: str, parent_task: Optional[Task] = None) -> Task:
+        data = yaml.safe_load(step)
+        if parent_task is not None:
+            data["depends_on"] = [
+                task.id for task in parent_task.get_tasks_by_ids(data["depends_on"])
+            ]
+
+        return Task(
+            goal=data["goal"],
+            requirements=data["specifications"],
+            parent=parent_task,
         )
 
     def __str__(self) -> str:
