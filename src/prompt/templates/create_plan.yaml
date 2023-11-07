@@ -2,33 +2,29 @@ version: 3
 messages:
   - role: system
     content: |
-      Your primary objective as a large language model tasked with "{{ task }}" is to break it down into manageable subtasks.
-      While devising the plan, apply these constraints:
-      - Delve deeply into the problem
-      - Add subtasks or use 'ask_user' for clarity as necessary
-      - Ensure the plan is text-only, excluding non-textual content like images or videos
-      - Include tasks that can run code locally and access internet resources
-      - Adhere to a 3K character limit for both input and output; partition larger data as needed
-      - For tasks accessing file contents, include code to print this to the console within the character limit
-      - Articulate each step clearly for straightforward execution by a machine
-      - Align each step with the user's desired outcomes
-      - Maintain clarity and logical progression in the plan for easy verification of correctness and progress
+      As a large language model tasked with "{{ task }}", your role involves deconstructing it into discrete subtasks. Each subtask is defined by a 'goal', a generic 'definition' for future reuse, and 'specifics' addressing the current context. Follow these guidelines:
+      - Ensure subtasks are modular with 'definition' capturing the generic, reusable component
+      - Use 'specifics' to tailor the subtask to the current task requirements
+      - Maintain 'goal' as a broad statement of purpose, applicable in any context
+      - Make 'definition' detailed enough to function independently in a new scenario
+      - Keep 'specifics' adaptable to meet the nuances of the current task
+      - Consider dependencies between subtasks, but strive for independence where possible
 
-      Differentiate general task requirements from specific actionable steps, where each step provides a direct result for the next one.
-      Additional specifications will be detailed later.
-      Ensure the final subtask is well-defined, as it will be the overall output of the task.
+      The plan should reflect the above structure, providing a clear framework for each subtask:
+      - 'goal': The high-level objective of the subtask
+      - 'definition': The generic, reusable approach or logic that addresses this type of problem
+      - 'specifics': The current task-specific details necessary to achieve the 'goal'
+      - 'depends_on': (optional) References to other subtasks that provide inputs or necessary context
 
-      Before starting the plan:
-      1. Fully comprehend the desired outcome.
-      2. Obtain all necessary task information for complete clarity.
-      3. Review the task methodically, step by step.
-      4. Define or refine the plan with iterative improvements.
+      Before commencing the plan:
+      1. Clearly understand the overarching task and individual subtask goals.
+      2. Differentiate between generic and specific information for each subtask.
+      3. Design each 'definition' to be a standalone skill for similar future tasks.
+      4. Ensure 'specifics' are sufficiently detailed for the current task execution.
 
-      As a "{{ role }}", thoughtfully break down the task into direct sublevel tasks without numbering.
-      Each step must be clear and concise.
-      The plan should have no more than 15 steps; group subtasks into overarching tasks if you exceed this number.
+      Dissect the task thoughtfully into self-contained subtasks, keeping them clear and concise for future adaptability.
 
-      Note: This breakdown is preliminary and will be detailed further later on.
+      Note: This initial breakdown is the foundation for further refinement and potential skill extraction.
 
   - role: user
     content: |
@@ -38,42 +34,41 @@ messages:
 {% if plan|length > 0 %}
   - role: user
     content: |
-      Below is the current plan, formatted as a sequence of tasks.
-      Each task outlines the goal to be achieved and specifications necessary to achieve it.
-      If a task is contingent on the completion of previous tasks, this is indicated by 'depends on,' followed by the indices of the prerequisite tasks.
-      Review each task and its components, considering the constraints outlined previously.
-      Evaluate the plan's effectiveness and its alignment with the task objectives, and consider if any refinements or additions are necessary.
-      
+      Here is the current plan, structured as a sequence of subtasks, each with its own 'goal', 'definition', and 'specifics', and where applicable, 'depends_on' references.
+      Evaluate the plan considering its adaptability for current execution and future reusability.
+      Adjust the 'definition' to ensure it remains generic, and tweak the 'specifics' to meet the immediate task needs.
+
       Plan steps:
       {% for item in plan %}
-      - {{ item | indent(8) }}
+      - Goal: {{ item.goal | indent(10) }}
+      - Definition: {{ item.definition | indent(12) }}
+      - Specifics: {{ item.specifics | indent(12) }}
+      {% if item.depends_on %}
+      - Depends on: {{ item.depends_on | indent(16) }}
+      {% endif %}
       {% endfor %}
 
-      If the plan is acceptable, select 'validate_plan' to proceed
+      If the plan ensures each subtask is both self-sufficient and generalizable, select 'validate_plan' to proceed.
 {% endif %}
 
 functions:
   - name: update_plan
-    description: Define the task plan as a stringified JSON array
+    description: Define the task plan as a stringified JSON array with clearly separated 'goal', 'definition', and 'specifics' for each subtask
     parameters:
       - name: plan
         type: string
         description: >
-          A stringified JSON array of tasks, where each task is an object with 'goal', 'specifications', and an optional 'depends_on' property.
-          'goal': A string that describes the aim of the task.
-          'specifications': A string or array that outlines the precise steps and conditions for the task's execution.
-          'depends_on': An optional array of indices referring to other tasks in this array whose outputs are prerequisites for the current task.
+          A stringified JSON array of tasks, where each task is an object with distinct 'goal', 'definition', and 'specifics'. The 'definition' should be formulated as a generic skill, while 'specifics' handle the nuances of the current task. 'depends_on' (optional) captures any dependencies.
     required:
       - plan
   - name: ask_user
-    description: Solicit more information or clarity from the user
+    description: Request more information or clarification from the user to ensure the clarity and independence of subtasks, as well as their potential for reuse as generic skills
     parameters:
       - name: query
         type: string
-        description: The question or clarification needed from the user
+        description: The question or clarification needed to ensure the subtask's 'definition' and 'specifics' are well-formed and independent
     required:
       - query
 {% if plan|length > 0 %}
   - name: validate_plan
-    description: Accept the original plan as is
-{% endif %}
+    description: Validate the plan ensuring that each subtask's 'goal', 'definition', and 'specifics' are appropriate for both immediate execution and future reapplication as a skill
