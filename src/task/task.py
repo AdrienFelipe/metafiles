@@ -53,7 +53,7 @@ class Task:
         )
 
     @staticmethod
-    def step_to_string(
+    def to_plan_step(
         goal: str, specifications: List[str], depends_on: Optional[List[str]] = None
     ) -> str:
         step = {"goal": goal, "specifications": specifications}
@@ -63,7 +63,7 @@ class Task:
         return yaml.dump(step, sort_keys=False, width=999).strip()
 
     @staticmethod
-    def from_string(step: str, parent_task: Optional[Task] = None) -> Task:
+    def from_plan_step(step: str, parent_task: Optional[Task] = None) -> Task:
         data = yaml.safe_load(step)
         if parent_task is not None:
             data["depends_on"] = [

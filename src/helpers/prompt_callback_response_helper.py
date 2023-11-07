@@ -23,7 +23,7 @@ class PromptCallbackResponseHelper:
 
     def get_plan(self) -> List[str]:
         return [
-            Task.step_to_string(step["goal"], step["specifications"], step.get("depends_on"))
+            Task.to_plan_step(step["goal"], step["specifications"], step.get("depends_on"))
             for step in DEFAULT_PLAN
         ]
 

@@ -34,9 +34,8 @@ class DivideTask(Action):
         # TODO: should it be able to update the whole plan?
 
         # Apply sub-tasks
-        for sub_goal in task.plan:
-            sub_requirements = agent_proxy.ask_to_filter_requirements(task, sub_goal)
-            sub_task = Task(sub_goal, sub_requirements, task)
+        for step in task.plan:
+            sub_task = Task.from_plan_step(step, task)
             execute_task(agent, sub_task)
             # TODO: check sub result and advise what to do next <---------
 
