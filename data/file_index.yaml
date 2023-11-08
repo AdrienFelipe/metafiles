@@ -1,5 +1,5 @@
 goal: "Create Summarized TEI Files"
-requirements: |
+definition: |
   Create new TEI files that summarize user-shared documents, allowing for quick, machine-friendly overviews with varying levels of detail. Think of it as generating a layered index with file summaries. The TEI files will include content-specific customizations. For example, a code file might use <div type="file"> for each file and <note type="path"> to specify the file path.
 
   # TEI File Construction Rules

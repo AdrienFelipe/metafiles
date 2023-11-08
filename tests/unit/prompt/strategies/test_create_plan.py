@@ -21,11 +21,12 @@ def test_create_plan_callbacks():
 
 
 def test_create_plan_callbacks_with_plan():
+    callback_helper = PromptCallbackResponseHelper().with_plan()
     task = Task("test", "test")
-    task.plan = ["step 1", "step 2"]
+    task.plan = callback_helper.get_plan()
+
     prompt = PromptFactory.create_plan(task, "role")
-    arguments = PromptCallbackResponseHelper.simple()
-    assert_prompt_callbacks_are_valid(FakeAgent(), prompt, arguments)
+    assert_prompt_callbacks_are_valid(FakeAgent(), prompt, callback_helper.arguments)
 
 
 def test_create_plan_agent_proxy_success():

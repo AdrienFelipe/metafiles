@@ -6,8 +6,8 @@ from typing import Any, Dict, List, Optional
 from task.task import Task
 
 DEFAULT_PLAN: List[Dict[str, Any]] = [
-    {"goal": "Setup", "specifications": ["Install X", "Configure Y"]},
-    {"goal": "Test", "specifications": ["Run Z"], "depends_on": [0, 1]},
+    {"goal": "Setup", "definition": ["Install X", "Configure Y"], "specifics": ["Run A"]},
+    {"goal": "Test", "definition": ["Run Z"], "depends_on": [0, 1]},
 ]
 
 
@@ -18,12 +18,17 @@ class PromptCallbackResponseHelper:
     @staticmethod
     def simple() -> Dict[str, str]:
         return {
-            "plan": '[{"goal": "Setup", "specifications": ["Install X", "Configure Y"], "depends_on": [0, 1]}]',
+            "plan": '[{"goal": "Setup", "definition": ["Install X","Configure Y"], "specifics": ["Run A"], "depends_on": [0, 1]}]',
         }
 
     def get_plan(self) -> List[str]:
         return [
-            Task.to_plan_step(step["goal"], step["specifications"], step.get("depends_on"))
+            Task.to_plan_step(
+                goal=step["goal"],
+                definition=step["definition"],
+                specifics=step.get("specifics"),
+                depends_on=step.get("depends_on"),
+            )
             for step in DEFAULT_PLAN
         ]
 

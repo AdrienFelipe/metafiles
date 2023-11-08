@@ -25,8 +25,9 @@ class CreatePlanStrategy(IPromptStrategy):
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
             "role": self.agent_role,
-            "task": task.goal,
-            "goal": task.requirements,
+            "goal": task.goal,
+            "definition": task.definition,
+            "specifics": task.specifics,
             "plan": task.plan,
         }
 

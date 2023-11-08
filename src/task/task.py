@@ -14,7 +14,8 @@ class Task:
     def __init__(
         self,
         goal: str,
-        requirements: str = "",
+        definition: Optional[List[str]] = None,
+        specifics: Optional[List[str]] = None,
         parent: Optional[Task] = None,
         plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
@@ -22,7 +23,8 @@ class Task:
     ):
         self.id = Task._build_id(parent)
         self.goal = goal
-        self.requirements = requirements
+        self.definition = definition or []
+        self.specifics = specifics or []
         self.plan = plan or []
         self.action = action
         self.parent = parent
@@ -46,7 +48,9 @@ class Task:
 
         return Task(
             goal=data["goal"],
-            requirements=data["requirements"],
+            definition=data["definition"],
+            specifics=data.get("specifics", None),
+            depends_on=data.get("depends_on", None),
             parent=parent_task,
             plan=data.get("plan", None),
             action=action,
@@ -54,9 +58,14 @@ class Task:
 
     @staticmethod
     def to_plan_step(
-        goal: str, specifications: List[str], depends_on: Optional[List[str]] = None
+        goal: str,
+        definition: List[str],
+        specifics: Optional[List[str]] = None,
+        depends_on: Optional[List[str]] = None,
     ) -> str:
-        step = {"goal": goal, "specifications": specifications}
+        step = {"goal": goal, "definition": definition}
+        if specifics is not None:
+            step["specifics"] = specifics
         if depends_on is not None:
             step["depends_on"] = depends_on
 
@@ -65,19 +74,13 @@ class Task:
     @staticmethod
     def from_plan_step(step: str, parent_task: Optional[Task] = None) -> Task:
         data = yaml.safe_load(step)
-        if parent_task is not None:
-            data["depends_on"] = [
-                task.id for task in parent_task.get_tasks_by_ids(data["depends_on"])
-            ]
-
         return Task(
             goal=data["goal"],
-            requirements=data["specifications"],
+            definition=data.get("definition", ""),
+            specifics=data.get("specifics", None),
+            depends_on=data.get("depends_on", None),
             parent=parent_task,
         )
-
-    def __str__(self) -> str:
-        return f"Goal: {self.goal}, Requirements: {self.requirements}, Plan: {', '.join(self.plan)}"
 
     @staticmethod
     def _build_id(parent: Optional[Task]) -> str:

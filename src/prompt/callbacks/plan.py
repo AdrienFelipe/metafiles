@@ -18,7 +18,12 @@ class CreatePlanResponse(PromptResponse):
 def create_plan_callback(task: Task, plan: str) -> CreatePlanResponse:
     plan_data = json.loads(plan)
     text_plan = [
-        Task.to_plan_step(step["goal"], step["specifications"], step.get("depends_on"))
+        Task.to_plan_step(
+            goal=step["goal"],
+            definition=step["definition"],
+            specifics=step.get("specifics"),
+            depends_on=step.get("depends_on"),
+        )
         for step in plan_data
     ]
 

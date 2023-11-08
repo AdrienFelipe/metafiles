@@ -20,7 +20,7 @@ class FilterRequirementsStrategy(IPromptStrategy):
         return {
             "task": task.goal,
             "plan": task.plan,
-            "requirements": task.requirements,
+            "requirements": task.definition,
             "subtask": self.sub_goal,
         }
 

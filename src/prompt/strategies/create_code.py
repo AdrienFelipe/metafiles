@@ -37,7 +37,7 @@ class CreateCodeStrategy(IPromptStrategy):
         return {
             "task_id": task.id,
             "goal": task.goal,
-            "requirements": task.requirements,
+            "requirements": task.definition,
             "code": "\n\n".join(task.plan),
             "sibling_tasks": task.get_siblings(),
             "user_queries": self.queries,
