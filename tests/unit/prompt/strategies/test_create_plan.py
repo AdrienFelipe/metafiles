@@ -5,6 +5,7 @@ from agent.agents.fake_agent import FakeAgent
 from helpers.prompt_callback_response_helper import PromptCallbackResponseHelper
 from helpers.prompt_helper import (
     assert_prompt_callbacks_are_valid,
+    get_callback_response,
     prompt_function_to_callback_arguments,
 )
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse
@@ -72,25 +73,26 @@ def test_create_plan_agent_proxy_scenario():
 
 
 def test_create_plan_agent_proxy_responses_are_valid():
-    arguments = PromptCallbackResponseHelper.simple()
     agent = FakeAgent()
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
     prompt = PromptFactory.create_plan(task, "role")
+    specials = PromptCallbackResponseHelper.simple()
+    callback_response = get_callback_response(prompt, "update_plan", specials)
 
     for function in prompt.functions():
         callback = function["name"]
         assert isinstance(callback, str), "function name should be a string"
         responses = [
             PromptCallbackResponse(
-                function["name"], prompt_function_to_callback_arguments(function, arguments)
+                function["name"], prompt_function_to_callback_arguments(function, specials)
             ),
             # Always end by a code execution
-            PromptCallbackResponse("update_plan", arguments),
+            callback_response,
         ]
-        agent.add_responses(responses)
+        agent.add_responses(responses, reset=True)
 
         with patch("builtins.input", return_value="This is a test!"):
             response = agent_proxy.ask_to_create_plan(task, prompt.strategy.agent_role)
 
         assert isinstance(response, CreatePlanResponse)
-        assert response.is_successful(), "Response should be successful"
+        assert response.is_successful(), f"Response should be successful: {response.message}"

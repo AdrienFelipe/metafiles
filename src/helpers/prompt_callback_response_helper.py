@@ -10,6 +10,8 @@ DEFAULT_PLAN: List[Dict[str, Any]] = [
     {"goal": "Test", "definition": ["Run Z"], "depends_on": [0, 1]},
 ]
 
+DEFAULT_CODE: str = "var = 'ok'\nprint(var)"
+
 
 class PromptCallbackResponseHelper:
     def __init__(self):
@@ -19,6 +21,7 @@ class PromptCallbackResponseHelper:
     def simple() -> Dict[str, str]:
         return {
             "plan": '[{"goal": "Setup", "definition": ["Install X","Configure Y"], "specifics": ["Run A"], "depends_on": [0, 1]}]',
+            "code": "var = 'ok'\nprint(var)",
         }
 
     def get_plan(self) -> List[str]:
@@ -36,4 +39,11 @@ class PromptCallbackResponseHelper:
         self, plan: Optional[List[Dict[str, str]]] = None
     ) -> PromptCallbackResponseHelper:
         self.arguments["plan"] = json.dumps(plan if plan is not None else DEFAULT_PLAN)
+        return self
+
+    def get_code(self) -> str:
+        return self.arguments["code"]
+
+    def with_code(self, code: Optional[str] = None) -> PromptCallbackResponseHelper:
+        self.arguments["code"] = code if code is not None else DEFAULT_CODE
         return self

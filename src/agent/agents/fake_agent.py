@@ -17,8 +17,11 @@ class FakeAgent(BaseAgent):
         if responses is not None:
             self.add_responses(responses)
 
-    def add_responses(self, responses: List[PromptResponse]) -> None:
-        self.responses.setdefault(DEFAULT_STRATEGY_KEY, []).extend(responses)
+    def add_responses(self, responses: List[PromptResponse], reset: bool = False) -> None:
+        if reset:
+            self.responses[DEFAULT_STRATEGY_KEY] = responses
+        else:
+            self.responses.setdefault(DEFAULT_STRATEGY_KEY, []).extend(responses)
 
     def add_strategy_responses(
         self, responses: Dict[Type[IPromptStrategy], List[PromptResponse]]
