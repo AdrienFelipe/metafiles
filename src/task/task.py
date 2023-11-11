@@ -10,12 +10,13 @@ from action.action_result import ActionResult, ActionResultStatus
 
 class Task:
     result: ActionResult = ActionResult(ActionResultStatus.PENDING, "Task not executed yet")
+    code: str = ""
 
     def __init__(
         self,
         goal: str,
-        definition: Optional[List[str]] = None,
-        specifics: Optional[List[str]] = None,
+        definition: str = "",
+        specifics: str = "",
         parent: Optional[Task] = None,
         plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
@@ -23,8 +24,8 @@ class Task:
     ):
         self.id = Task._build_id(parent)
         self.goal = goal
-        self.definition = definition or []
-        self.specifics = specifics or []
+        self.definition = definition
+        self.specifics = specifics
         self.plan = plan or []
         self.action = action
         self.parent = parent
@@ -76,8 +77,8 @@ class Task:
         data = yaml.safe_load(step)
         return Task(
             goal=data["goal"],
-            definition=data.get("definition", ""),
-            specifics=data.get("specifics", None),
+            definition="\n".join(data.get("definition", "")),
+            specifics="\n".join(data.get("specifics", "")),
             depends_on=data.get("depends_on", None),
             parent=parent_task,
         )

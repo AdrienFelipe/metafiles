@@ -26,7 +26,7 @@ class CreateCodeResponse(PromptResponse):
     def get_tasks_ids(self) -> List[str]:
         return self.data["tasks_ids"]
 
-    def get_update_reason(self) -> str:
+    def reason(self) -> str:
         return self.data["update_reason"]
 
 
@@ -38,9 +38,16 @@ def create_code_callback(
     return CreateCodeResponse(code, test_args_dict, tasks_ids_list, update_reason)
 
 
-class ValidateCodeResponse(PromptResponse):
+class ValidateCodeResponse(CreateCodeResponse):
+    # TODO: these values should be from the task, and not left empty
     def __init__(self, code: str):
-        super().__init__(PromptStatus.SUCCESS, code)
+        super().__init__(
+            code,
+            test_args={},
+            tasks_ids=[],
+            update_reason="",
+            status=PromptStatus.SUCCESS,
+        )
 
     def get_code(self) -> str:
         return self.message
@@ -53,3 +60,8 @@ def validate_code_callback(task: Task) -> ValidateCodeResponse:
 class FailedCreateCodeResponse(CreateCodeResponse):
     def __init__(self, message: str):
         super().__init__(message, {}, [], "", PromptStatus.FAILURE)
+
+
+class NoCodeResponse(CreateCodeResponse):
+    def __init__(self, reason: str):
+        super().__init__("", {}, [], reason, PromptStatus.PENDING)

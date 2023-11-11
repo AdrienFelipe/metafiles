@@ -36,8 +36,10 @@ def prompt_function_to_callback_arguments(func: dict, specials: Optional[dict] =
 def get_callback_response(
     prompt: Prompt, function_name: str, specials: Optional[dict] = None
 ) -> PromptCallbackResponse:
-    if prompt.functions():
-        for function in prompt.functions():
+    functions = prompt.functions()
+    
+    if functions is not None:
+        for function in functions:
             if function["name"] == function_name:
                 arguments = prompt_function_to_callback_arguments(function, specials)
                 return PromptCallbackResponse(function_name, arguments)

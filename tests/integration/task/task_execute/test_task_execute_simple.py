@@ -43,3 +43,18 @@ def test_task_execute_ask_two_steps_code():
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == "Custom: Hello, World!", "Incorrect result"
+
+
+def test_task_execute_search_google():
+    task = Task(
+        "Search google for 'Hello, World!'",
+        """
+        Print the first result from google search for 'Hello, World!'
+        """,
+    )
+
+    with patch("builtins.input", return_value="Just follow the instructions!"):
+        execute_task(OpenAIAgent(), task)
+
+    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.message == "Custom: Hello, World!", "Incorrect result"

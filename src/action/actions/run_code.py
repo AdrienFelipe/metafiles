@@ -15,18 +15,21 @@ class RunCode(Action):
     description = "Execute a single atomic code function"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        if not task.plan:
-            task.plan = [CreateCodeCommand.ask(agent, task, reason).get_code()]
+        if not task.code:
+            codeResponse = CreateCodeCommand.ask(agent, task, reason)
+            if codeResponse.is_successful() != ActionResultStatus.SUCCESS:
+                return ActionResult(ActionResultStatus.PENDING, codeResponse.get_message())
+            task.code = codeResponse.get_code()
 
-        # TODO: validate code is not harmful
-        # TODO: test the code on test data
+            # TODO: validate code is not harmful
+            # TODO: test the code on test data
 
         # Eval run code
-        result = self.run_code("\n\n".join(task.plan))
+        execution_result = self.run_code(task.code)
 
         # TODO: validate output is what was expected
 
-        return ActionResult(ActionResultStatus.SUCCESS, result)
+        return ActionResult(ActionResultStatus.SUCCESS, execution_result)
 
     def run_code(self, code: str):
         buffer = io.StringIO()

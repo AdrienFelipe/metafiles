@@ -11,7 +11,7 @@ from helpers.prompt_helper import (
 )
 from prompt.callbacks.choose_action import ChooseActionResponse
 from prompt.callbacks.choose_agent import ChooseAgentResponse
-from prompt.callbacks.code import CreateCodeResponse
+from prompt.callbacks.code import CreateCodeResponse, NoCodeResponse
 from prompt.callbacks.plan import CreatePlanResponse
 from prompt.commands.create_code_command import CreateCodeCommand
 from prompt.prompt_factory import PromptFactory
@@ -51,9 +51,8 @@ def test_create_code_agent_proxy_success():
     callback_helper = PromptCallbackResponseHelper().with_code().with_plan()
     callback_helper.arguments = {
         **callback_helper.arguments,
-        **{"task_id": sub_task1.id, "tasks_ids": "0,1"},
+        **{"task_id": sub_task1.id, "tasks_ids": "0,1", "reason": "Test reason!"},
     }
-    code = callback_helper.get_code()
     execute_code_response = get_callback_response(prompt, "execute_code", callback_helper.arguments)
 
     agent = FakeAgent(keep_last=True)
@@ -78,7 +77,7 @@ def test_create_code_agent_proxy_success():
             # Always end by a code execution
             execute_code_response,
         ]
-        agent.add_responses(responses)
+        agent.add_responses(responses, reset=True)
 
         try:
             with patch("builtins.input", return_value="This is a test!"):
@@ -86,6 +85,17 @@ def test_create_code_agent_proxy_success():
         except Exception as e:
             assert False, f"{function_name} should not raise an exception: {e}"
 
-        assert isinstance(result, CreateCodeResponse)
-        assert result.is_successful(), f"{function_name}: Response should be successful"
-        assert result.get_code() == code, f"{function_name}: Incorrect code"
+        if function_name == "divide_task":
+            assert isinstance(result, NoCodeResponse)
+            assert (
+                result.is_successful() != ActionResultStatus.SUCCESS
+            ), f"{function_name}: Response should not be successful - {result.message}"
+            assert (
+                result.reason() == "Test reason!"
+            ), f"{function_name}: Invalid message - {result.message}"
+        else:
+            assert isinstance(result, CreateCodeResponse)
+            assert (
+                result.is_successful()
+            ), f"{function_name}: Response should be successful - {result.message}"
+            assert callback_helper.get_code() == result.get_code(), f"{function_name}: Invalid code - {result.message}"
