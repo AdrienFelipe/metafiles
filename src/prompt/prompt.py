@@ -10,7 +10,7 @@ from task.task import Task
 class Prompt(Generic[TStrategy]):
     def __init__(self, task: Task, strategy: TStrategy):
         self.task = task
-        self.strategy = strategy
+        self.strategy: TStrategy = strategy
 
         self.env = Environment(loader=FileSystemLoader("/app/prompt/templates"))
         self.template = self.env.get_template(self.strategy.get_template_name())

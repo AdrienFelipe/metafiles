@@ -17,7 +17,7 @@ class RunCode(Action):
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         if not task.code:
             codeResponse = CreateCodeCommand.ask(agent, task, reason)
-            if codeResponse.is_successful() != ActionResultStatus.SUCCESS:
+            if not codeResponse.is_successful():
                 return ActionResult(ActionResultStatus.PENDING, codeResponse.get_message())
             task.code = codeResponse.get_code()
 
