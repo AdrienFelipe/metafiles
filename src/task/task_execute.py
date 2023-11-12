@@ -1,10 +1,10 @@
 from action.action_registry import action_registry
-from action.action_result import ActionResultStatus
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task.task import Task
 
 MAX_ITERATIONS = 10
+
 
 def execute_task(agent: AgentInterface, task: Task, reason: str = "") -> None:
     agent_proxy = AgentProxy(agent)

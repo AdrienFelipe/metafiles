@@ -5,9 +5,7 @@ include = '\.pyi?$'
 exclude = '''
 (
 /(
-    \.git
-  | \.venv
-  | \.pytest_cache
+    \..+
   | _build
   | buck-out
   | build

@@ -35,10 +35,11 @@ class ExecuteTaskResponse(PromptResponse):
 def execute_task_callback(
     task: Task, task_id: str, reason: str
 ) -> Union[ExecuteTaskResponse, FailedTaskResponse]:
-    target_task = task.index.get(task_id)
-    if target_task:
+    try:
+        target_task = task.get_siblings()[int(task_id)]
         return ExecuteTaskResponse(target_task, reason)
-    return FailedTaskResponse(f"Task with id {task_id} not found")
+    except IndexError:
+        return FailedTaskResponse(f"Task with id {task_id} not found")
 
 
 class GetTasksResultsResponse(PromptResponse):
@@ -53,8 +54,8 @@ def get_tasks_results_callback(
     task: Task, tasks_ids: str
 ) -> Union[GetTasksResultsResponse, FailedTaskResponse]:
     # TODO: Add id safe check
-    tasks_ids_list = list(set(task_id.strip() for task_id in tasks_ids.split(",")))
-    tasks = task.get_tasks_by_ids(tasks_ids_list)
+    tasks_ids_list = [int(task_id) for task_id in tasks_ids.split(",")]
+    tasks = task.get_siblings(tasks_ids_list)
     if tasks:
         return GetTasksResultsResponse(tasks)
     return FailedTaskResponse(f"Tasks with ids {tasks_ids} not found")

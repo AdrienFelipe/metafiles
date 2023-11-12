@@ -54,7 +54,7 @@ class ValidateCodeResponse(CreateCodeResponse):
 
 
 def validate_code_callback(task: Task) -> ValidateCodeResponse:
-    return ValidateCodeResponse("\n\n".join(task.plan))
+    return ValidateCodeResponse(task.code)
 
 
 class FailedCreateCodeResponse(CreateCodeResponse):

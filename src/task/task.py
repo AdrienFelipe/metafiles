@@ -33,7 +33,8 @@ class Task:
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.depends_on = depends_on or []
 
-        self.add_to_parent()
+        if parent is not None:
+            self.add_parent(parent)
 
     @staticmethod
     def from_yaml(file_path: str, parent_task: Optional[Task] = None) -> Task:
@@ -90,10 +91,9 @@ class Task:
 
         return f"{parent.id}.{len(parent.children)}"
 
-    def add_to_parent(self) -> None:
-        if self.parent is not None:
-            self.parent.children.append(self)
-
+    def add_parent(self, parent: Task) -> None:
+        parent.children.append(self)
+        self.parent = parent
         self.index[self.id] = self
 
     def remove_from_parent(self) -> None:
@@ -101,8 +101,18 @@ class Task:
             self.parent.children.remove(self)
         del self.index[self.id]
 
-    def get_siblings(self) -> List[Task]:
-        return [] if self.parent is None else self.parent.children
+    def get_siblings(self, positions: Optional[List[int]] = None) -> List[Task]:
+        if self.parent is None:
+            return []
+
+        if positions is not None:
+            return [
+                self.parent.children[position]
+                for position in positions
+                if 0 <= position < len(self.parent.children)
+            ]
+
+        return self.parent.children
 
     def get_tasks_by_ids(self, ids: List[str]) -> List[Task]:
         return [self.index[task_id] for task_id in ids if self.index.get(task_id)]

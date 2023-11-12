@@ -16,12 +16,13 @@ from task.task_execute import execute_task
 
 MAX_ITERATIONS = 20
 
+
 class CreateCodeCommand(PromptCommand):
     @staticmethod
     def ask(agent: AgentInterface, task: Task, reason: str = "") -> CreateCodeResponse:
         prompt = PromptFactory.create_code(task, reason)
         iteration_count = 0
-        
+
         while iteration_count < MAX_ITERATIONS:
             response = agent.ask(prompt)
             if isinstance(response, (CreateCodeResponse, ValidateCodeResponse)):

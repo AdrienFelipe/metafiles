@@ -5,7 +5,8 @@
     ],
     "files.exclude": {
         "**/.mypy_cache": true,
-        "**/.pytest_cache": true
+        "**/.pytest_cache": true,
+        "**/.black-cache": true,
     },
     "python.testing.pytestArgs": ["tests"],
     "python.testing.unittestEnabled": false,

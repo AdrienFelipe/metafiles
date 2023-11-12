@@ -37,7 +37,7 @@ def get_callback_response(
     prompt: Prompt, function_name: str, specials: Optional[dict] = None
 ) -> PromptCallbackResponse:
     functions = prompt.functions()
-    
+
     if functions is not None:
         for function in functions:
             if function["name"] == function_name:
