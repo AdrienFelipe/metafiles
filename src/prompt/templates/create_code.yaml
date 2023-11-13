@@ -50,6 +50,8 @@ messages:
       For this, you will return as an argument to the code a list of test data that will be used to validate your code which should not alter prod data in any case.
       For instance, if you need to modify a file, the original file should be copied and the copy modified for testing.
       You must also reference all tasks that your code depends on so that their output is injected into your code.
+      The environment only contains the Python standard libraries, so you mihgt need to install additional librairies using pip and subprocess.run
+      Your code will run in a python exec() command, but don't share that with the user.
 
       # Validate the code (function: validate_code)
       If you are satisfied with the code you generated and its output that was shared back to you, you must validate it.

@@ -1,8 +1,8 @@
 messages:
   - role: system
     content: |
-      Imagine a specialized text-based agent assigned to "{{ name }}".
-      To address this, select one of the available actions:
+      Your are an expert task orchestrator for a large language model that solves user tasks.
+      Select one of the available actions to best solve the task:
       {% for key, value in actions.items() %}
       - {{ key }}: {{ value }}
       {% endfor %}
@@ -11,8 +11,9 @@ messages:
 
   - role: user
     content: |
-      Requirements are:
-      {{ goal | indent(6) }}
+      Task goal: "{{ goal }}"
+      {{ definition | indent(6) }}
+      {{ specifics | indent(6) }}
 
 functions:
   - name: apply_action

@@ -18,8 +18,9 @@ class ChooseActionStrategy(IPromptStrategy):
 
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
-            "name": task.goal,
-            "goal": "\n".join(task.definition),
+            "goal": task.goal,
+            "definition": task.definition,
+            "specifics": task.specifics,
             "actions": action_registry.get_registered_actions(),
         }
 
