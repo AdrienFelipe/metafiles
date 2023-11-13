@@ -40,6 +40,8 @@ class RunCode(Action):
             exec(code, context)
             printed_output = buffer.getvalue().strip()
             return printed_output  # , context
+        except Exception as e:
+            return f"An error occurred: {e}"
         finally:
             sys.stdout = sys.__stdout__
 

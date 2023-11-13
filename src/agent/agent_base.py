@@ -1,16 +1,21 @@
 from abc import ABC
+from typing import Union
 
 from agent.agent_interface import AgentInterface
 from prompt.prompt import Prompt
 from prompt.prompt_result import FailedPromptResponse, PromptCallbackResponse, PromptResponse
+from prompt.prompt_strategy import IPromptStrategy
 
 
 class BaseAgent(AgentInterface, ABC):
-    def ask(self, prompt: Prompt) -> PromptResponse:
-        response = self.parse_response(self.send_query(prompt))
-        return self._handle_response(prompt, response)
+    def ask(self, prompt: Prompt[IPromptStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
+        try:
+            response = self.parse_response(self.send_query(prompt))
+            return self._handle_response(prompt, response)
+        except Exception as e:
+            return FailedPromptResponse(f"Error parsing response: {e}")
 
-    def _handle_response(self, prompt: Prompt, parsed_response: PromptResponse) -> PromptResponse:
+    def _handle_response(self, prompt: Prompt[IPromptStrategy], parsed_response: PromptResponse) -> PromptResponse:
         if isinstance(parsed_response, PromptCallbackResponse):
             handler = prompt.strategy.handler_functions().get(parsed_response.get_function_name())
             if handler:

@@ -47,9 +47,9 @@ def test_task_execute_ask_two_steps_code():
 
 def test_task_execute_search_google():
     task = Task(
-        "Search google for 'Hello, World!'",
+        "Search internet for 'Hello, World!'",
         """
-        Print the first result from google search for 'Hello, World!'
+        Print the first search result for 'Hello, World!'
         """,
     )
 

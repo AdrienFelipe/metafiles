@@ -11,6 +11,7 @@ from prompt.callbacks.query_user import QueryUserResponse
 from prompt.callbacks.task import DivideTaskResponse, ExecuteTaskResponse, GetTasksResultsResponse
 from prompt.prompt_command import PromptCommand
 from prompt.prompt_factory import PromptFactory
+from prompt.prompt_result import PromptMessageResponse
 from task.task import Task
 from task.task_execute import execute_task
 
@@ -39,5 +40,7 @@ class CreateCodeCommand(PromptCommand):
             elif isinstance(response, DivideTaskResponse):
                 task.action = ActionName.DIVIDE_TASK
                 return NoCodeResponse(response.reason())
+            elif isinstance(response, PromptMessageResponse):
+                prompt.add_message("assistant", response.get_message())
             else:
                 return FailedCreateCodeResponse(PromptCommand._error_message(response))

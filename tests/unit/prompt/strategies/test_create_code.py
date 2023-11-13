@@ -104,3 +104,18 @@ def setup_command_responses(
         return False
 
     return True
+
+def test_create_code_with_prompt_message_response():
+    task = Task("Task goal", "Task definition")
+    prompt = PromptFactory.create_code(task, "reason")
+    agent = FakeAgent(keep_last=True)
+    
+    callback_helper = PromptCallbackResponseHelper().with_code()
+    agent.add_responses([
+        PromptMessageResponse("Default response"),
+        get_callback_response(prompt, "execute_code", callback_helper.arguments)
+    ])
+    
+    result = CreateCodeCommand.ask(agent, task)
+    assert result.is_successful(), f"Response should be successful - {result.message}"
+    assert result.get_code() == callback_helper.get_code(), f"Invalid code - {result.message}"
