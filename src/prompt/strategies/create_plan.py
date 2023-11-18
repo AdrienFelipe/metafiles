@@ -9,7 +9,7 @@ from task.task import Task
 
 class CreatePlanStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "create_plan.yaml"
-    _HANDLER_FUNCTIONS = {
+    _HANDLER_FUNCTIONS: Dict[str, Callable] = {
         "update_plan": create_plan_callback,
         "validate_plan": validate_plan_callback,
         "ask_user": query_user_callback,

@@ -4,7 +4,7 @@ from task.task import Task
 
 class QueryUserResponse(PromptResponse):
     def __init__(self, query: str):
-        super().__init__(PromptStatus.SUCCESS, query)
+        super().__init__(PromptStatus.COMPLETED, query)
 
     def query(self) -> str:
         return self.message

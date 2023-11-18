@@ -12,7 +12,7 @@ class CreateCodeResponse(PromptResponse):
         test_args: dict,
         tasks_ids: List[str],
         update_reason: str,
-        status: PromptStatus = PromptStatus.SUCCESS,
+        status: PromptStatus = PromptStatus.PENDING,
     ):
         data = {"test_args": test_args, "tasks_ids": tasks_ids, "update_reason": update_reason}
         super().__init__(status, code, data)
@@ -46,7 +46,7 @@ class ValidateCodeResponse(CreateCodeResponse):
             test_args={},
             tasks_ids=[],
             update_reason="",
-            status=PromptStatus.SUCCESS,
+            status=PromptStatus.COMPLETED,
         )
 
     def get_code(self) -> str:
@@ -64,4 +64,4 @@ class FailedCreateCodeResponse(CreateCodeResponse):
 
 class NoCodeResponse(CreateCodeResponse):
     def __init__(self, reason: str):
-        super().__init__("", {}, [], reason, PromptStatus.PENDING)
+        super().__init__("", {}, [], reason, PromptStatus.POSTPONED)

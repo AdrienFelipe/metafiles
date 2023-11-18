@@ -8,28 +8,38 @@ from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface
 from prompt.commands.create_code_command import CreateCodeCommand
+from prompt.prompt_result import PromptStatus
 from task.task import Task
+
+MAX_ITERATIONS = 20
 
 
 class RunCode(Action):
     description = "Execute a single atomic code function"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        if not task.code:
-            codeResponse = CreateCodeCommand.ask(agent, task, reason)
-            if not codeResponse.is_successful():
-                return ActionResult(ActionResultStatus.PENDING, codeResponse.get_message())
-            task.code = codeResponse.get_code()
+        command = CreateCodeCommand(agent, task)
+        iteration_count = 0
 
-            # TODO: validate code is not harmful
-            # TODO: test the code on test data
+        while iteration_count < MAX_ITERATIONS:
+            if task.code:
+                # TODO: test the code on test data
+                # TODO: validate code is not harmful
+                execution_result = self.run_code(task.code)
+                command.strategy.add_execution_result(execution_result)
 
-        # Eval run code
-        execution_result = self.run_code(task.code)
+            response = command.ask(reason)
 
-        # TODO: validate output is what was expected
+            if response.status == PromptStatus.POSTPONED:
+                return ActionResult(ActionResultStatus.PENDING, response.get_message())
 
-        return ActionResult(ActionResultStatus.SUCCESS, execution_result)
+            task.code = response.get_code()
+            reason = response.reason()
+
+            if response.status == PromptStatus.COMPLETED:
+                return ActionResult(ActionResultStatus.SUCCESS, response.get_message())
+
+        return ActionResult(ActionResultStatus.FAILURE, execution_result)
 
     def run_code(self, code: str):
         buffer = io.StringIO()

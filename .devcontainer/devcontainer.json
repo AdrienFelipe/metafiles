@@ -9,11 +9,12 @@
 				"terminal.integrated.shell.linux": "/bin/bash"
 			},
 			"extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
-                "GitHub.copilot",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"GitHub.copilot",
 				"GitHub.copilot-chat",
-				"ms-python.mypy-type-checker"
+				"ms-python.mypy-type-checker",
+				"matangover.mypy"
 			]
 		}
 	}

@@ -15,7 +15,9 @@ class BaseAgent(AgentInterface, ABC):
         except Exception as e:
             return FailedPromptResponse(f"Error parsing response: {e}")
 
-    def _handle_response(self, prompt: Prompt[IPromptStrategy], parsed_response: PromptResponse) -> PromptResponse:
+    def _handle_response(
+        self, prompt: Prompt[IPromptStrategy], parsed_response: PromptResponse
+    ) -> PromptResponse:
         if isinstance(parsed_response, PromptCallbackResponse):
             handler = prompt.strategy.handler_functions().get(parsed_response.get_function_name())
             if handler:

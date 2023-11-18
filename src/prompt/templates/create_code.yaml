@@ -78,10 +78,18 @@ messages:
       {% endfor %}
 {% endif %}
 
+{% if messages|length > 0 %}
+  - role: assistant
+    content: |
+      {% for message in messages %}
+      {{ message | indent(6) }}
+      {% endfor %}
+{% endif %}
+
 {% if code %}
   - role: assistant
     content: |
-      Your current version of the code to resolve the task:
+      I suggest the following code to resolve the task:
       {{ code | indent(6) }}
 {% endif %}
 
@@ -154,5 +162,7 @@ functions:
     required:
       - code
       - test_args
+{% if code %}
   - name: validate_code
     description: Validates the current code and its output to proceed to the next task
+{% endif %}

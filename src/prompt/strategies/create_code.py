@@ -23,12 +23,13 @@ class CreateCodeStrategy(IPromptStrategy):
         "validate_code": validate_code_callback,
     }
 
-    def __init__(self, reason: str) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.reason = reason
+        self.reason: str = ""
         self.queries: List[Query] = []
         self.dependencies: List[Task] = []
         self.execution_results: List[str] = []
+        self.messages: List[str] = []
 
     def get_template_name(self) -> str:
         return self._TEMPLATE_NAME
@@ -43,6 +44,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "user_queries": self.queries,
             "dependencies_tasks": self.dependencies,
             "execution_results": self.execution_results,
+            "messages": self.messages,
         }
 
     def handler_functions(self) -> Dict[str, Callable]:
@@ -51,11 +53,20 @@ class CreateCodeStrategy(IPromptStrategy):
     def agent_config(self) -> AgentConfig:
         return AgentConfig(ModelType.CAPABLE, 4096, 0)
 
+    def set_reason(self, reason: str) -> None:
+        self.reason = reason
+
     def add_query(self, question: str, answer: str) -> None:
         self.queries.append(Query(question, answer))
 
     def add_dependencies(self, tasks: List[Task]) -> None:
         self.dependencies.extend(tasks)
+
+    def add_message(self, message: str) -> None:
+        self.messages.append(message)
+
+    def add_execution_result(self, result: str) -> None:
+        self.execution_results.append(result)
 
 
 class Query(NamedTuple):

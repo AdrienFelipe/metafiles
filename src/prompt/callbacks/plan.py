@@ -7,7 +7,7 @@ from task.task import Task
 
 class CreatePlanResponse(PromptResponse):
     def __init__(
-        self, plan: List[str], status: PromptStatus = PromptStatus.SUCCESS, message: str = ""
+        self, plan: List[str], status: PromptStatus = PromptStatus.COMPLETED, message: str = ""
     ):
         super().__init__(status, message, {"plan": plan})
 

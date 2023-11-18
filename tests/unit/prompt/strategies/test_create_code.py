@@ -23,7 +23,7 @@ def test_create_code_callbacks():
     Task("Previous task 1", "Previous task 1 definition", parent=parent_task)
     Task("Previous task 2", "Previous task 2 definition", parent=parent_task)
     task = Task("Task goal", "Task definition", parent=parent_task)
-    prompt = PromptFactory.create_code(task, "reason")
+    prompt = PromptFactory.create_code(task)
 
     specials = {
         "code": "print('ok')",
@@ -49,7 +49,7 @@ def test_create_code_command_responses():
         callback_helper = PromptCallbackResponseHelper().with_code()
         # Add a default wildcard response
         agent.add_responses([PromptMessageResponse("Default response")])
-        expected_success = setup_command_responses(function_name, agent, task, callback_helper)
+        should_have_code = setup_command_responses(function_name, agent, task, callback_helper)
 
         agent.add_strategy_responses(
             {
@@ -67,16 +67,16 @@ def test_create_code_command_responses():
 
         try:
             with patch("builtins.input", return_value="This is a test!"):
-                result = CreateCodeCommand.ask(agent, task)
+                result = CreateCodeCommand(agent, task).ask()
         except Exception as e:
             assert False, f"{function_name} should not raise an exception: {e}"
 
         assert isinstance(result, CreateCodeResponse)
         assert (
-            result.is_successful() == expected_success
-        ), f"{function_name}: Response should be successful - {result.message}"
+            not result.is_failure()
+        ), f"{function_name}: Response should not fail - {result.message}"
 
-        if expected_success:
+        if should_have_code:
             assert (
                 result.get_code() == callback_helper.get_code()
             ), f"{function_name}: Invalid code - {result.message}"
@@ -105,17 +105,20 @@ def setup_command_responses(
 
     return True
 
+
 def test_create_code_with_prompt_message_response():
     task = Task("Task goal", "Task definition")
-    prompt = PromptFactory.create_code(task, "reason")
+    prompt = PromptFactory.create_code(task)
     agent = FakeAgent(keep_last=True)
-    
+
     callback_helper = PromptCallbackResponseHelper().with_code()
-    agent.add_responses([
-        PromptMessageResponse("Default response"),
-        get_callback_response(prompt, "execute_code", callback_helper.arguments)
-    ])
-    
-    result = CreateCodeCommand.ask(agent, task)
-    assert result.is_successful(), f"Response should be successful - {result.message}"
-    assert result.get_code() == callback_helper.get_code(), f"Invalid code - {result.message}"
+    agent.add_responses(
+        [
+            PromptMessageResponse("Default response"),
+            get_callback_response(prompt, "execute_code", callback_helper.arguments),
+        ]
+    )
+
+    response = CreateCodeCommand(agent, task).ask()
+    assert not response.is_failure(), f"Response should not fail - {response.message}"
+    assert response.get_code() == callback_helper.get_code(), f"Invalid code - {response.message}"

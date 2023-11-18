@@ -44,4 +44,4 @@ class OpenAIAgent(BaseAgent):
             function_arguments = json.loads(message.function_call.arguments)
             return PromptCallbackResponse(function_name, function_arguments)
         else:
-            return PromptMessageResponse(message.content)
+            return PromptMessageResponse(message.content or "")

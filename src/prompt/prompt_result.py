@@ -1,11 +1,12 @@
 from enum import Enum, auto
-from typing import Optional
+from typing import Optional, TypeVar
 
 
 class PromptStatus(Enum):
-    SUCCESS = auto()
+    COMPLETED = auto()
     FAILURE = auto()
     PENDING = auto()
+    POSTPONED = auto()
 
 
 class PromptResponse:
@@ -17,8 +18,11 @@ class PromptResponse:
     def get_message(self) -> str:
         return self.message
 
-    def is_successful(self) -> bool:
-        return self.status == PromptStatus.SUCCESS
+    def is_completed(self) -> bool:
+        return self.status == PromptStatus.COMPLETED
+
+    def is_failure(self) -> bool:
+        return self.status == PromptStatus.FAILURE
 
     def __str__(self) -> str:
         return f"Status: {self.status.name}, Message: {self.message}, Data: {self.data}"
@@ -29,12 +33,12 @@ class PromptResponse:
 
 class PromptMessageResponse(PromptResponse):
     def __init__(self, message: str):
-        super().__init__(PromptStatus.SUCCESS, message)
+        super().__init__(PromptStatus.COMPLETED, message)
 
 
 class PromptCallbackResponse(PromptResponse):
     def __init__(self, function_name: str, function_arguments: dict):
-        super().__init__(PromptStatus.SUCCESS, function_name, function_arguments)
+        super().__init__(PromptStatus.COMPLETED, function_name, function_arguments)
 
     def get_function_name(self) -> str:
         return self.message
@@ -46,3 +50,6 @@ class PromptCallbackResponse(PromptResponse):
 class FailedPromptResponse(PromptResponse):
     def __init__(self, message: str):
         super().__init__(PromptStatus.FAILURE, message)
+
+
+TPromptResponse = TypeVar("TPromptResponse", bound=PromptResponse)

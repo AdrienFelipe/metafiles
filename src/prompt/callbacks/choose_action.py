@@ -7,7 +7,7 @@ from task.task import Task
 
 class ChooseActionResponse(PromptResponse):
     def __init__(
-        self, action: ActionName, reason: str, status: PromptStatus = PromptStatus.SUCCESS
+        self, action: ActionName, reason: str, status: PromptStatus = PromptStatus.COMPLETED
     ):
         data = {"action": action, "reason": reason}
         super().__init__(status, action.value, data)

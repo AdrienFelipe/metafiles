@@ -62,4 +62,4 @@ def assert_prompt_callbacks_are_valid(
 
         response = agent.ask(prompt)
         message = f"callback {callback} failed with arguments {arguments}: {response.message}"
-        assert response.is_successful(), message
+        assert not response.is_failure(), message

@@ -13,4 +13,4 @@ def test_agent_base_undefined_callback():
 
     assert not agent.ask(
         prompt
-    ).is_successful(), "Expected response to be unsuccessful but it was successful."
+    ).is_completed(), "Expected response to be unsuccessful but it was successful."
