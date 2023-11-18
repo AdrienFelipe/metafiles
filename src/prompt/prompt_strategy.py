@@ -15,7 +15,7 @@ class IPromptStrategy(ABC):
         pass
 
     @abstractmethod
-    def handler_functions(self) -> Dict[str, Callable]:
+    def callbacks(self) -> Dict[str, Callable]:
         pass
 
     @abstractmethod

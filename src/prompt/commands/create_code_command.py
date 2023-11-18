@@ -41,6 +41,8 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
                 self.strategy.add_message(response.get_message())
             # TODO: handle non expected responses
 
+            iteration_count += 1
+
         return FailedCreateCodeResponse(PromptCommand._error_message(response))
 
     def _define_strategy(self) -> CreateCodeStrategy:

@@ -39,7 +39,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "task_id": task.id,
             "goal": task.goal,
             "requirements": task.definition,
-            "code": "\n\n".join(task.plan),
+            "code": task.code,
             "sibling_tasks": task.get_siblings(),
             "user_queries": self.queries,
             "dependencies_tasks": self.dependencies,
@@ -47,7 +47,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "messages": self.messages,
         }
 
-    def handler_functions(self) -> Dict[str, Callable]:
+    def callbacks(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

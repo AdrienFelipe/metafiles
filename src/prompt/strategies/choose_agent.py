@@ -18,7 +18,7 @@ class ChooseAgentStrategy(IPromptStrategy):
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {"name": task.goal, "goal": task.definition}
 
-    def handler_functions(self) -> Dict[str, Callable]:
+    def callbacks(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

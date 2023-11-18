@@ -10,26 +10,25 @@ from prompt.prompt_strategy import IPromptStrategy
 class BaseAgent(AgentInterface, ABC):
     def ask(self, prompt: Prompt[IPromptStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
         try:
-            response = self.parse_response(self.send_query(prompt))
+            raw_response = self.send_query(prompt)
+            response = self.parse_response(raw_response)
             return self._handle_response(prompt, response)
         except Exception as e:
             return FailedPromptResponse(f"Error parsing response: {e}")
 
     def _handle_response(
-        self, prompt: Prompt[IPromptStrategy], parsed_response: PromptResponse
+        self, prompt: Prompt[IPromptStrategy], response: PromptResponse
     ) -> PromptResponse:
-        if isinstance(parsed_response, PromptCallbackResponse):
-            handler = prompt.strategy.handler_functions().get(parsed_response.get_function_name())
-            if handler:
+        if isinstance(response, PromptCallbackResponse):
+            callback = prompt.strategy.callbacks().get(response.callback_name())
+            if callback:
                 try:
-                    return handler(prompt.task, **parsed_response.get_function_arguments())
+                    return callback(prompt.task, **response.callback_arguments())
                 except Exception as e:
                     return FailedPromptResponse(f"Error in callback function: {e}")
             else:
-                message = (
-                    f"Agent chose a non-defined function: {parsed_response.get_function_name()}"
-                )
+                message = f"Agent chose a non-defined function: {response.callback_name()}"
                 print(message)
                 return FailedPromptResponse(message)
 
-        return parsed_response
+        return response

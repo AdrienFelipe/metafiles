@@ -23,9 +23,9 @@ class Task:
         depends_on: Optional[List[str]] = None,
     ):
         self.id = Task._build_id(parent)
-        self.goal = goal
-        self.definition = definition
-        self.specifics = specifics
+        self.goal = goal.strip()
+        self.definition = definition.strip()
+        self.specifics = specifics.strip()
         self.plan = plan or []
         self.action = action
         self.parent = parent

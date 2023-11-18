@@ -24,7 +24,7 @@ class ChooseActionStrategy(IPromptStrategy):
             "actions": action_registry.get_registered_actions(),
         }
 
-    def handler_functions(self) -> Dict[str, Callable]:
+    def callbacks(self) -> Dict[str, Callable]:
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:

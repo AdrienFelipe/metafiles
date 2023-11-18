@@ -12,7 +12,7 @@ class PromptStatus(Enum):
 class PromptResponse:
     def __init__(self, status: PromptStatus, message: str = "", data: Optional[dict] = None):
         self.status = status
-        self.message = message
+        self.message = message.strip()
         self.data = data or {}
 
     def get_message(self) -> str:
@@ -40,10 +40,10 @@ class PromptCallbackResponse(PromptResponse):
     def __init__(self, function_name: str, function_arguments: dict):
         super().__init__(PromptStatus.COMPLETED, function_name, function_arguments)
 
-    def get_function_name(self) -> str:
+    def callback_name(self) -> str:
         return self.message
 
-    def get_function_arguments(self) -> dict:
+    def callback_arguments(self) -> dict:
         return self.data
 
 
