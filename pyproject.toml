@@ -13,3 +13,7 @@ exclude = '''
 )/
 )
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 100 # Not imported from Black profile
