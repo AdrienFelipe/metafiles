@@ -34,7 +34,7 @@ messages:
       You must provide a detailed reason for rerunning the task and what you would have expected as output.
 
       #5 Divide the code in subtasks (function: divide_task)
-      The code you are building might be too complex to be built in one go.
+      The code you are building might be too complex to be built in one go, or you might need to test it in parts, or search for documention.
       You can divide the code into subtasks and build each subtask one by one.
 
       #6 Build the code (function: execute_code)
@@ -47,68 +47,81 @@ messages:
       The environment only contains the Python standard libraries, so you mihgt need to install additional librairies using pip and subprocess.run
       Your code will run in a python exec() command, but don't share that with the user.
 
-      {% if code %}
+      {% if code -%}
       #7 Validate the code (function: validate_code)
       If you are satisfied with the code you generated and its output that was shared back to you, you must validate it.
-      {% endif %}
+      {%- endif %}
 
   - role: user
     content: |
       {{ goal | indent(8) }}
 
-      {% if requirements %}
+      {% if requirements -%}
       {{ requirements | indent(8) }}
-      {% endif %}
+      {%- endif %}
 
 {% if sibling_tasks|length > 0 %}
   - role: user
     content: |
       Tasks executed so far from which you can use the result or ask for it (task.id: task.name):
-      {% for task in tasks %}
+      {% for task in tasks -%}
       - {{ task.id }}: {{ task.goal }}
-        {% if task.id in sibling_tasks %}
-        result: {{ task.result | indent(6) }}
-        {% endif %}
-      {% endfor %}
+        {% if task.id in sibling_tasks -%}
+        result: {{ task.result | indent(8) }}
+        {%- endif %}
+      {%- endfor %}
 {% endif %}
 
 {% if queries|length > 0 %}
   - role: user
     content: |
       Clarifications to questions you had:
-      {% for query in queries %}
+      {% for query in queries -%}
       - {{ query.question }}:
         {{ query.answer }}
-      {% endfor %}
+      
+      {%- endfor %}
 {% endif %}
 
 {% if messages|length > 0 %}
   - role: assistant
     content: |
-      {% for message in messages %}
+      {% for message in messages -%}
       {{ message | indent(6) }}
+
       {% endfor %}
 {% endif %}
 
 {% if code %}
   - role: assistant
     content: |
-      I suggest the following code:
-      {{ code | indent(6) }}
+      I suggest the following code (versions #{{ execution_logs|length }}):
+      {%- for line in code.split('\n') %}
+        {{ loop.index }}: {{ line }}
+      {%- endfor -%}
 {% endif %}
 
-{% if execution_results|length > 0 %}
+{% if execution_logs|length > 0 %}
   - role: user
     content: |
-      You code attempts had the following outputs:
-      {% for result in execution_results %}
-      - {{ result }}:
-      {% endfor %}
+      Your code attempts had the following outputs:
+      {%- for log in execution_logs %}
 
-      Carefuly review your code and its output and decide if you want to update it or not.
-      The last output corresponds to the current version of the code, but you can also review previous outputs.
-      If this last output was the expected one, call the validate_code function.
-      If not, iterate on your options and decisions to fix the code and obtain the desired output.
+      - Version #{{ loop.index }}: {{ log.change_log | indent(6) }}
+        Output: {{ log.output | indent(10) }}
+      {%- endfor %}
+
+      Version #{{ execution_logs|length }} corresponds to the current code version output.
+      If the output is the expected one, call the validate_code function.
+      If not, take a step back to carefully review your code and think about why it is failing or not producing the expected output.
+      Also, review change logs and outputs from previous versions to avoid reproducing the same mistakes.
+      Remember that while your end goal is to produce working code, you also have other options available to help you do so.
+
+
+
+
+
+
 {% endif %}
 
 functions:
@@ -154,18 +167,15 @@ functions:
       - name: code
         type: string
         description: A text block containing valid python code to execute
-      - name: test_args
+      - name: change_log
         type: string
-        description: A JSON object containing the test arguments to use to validate the code
+        description: A brief description of what the code does or the changes made to it
       - name: tasks_ids
         type: string
-        description: A coma separated list of tasks ids to use the input as input for the code
-      - name: update_reason
-        type: string
-        description: If code was shared and you updated it, provide a detailled reason for the update
+        description: A coma separated list of tasks ids from which to use the result as input to the code
     required:
       - code
-      - test_args
+      - change_log
 {% if code %}
   - name: validate_code
     description: Validates the current code based on its output. No arguments are required.

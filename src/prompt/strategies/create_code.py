@@ -28,7 +28,7 @@ class CreateCodeStrategy(IPromptStrategy):
         self.reason: str = ""
         self.queries: List[Query] = []
         self.dependencies: List[Task] = []
-        self.execution_results: List[str] = []
+        self.execution_logs: List[ExecutionLog] = []
         self.messages: List[str] = []
 
     def get_template_name(self) -> str:
@@ -41,9 +41,9 @@ class CreateCodeStrategy(IPromptStrategy):
             "requirements": task.definition,
             "code": task.code,
             "sibling_tasks": task.get_siblings(),
-            "user_queries": self.queries,
+            "queries": self.queries,
             "dependencies_tasks": self.dependencies,
-            "execution_results": self.execution_results,
+            "execution_logs": self.execution_logs,
             "messages": self.messages,
         }
 
@@ -65,10 +65,15 @@ class CreateCodeStrategy(IPromptStrategy):
     def add_message(self, message: str) -> None:
         self.messages.append(message)
 
-    def add_execution_result(self, result: str) -> None:
-        self.execution_results.append(result)
+    def log_execution(self, change_log: str, output: str) -> None:
+        self.execution_logs.append(ExecutionLog(change_log, output))
 
 
 class Query(NamedTuple):
     question: str
     answer: str
+
+
+class ExecutionLog(NamedTuple):
+    change_log: str
+    output: str

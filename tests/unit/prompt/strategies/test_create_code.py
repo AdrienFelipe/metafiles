@@ -78,10 +78,10 @@ def test_create_code_command_responses():
 
         if should_have_code:
             assert (
-                result.get_code() == callback_helper.get_code()
+                result.code() == callback_helper.get_code()
             ), f"{function_name}: Invalid code - {result.message}"
         else:
-            assert result.get_code() == "", f"{function_name}: Invalid code - {result.message}"
+            assert result.code() == "", f"{function_name}: Invalid code - {result.message}"
 
 
 def setup_command_responses(
@@ -121,4 +121,4 @@ def test_create_code_with_prompt_message_response():
 
     response = CreateCodeCommand(agent, task).ask()
     assert not response.is_failure(), f"Response should not fail - {response.message}"
-    assert response.get_code() == callback_helper.get_code(), f"Invalid code - {response.message}"
+    assert response.code() == callback_helper.get_code(), f"Invalid code - {response.message}"

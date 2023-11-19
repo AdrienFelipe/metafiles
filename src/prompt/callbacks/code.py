@@ -1,4 +1,3 @@
-import json
 from typing import List
 
 from prompt.prompt_result import PromptResponse, PromptStatus
@@ -9,47 +8,41 @@ class CreateCodeResponse(PromptResponse):
     def __init__(
         self,
         code: str,
-        test_args: dict,
+        change_log: str,
         tasks_ids: List[str],
-        update_reason: str,
         status: PromptStatus = PromptStatus.PENDING,
     ):
-        data = {"test_args": test_args, "tasks_ids": tasks_ids, "update_reason": update_reason}
+        data = {"tasks_ids": tasks_ids, "change_log": change_log}
         super().__init__(status, code, data)
 
-    def get_code(self) -> str:
+    def code(self) -> str:
         return self.message
 
-    def get_test_args(self) -> dict:
-        return self.data["test_args"]
-
-    def get_tasks_ids(self) -> List[str]:
+    def tasks_ids(self) -> List[str]:
         return self.data["tasks_ids"]
 
-    def reason(self) -> str:
-        return self.data["update_reason"]
+    def change_log(self) -> str:
+        return self.data["change_log"]
 
 
 def create_code_callback(
-    task: Task, code: str, test_args: str, tasks_ids: str = "", update_reason: str = "", **kwargs
+    task: Task, code: str, change_log: str, tasks_ids: str = "", **kwargs
 ) -> CreateCodeResponse:
-    test_args_dict = json.loads(test_args)
-    tasks_ids_list = [task_id.strip() for task_id in tasks_ids.split(",")]
-    return CreateCodeResponse(code, test_args_dict, tasks_ids_list, update_reason)
+    ids = [task_id.strip() for task_id in tasks_ids.split(",")]
+    return CreateCodeResponse(code, change_log, ids)
 
 
 class ValidateCodeResponse(CreateCodeResponse):
-    # TODO: these values should be from the task, and not left empty
     def __init__(self, code: str):
         super().__init__(
             code,
-            test_args={},
+            # TODO: not sure this should be hardcoded here as empty
+            change_log="",
             tasks_ids=[],
-            update_reason="",
             status=PromptStatus.COMPLETED,
         )
 
-    def get_code(self) -> str:
+    def code(self) -> str:
         return self.message
 
 
@@ -59,9 +52,9 @@ def validate_code_callback(task: Task, **kwargs) -> ValidateCodeResponse:
 
 class FailedCreateCodeResponse(CreateCodeResponse):
     def __init__(self, message: str):
-        super().__init__(message, {}, [], "", PromptStatus.FAILURE)
+        super().__init__(message, "", [], PromptStatus.FAILURE)
 
 
 class NoCodeResponse(CreateCodeResponse):
     def __init__(self, reason: str):
-        super().__init__("", {}, [], reason, PromptStatus.POSTPONED)
+        super().__init__("", reason, [], PromptStatus.POSTPONED)

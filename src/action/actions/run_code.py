@@ -1,5 +1,7 @@
 import io
+import re
 import sys
+import traceback
 from typing import Any, Dict
 
 from action.action import Action
@@ -20,26 +22,27 @@ class RunCode(Action):
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         command = CreateCodeCommand(agent, task)
         iteration_count = 0
+        execution_result = None
 
         while iteration_count < MAX_ITERATIONS:
-            if task.code:
-                # TODO: test the code on test data
-                # TODO: validate code is not harmful
-                execution_result = self.run_code(task.code)
-                command.strategy.add_execution_result(execution_result)
-
             response = command.ask(reason)
 
             if response.status == PromptStatus.POSTPONED:
                 return ActionResult(ActionResultStatus.PENDING, response.get_message())
 
-            task.code = response.get_code()
-            reason = response.reason()
+            if response.status == PromptStatus.COMPLETED and execution_result is not None:
+                return ActionResult(ActionResultStatus.SUCCESS, execution_result)
 
-            if response.status == PromptStatus.COMPLETED:
-                return ActionResult(ActionResultStatus.SUCCESS, response.get_message())
+            if response.code():
+                task.code = response.code()
+                # TODO: test the code on test data
+                # TODO: validate code is not harmful
+                execution_result = self.run_code(task.code)
+                command.strategy.log_execution(response.change_log(), execution_result)
 
-        return ActionResult(ActionResultStatus.FAILURE, execution_result)
+            iteration_count += 1
+
+        return ActionResult(ActionResultStatus.FAILURE, response.get_message())
 
     def run_code(self, code: str):
         buffer = io.StringIO()
@@ -49,9 +52,28 @@ class RunCode(Action):
         try:
             exec(code, context)
             printed_output = buffer.getvalue().strip()
-            return printed_output  # , context
-        except Exception as e:
-            return f"An error occurred: {e}"
+            return printed_output
+        except Exception:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            stack_trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            filtered_trace = []
+
+            # Regex pattern for lines referencing Python files
+            py_file_pattern = re.compile(r' +File +".*\.py", +line \d+.*')
+
+            for line in stack_trace:
+                # Check if the line matches the Python file reference pattern
+                if py_file_pattern.match(line):
+                    continue
+
+                # Remove 'File "<string>", ' from the line if present
+                if "<string>" in line:
+                    line = line.replace('File "<string>", ', "")
+
+                filtered_trace.append(line)
+
+            formatted_stack_trace = "".join(filtered_trace).strip()
+            return f"An error occurred. {formatted_stack_trace}"
         finally:
             sys.stdout = sys.__stdout__
 
