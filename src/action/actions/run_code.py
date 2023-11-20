@@ -28,7 +28,7 @@ class RunCode(Action):
             response = command.ask(reason)
 
             if response.status == PromptStatus.POSTPONED:
-                return ActionResult(ActionResultStatus.PENDING, response.get_message())
+                return ActionResult(ActionResultStatus.PENDING, response.change_log())
 
             if response.status == PromptStatus.COMPLETED and execution_result is not None:
                 return ActionResult(ActionResultStatus.SUCCESS, execution_result)
@@ -37,18 +37,17 @@ class RunCode(Action):
                 task.code = response.code()
                 # TODO: test the code on test data
                 # TODO: validate code is not harmful
-                execution_result = self.run_code(task.code)
+                execution_result = self.run_code(task.code, task.context)
                 command.strategy.log_execution(response.change_log(), execution_result)
 
             iteration_count += 1
 
         return ActionResult(ActionResultStatus.FAILURE, response.get_message())
 
-    def run_code(self, code: str):
+    def run_code(self, code: str, context: Dict[str, Any]) -> str:
         buffer = io.StringIO()
         sys.stdout = buffer
 
-        context: Dict[str, Any] = {}
         try:
             exec(code, context)
             printed_output = buffer.getvalue().strip()

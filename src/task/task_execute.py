@@ -14,7 +14,7 @@ def execute_task(agent: AgentInterface, task: Task, reason: str = "") -> None:
         if task.action:
             action_name = task.action
         else:
-            response = agent_proxy.ask_to_choose_action(task)
+            response = agent_proxy.ask_to_choose_action(task, reason)
             action_name, reason = response.action_name(), response.reason()
 
         # TODO: validate action is valid (not NO_ACTION)
@@ -22,6 +22,7 @@ def execute_task(agent: AgentInterface, task: Task, reason: str = "") -> None:
         # Now with task type, execute it's action
         task.result = action_registry.get_action(action_name).execute(agent, task, reason)
         # TODO: check task result status (success, pending, error, ...)
+        reason = task.result.message
 
         # TODO: is goal complete?
         iteration_count += 1

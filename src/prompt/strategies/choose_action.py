@@ -13,6 +13,10 @@ class ChooseActionStrategy(IPromptStrategy):
         "apply_action": choose_action_callback,
     }
 
+    def __init__(self, reason: str = "") -> None:
+        super().__init__()
+        self.reason = reason
+
     def get_template_name(self) -> str:
         return self._TEMPLATE_NAME
 
@@ -21,6 +25,7 @@ class ChooseActionStrategy(IPromptStrategy):
             "goal": task.goal,
             "definition": task.definition,
             "specifics": task.specifics,
+            "reason": self.reason,
             "actions": action_registry.get_registered_actions(),
         }
 

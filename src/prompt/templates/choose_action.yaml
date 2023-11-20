@@ -15,6 +15,11 @@ messages:
       {{ definition | indent(6) }}
       {{ specifics | indent(6) }}
 
+      {% if reason -%}
+      The reason to choose the action:
+      {{ reason | indent(6) }}
+      {%- endif %}
+
 functions:
   - name: apply_action
     description: Apply the chosen action

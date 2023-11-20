@@ -25,15 +25,15 @@ class AgentProxy:
 
         return FailedChooseAgentResponse(self.__error_message(response))
 
-    def ask_to_choose_action(self, task: Task) -> ChooseActionResponse:
-        response = self.agent.ask(PromptFactory.choose_action(task))
+    def ask_to_choose_action(self, task: Task, reason: str = "") -> ChooseActionResponse:
+        response = self.agent.ask(PromptFactory.choose_action(task, reason))
         if isinstance(response, ChooseActionResponse):
             return response
 
         return FailedChooseActionResponse(self.__error_message(response))
 
-    def ask_to_create_plan(self, task: Task, role: str) -> CreatePlanResponse:
-        prompt = PromptFactory.create_plan(task, role)
+    def ask_to_create_plan(self, task: Task, role: str, reason: str = "") -> CreatePlanResponse:
+        prompt = PromptFactory.create_plan(task, role, reason)
 
         # TODO: add maximum number of retries
         while True:

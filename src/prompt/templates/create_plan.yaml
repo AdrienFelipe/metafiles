@@ -24,15 +24,19 @@ messages:
 
   - role: user
     content: |
-      Here are the details for the Task:
-      - Goal:
-      {{ goal | indent(8) }}
+      Here are the Task details the plan needs to address:
+      - Goal: {{ goal | indent(8) }}
       - Definition:
       {{ definition | indent(8) }}
       {% if specifics %}
       - Specifics:
       {{ specifics | indent(8) }}
       {% endif %}
+
+      {% if reason -%}
+      The reason to divide into subtasks:
+      {{ reason | indent(6) }}
+      {%- endif %}
 
 {% if plan|length > 0 %}
   - role: user

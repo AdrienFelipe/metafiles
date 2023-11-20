@@ -15,9 +15,10 @@ class CreatePlanStrategy(IPromptStrategy):
         "ask_user": query_user_callback,
     }
 
-    def __init__(self, agent_role: str) -> None:
+    def __init__(self, agent_role: str, reason: str = "") -> None:
         super().__init__()
         self.agent_role = agent_role
+        self.reason = reason
 
     def get_template_name(self) -> str:
         return self._TEMPLATE_NAME
@@ -28,6 +29,7 @@ class CreatePlanStrategy(IPromptStrategy):
             "goal": task.goal,
             "definition": task.definition,
             "specifics": task.specifics,
+            "reason": self.reason,
             "plan": task.plan,
         }
 
@@ -35,4 +37,4 @@ class CreatePlanStrategy(IPromptStrategy):
         return self._HANDLER_FUNCTIONS
 
     def agent_config(self) -> AgentConfig:
-        return AgentConfig(ModelType.FAST, 2048, 0)
+        return AgentConfig(ModelType.CAPABLE, 2048, 0)

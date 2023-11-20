@@ -10,7 +10,6 @@ from action.action_result import ActionResult, ActionResultStatus
 
 class Task:
     result: ActionResult = ActionResult(ActionResultStatus.PENDING, "Task not executed yet")
-    code: str = ""
 
     def __init__(
         self,
@@ -32,6 +31,8 @@ class Task:
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.depends_on = depends_on or []
+        self.code: str = ""
+        self.context: Dict[str, str] = {} if parent is None else parent.context
 
         if parent is not None:
             self.add_parent(parent)
@@ -112,7 +113,7 @@ class Task:
                 if 0 <= position < len(self.parent.children)
             ]
 
-        return self.parent.children
+        return [task for task in self.parent.children if task.id != self.id]
 
     def get_tasks_by_ids(self, ids: List[str]) -> List[Task]:
         return [self.index[task_id] for task_id in ids if self.index.get(task_id)]
