@@ -1,13 +1,11 @@
-from core.service.py.service_container import ServiceContainer
 from dotenv import load_dotenv
 
 from action.action_registry import action_registry
 from agent.agents.openai_agent import OpenAIAgent
-from core.service.service_registry import services_registry
 from core.service.service_container import ServiceContainer
-from core.logger.file_logger import FileLogger
+from core.service.service_registry import services_registry
 from task.task import Task
-from task.task_execute import execute_task
+from task.task_execute import TaskManager
 
 
 def bootstrap() -> None:
@@ -21,7 +19,8 @@ def main() -> None:
 
     agent = OpenAIAgent()
     task = Task.from_yaml("/data/file_index.yaml")
-    execute_task(agent, task)
+    task_manager: TaskManager = container.get_service("TaskManager")
+    task_manager.execute(agent, task)
 
 
 if __name__ == "__main__":

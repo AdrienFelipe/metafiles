@@ -1,9 +1,21 @@
 from action.action_registry import action_registry
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
+from core.logger.logger_interface import IExecutionLogger
+from core.service.service_container import ServiceContainer
 from task.task import Task
 
 MAX_ITERATIONS = 10
+
+
+class TaskManager(ServiceContainer):
+    def __init__(self, services):
+        super().__init__(services)
+        self._logger: IExecutionLogger = self.get_service("ExecutionLogger")
+
+    def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> None:
+        self._logger.log(f"Executing task: [{task.id}] {task.goal}")
+        execute_task(agent, task, reason)
 
 
 def execute_task(agent: AgentInterface, task: Task, reason: str = "") -> None:

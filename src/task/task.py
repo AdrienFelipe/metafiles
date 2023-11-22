@@ -51,8 +51,8 @@ class Task:
 
         return Task(
             goal=data["goal"],
-            definition=data["definition"],
-            specifics=data.get("specifics", None),
+            definition=data.get("definition", ""),
+            specifics=data.get("specifics", ""),
             depends_on=data.get("depends_on", None),
             parent=parent_task,
             plan=data.get("plan", None),

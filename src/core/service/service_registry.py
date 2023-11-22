@@ -1,7 +1,4 @@
 from core.logger.file_logger import FileLogger
-from core.logger.logger_interface import IExecutionLogger
+from task.task_execute import TaskManager
 
-
-services_registry = {
-    IExecutionLogger: FileLogger,
-}
+services_registry = {"ExecutionLogger": FileLogger, "TaskManager": TaskManager}
