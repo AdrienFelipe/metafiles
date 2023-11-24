@@ -1,5 +1,9 @@
+from abc import ABC
 from typing import TypeVar
 
-from core.service.service_container import ServiceContainer
 
-T = TypeVar("T", bound=ServiceContainer)
+class IService(ABC):
+    pass
+
+
+TService = TypeVar("TService", bound=IService)
