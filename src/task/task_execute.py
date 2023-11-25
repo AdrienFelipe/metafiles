@@ -14,7 +14,7 @@ class TaskHandler:
         self._logger = logger
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> None:
-        self._logger.log(f"Executing task: [{task.id}] {task.goal}")
+        self._logger.log(f"⚙️ Executing task: [{task.id}] {task.goal}")
         agent_proxy = AgentProxy(agent)
         iteration_count = 0
 
