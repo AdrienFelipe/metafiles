@@ -2,8 +2,7 @@ from core.logger.logger_interface import IExecutionLogger
 
 
 class FileLogger(IExecutionLogger):
-    def __init__(self, services):
-        super().__init__(services)
+    def __init__(self):
         self._filename = "execution.log"
 
     def log(self, message):
