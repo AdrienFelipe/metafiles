@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from action.action_name import ActionName
 from agent.agents.fake_agent import FakeAgent
+from core.logger.no_logger import NoLogger
 from helpers.prompt_callback_response_helper import PromptCallbackResponseHelper
 from helpers.prompt_helper import (
     assert_prompt_callbacks_are_valid,
@@ -30,7 +31,7 @@ def test_create_code_callbacks():
         "tasks_ids": "0, 1",
         "task_id": "1",
     }
-    assert_prompt_callbacks_are_valid(FakeAgent(), prompt, specials)
+    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt, specials)
 
 
 def test_create_code_command_responses():
@@ -45,7 +46,7 @@ def test_create_code_command_responses():
         Task("Previous task 2", "Previous task 2 definition", parent=parent_task)
         task = Task("Task goal", "Task definition", parent=parent_task)
 
-        agent = FakeAgent(keep_last=True)
+        agent = FakeAgent(NoLogger(), keep_last=True)
         callback_helper = PromptCallbackResponseHelper().with_code()
         # Add a default wildcard response
         agent.add_responses([PromptMessageResponse("Default response")])
@@ -109,7 +110,7 @@ def setup_command_responses(
 def test_create_code_with_prompt_message_response():
     task = Task("Task goal", "Task definition")
     prompt = PromptFactory.create_code(task)
-    agent = FakeAgent(keep_last=True)
+    agent = FakeAgent(NoLogger(), keep_last=True)
 
     callback_helper = PromptCallbackResponseHelper().with_code()
     agent.add_responses(

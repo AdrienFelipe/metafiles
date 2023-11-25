@@ -1,6 +1,7 @@
 from action.action_name import ActionName
 from agent.agent_proxy import AgentProxy
 from agent.agents.fake_agent import FakeAgent
+from core.logger.no_logger import NoLogger
 from helpers.prompt_helper import assert_prompt_callbacks_are_valid
 from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
 from prompt.prompt_factory import PromptFactory
@@ -11,13 +12,13 @@ from task.task import Task
 def test_choose_action_callbacks():
     task = Task("test", "test")
     prompt = PromptFactory.choose_action(task)
-    assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
+    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt)
 
 
 def test_choose_action_agent_proxy_success():
     action, reason = ActionName.RUN_CODE, "test code"
     arguments = {"action_key": action.value, "reason": reason}
-    agent = FakeAgent([PromptCallbackResponse("apply_action", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("apply_action", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_to_choose_action(task)
@@ -30,7 +31,7 @@ def test_choose_action_agent_proxy_success():
 def test_choose_action_agent_proxy_invalid_callback():
     action, reason = ActionName.RUN_CODE, "test code"
     arguments = {"action_key": action.value, "reason": reason}
-    agent = FakeAgent([PromptCallbackResponse("invalid_callback", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("invalid_callback", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_to_choose_action(task)
@@ -43,7 +44,7 @@ def test_choose_action_agent_proxy_invalid_callback():
 def test_choose_action_agent_proxy_invalid_action():
     action, reason = "invalid_action", "test code"
     arguments = {"action_key": action, "reason": reason}
-    agent = FakeAgent([PromptCallbackResponse("apply_action", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("apply_action", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_to_choose_action(task)
@@ -55,7 +56,7 @@ def test_choose_action_agent_proxy_invalid_action():
 
 def test_choose_action_agent_proxy_invalid_arguments():
     arguments = {"invalid_key": "value"}
-    agent = FakeAgent([PromptCallbackResponse("apply_action", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("apply_action", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_to_choose_action(task)

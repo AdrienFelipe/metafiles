@@ -19,7 +19,7 @@ def main() -> None:
     container = ServiceContainer(services_registry)
     logger = container.get_service(IExecutionLogger)
 
-    agent = OpenAIAgent()
+    agent = OpenAIAgent(logger)
     task = Task.from_yaml("/data/file_index.yaml")
     TaskHandler(logger).execute(agent, task)
 

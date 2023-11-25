@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
 from agent.agents.openai_agent import OpenAIAgent
+from core.logger.test_logger import TestLogger
 from task.task import Task
-from task.task_execute import execute_task
+from task.task_execute import TaskHandler
 
 
 def test_task_execute_print_hello():
@@ -10,7 +11,8 @@ def test_task_execute_print_hello():
         "Run code to print the exact string 'Hello, World!'",
         "This is a test task, just run the code",
     )
-    execute_task(OpenAIAgent(), task)
+    logger = TestLogger(name_suffix="test_task_execute_print_hello")
+    TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == "Hello, World!", "Incorrect result"
@@ -21,9 +23,10 @@ def test_task_execute_ask_user_print_string():
         "Run code to print the exact string you ask the user",
         "You don't need details about the task, just create the code that is asked",
     )
+    logger = TestLogger(name_suffix="test_task_execute_ask_user_print_string")
 
     with patch("builtins.input", return_value="Hello, World User!"):
-        execute_task(OpenAIAgent(), task)
+        TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == "Hello, World User!", "Incorrect result"
@@ -37,9 +40,10 @@ def test_task_execute_ask_two_steps_code():
         Divide into two separate tasks, the final output being the result of the execution.
         """,
     )
+    logger = TestLogger(name_suffix="test_task_execute_ask_two_steps_code")
 
     with patch("builtins.input", return_value="Just follow the instructions!"):
-        execute_task(OpenAIAgent(), task)
+        TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == "Custom: Hello, World!", "Incorrect result"
@@ -52,9 +56,10 @@ def test_task_execute_search_wikipedia():
         Print the first search result for 'Hello, World!'
         """,
     )
+    logger = TestLogger(name_suffix="test_task_execute_search_wikipedia")
 
     with patch("builtins.input", return_value="Use the simplest free option"):
-        execute_task(OpenAIAgent(), task)
+        TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
     assert task.result.is_successful(), "Incorrect status"
     assert task.result.message == '"Hello, World!" program', "Incorrect result"

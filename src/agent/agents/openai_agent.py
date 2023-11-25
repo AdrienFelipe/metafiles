@@ -6,6 +6,7 @@ from openai.types.chat.chat_completion import ChatCompletion
 
 from agent.agent_base import BaseAgent
 from agent.agent_config import ModelType
+from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
 from prompt.prompt_strategy import IPromptStrategy
@@ -17,9 +18,9 @@ class OpenAIAgent(BaseAgent):
         ModelType.CAPABLE: "gpt-4",
     }
 
-    def __init__(self):
+    def __init__(self, logger: IExecutionLogger):
+        super().__init__(logger)
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        super().__init__()
 
     def send_query(self, prompt: Prompt[IPromptStrategy]) -> PromptResponse:
         config = prompt.strategy.agent_config()

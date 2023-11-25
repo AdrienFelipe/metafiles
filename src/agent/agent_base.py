@@ -2,12 +2,16 @@ from abc import ABC
 from typing import Union
 
 from agent.agent_interface import AgentInterface
+from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import FailedPromptResponse, PromptCallbackResponse, PromptResponse
 from prompt.prompt_strategy import IPromptStrategy
 
 
 class BaseAgent(AgentInterface, ABC):
+    def __init__(self, logger: IExecutionLogger) -> None:
+        self._logger = logger
+
     def ask(self, prompt: Prompt[IPromptStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
         try:
             raw_response = self.send_query(prompt)

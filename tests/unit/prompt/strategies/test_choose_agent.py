@@ -1,5 +1,6 @@
 from agent.agent_proxy import AgentProxy
 from agent.agents.fake_agent import FakeAgent
+from core.logger.no_logger import NoLogger
 from helpers.prompt_helper import assert_prompt_callbacks_are_valid
 from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
 from prompt.prompt_factory import PromptFactory
@@ -10,13 +11,13 @@ from task.task import Task
 def test_choose_agent_callbacks():
     task = Task("test", "test")
     prompt = PromptFactory.choose_agent(task)
-    assert_prompt_callbacks_are_valid(FakeAgent(), prompt)
+    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt)
 
 
 def test_choose_agent_agent_proxy_success():
     agent_roles = ["role 1", "role 2"]
     arguments = {"roles": ", ".join(agent_roles)}
-    agent = FakeAgent([PromptCallbackResponse("ask_agents", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("ask_agents", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_for_agent_roles(task)
@@ -28,7 +29,7 @@ def test_choose_agent_agent_proxy_success():
 def test_choose_agent_agent_proxy_invalid_callback():
     agent_roles = ["role 1", "role 2"]
     arguments = {"roles": ", ".join(agent_roles)}
-    agent = FakeAgent([PromptCallbackResponse("invalid_callback", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("invalid_callback", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_for_agent_roles(task)
@@ -40,7 +41,7 @@ def test_choose_agent_agent_proxy_invalid_callback():
 
 def test_choose_agent_agent_proxy_invalid_arguments():
     arguments = {"invalid_key": "value"}
-    agent = FakeAgent([PromptCallbackResponse("ask_agents", arguments)])
+    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("ask_agents", arguments)])
     agent_proxy, task = AgentProxy(agent), Task("test", "test")
 
     response = agent_proxy.ask_for_agent_roles(task)

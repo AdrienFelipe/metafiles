@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, Type
 
 from agent.agent_base import BaseAgent
+from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptMessageResponse, PromptResponse
 from prompt.prompt_strategy import IPromptStrategy
@@ -11,7 +12,13 @@ DEFAULT_STRATEGY_KEY = object()
 class FakeAgent(BaseAgent):
     default_response = PromptMessageResponse("Default response")
 
-    def __init__(self, responses: Optional[List[PromptResponse]] = None, keep_last: bool = False):
+    def __init__(
+        self,
+        logger: IExecutionLogger,
+        responses: Optional[List[PromptResponse]] = None,
+        keep_last: bool = False,
+    ):
+        super().__init__(logger)
         self.keep_last = keep_last
         self.responses: Dict[object, List[PromptResponse]] = {}
         if responses is not None:
