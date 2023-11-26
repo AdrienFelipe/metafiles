@@ -1,9 +1,27 @@
 import datetime
 import os
 import threading
-from typing import Optional
+from typing import Dict, Optional
+
+import yaml
 
 from core.logger.logger_interface import IExecutionLogger
+from prompt.prompt_result import PromptStatus
+
+
+# Make yaml logs smart multiline
+def smart_string_presenter(dumper, data):
+    style = "|" if "\n" in data else None
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
+
+
+# For yaml logs to be human readable
+def enum_representer(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data.name)
+
+
+yaml.add_representer(str, smart_string_presenter)
+yaml.add_representer(PromptStatus, enum_representer)
 
 
 class FileLogger(IExecutionLogger):
@@ -40,6 +58,8 @@ class FileLogger(IExecutionLogger):
 
             return filepath
 
-    def log(self, message: str) -> None:
+    def log(self, message: str, data: Optional[Dict] = None) -> None:
         with open(self._filepath, "a") as file:
             file.write(f"{datetime.datetime.now().isoformat()}: {message}\n")
+            if data:
+                file.write(yaml.dump(data, sort_keys=False, width=999))

@@ -6,6 +6,14 @@ class ActionResultStatus(Enum):
     FAILURE = auto()
     PENDING = auto()
 
+    @property
+    def icon(self):
+        return {
+            ActionResultStatus.SUCCESS: "✅",
+            ActionResultStatus.FAILURE: "❌",
+            ActionResultStatus.PENDING: "🚧",
+        }[self]
+
 
 class ActionResult:
     def __init__(self, status: ActionResultStatus, message: str = "", data: dict = {}):

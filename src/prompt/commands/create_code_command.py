@@ -11,7 +11,7 @@ from prompt.callbacks.task import DivideTaskResponse, ExecuteTaskResponse, GetTa
 from prompt.prompt_command import PromptCommand
 from prompt.prompt_result import PromptMessageResponse
 from prompt.strategies.create_code import CreateCodeStrategy
-from task.task_execute import execute_task
+from task.task_execute import TaskHandler
 
 MAX_ITERATIONS = 20
 
@@ -33,7 +33,9 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
             elif isinstance(response, GetTasksResultsResponse):
                 self.strategy.add_dependencies(response.tasks())
             elif isinstance(response, ExecuteTaskResponse):
-                execute_task(self.agent, response.task(), response.reason())
+                TaskHandler(self.agent.logger()).execute(
+                    self.agent, response.task(), response.reason()
+                )
             elif isinstance(response, DivideTaskResponse):
                 self.task.action = ActionName.DIVIDE_TASK
                 return NoCodeResponse(response.reason())

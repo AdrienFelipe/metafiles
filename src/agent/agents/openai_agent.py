@@ -36,7 +36,7 @@ class OpenAIAgent(BaseAgent):
             args["functions"] = functions_value
             args["function_call"] = prompt.callback()
 
-        return self.client.chat.completions.create(**args)
+        return self.client.chat.completions.create(**args)  # type: ignore[call-overload]
 
     def parse_response(self, response: ChatCompletion) -> PromptResponse:
         message = response.choices[0].message

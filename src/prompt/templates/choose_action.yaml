@@ -3,7 +3,7 @@ messages:
     content: |
       Your are an expert task orchestrator for a large language model that solves user tasks.
       Select one of the available actions to best solve the task:
-      {% for key, value in actions.items() %}
+      {% for key, value in actions.items() -%}
       - {{ key }}: {{ value }}
       {% endfor %}
       Consider if the task needs further clarification, requires reasoning, can be executed by code, or should be divided.

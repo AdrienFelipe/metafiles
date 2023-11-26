@@ -16,3 +16,7 @@ class AgentInterface(ABC):
     @abstractmethod
     def parse_response(self, response) -> PromptResponse:
         pass
+
+    @abstractmethod
+    def logger(self):
+        pass

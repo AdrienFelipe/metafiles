@@ -5,7 +5,7 @@ from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task.task import Task
-from task.task_execute import execute_task
+from task.task_execute import TaskHandler
 
 
 class DivideTask(Action):
@@ -37,7 +37,7 @@ class DivideTask(Action):
         # Apply sub-tasks
         for step in task.plan:
             sub_task = Task.from_plan_step(step, task)
-            execute_task(agent, sub_task)
+            TaskHandler(agent.logger()).execute(agent, sub_task)
             # TODO: check sub result and advise what to do next <---------
 
         # TODO: this should check the sub results

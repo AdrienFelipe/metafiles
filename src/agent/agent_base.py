@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Union
 
 from agent.agent_interface import AgentInterface
@@ -8,16 +7,29 @@ from prompt.prompt_result import FailedPromptResponse, PromptCallbackResponse, P
 from prompt.prompt_strategy import IPromptStrategy
 
 
-class BaseAgent(AgentInterface, ABC):
+class BaseAgent(AgentInterface):
     def __init__(self, logger: IExecutionLogger) -> None:
         self._logger = logger
 
+    def logger(self):
+        return self._logger
+
     def ask(self, prompt: Prompt[IPromptStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
         try:
+            self._logger.log(
+                "➡️ Sending prompt", {"strategy": prompt.strategy, "prompt": prompt.messages()}
+            )
             raw_response = self.send_query(prompt)
-            response = self.parse_response(raw_response)
-            return self._handle_response(prompt, response)
+
+            parsed_response = self.parse_response(raw_response)
+            self._logger.log("⬅️ Agent response", {"response": parsed_response})
+
+            response = self._handle_response(prompt, parsed_response)
+            self._logger.log(f"🔄 Handled response: '{type(response).__name__}'")
+
+            return response
         except Exception as e:
+            self._logger.log(f"💥 Error: {e}")
             return FailedPromptResponse(f"Error parsing response: {e}")
 
     def _handle_response(
