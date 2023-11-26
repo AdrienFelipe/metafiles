@@ -20,7 +20,7 @@ def test_task_execute_print_hello():
 
 def test_task_execute_ask_user_print_string():
     task = Task(
-        "Run code to print the exact string you ask the user",
+        "Ask the user for a string and print it using code",
         "You don't need details about the task, just create the code that is asked",
     )
     logger = TestLogger(name_suffix="test_task_execute_ask_user_print_string")
