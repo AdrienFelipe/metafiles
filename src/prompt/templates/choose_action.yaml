@@ -1,22 +1,24 @@
 messages:
   - role: system
     content: |
-      Your are an expert task orchestrator for a large language model that solves user tasks.
-      Select one of the available actions to best solve the task:
+      You are a skilled task manager for a large language model whose goal is to solve user tasks.
+      To address the user's task, choose the most suitable action:
       {% for key, value in actions.items() -%}
-      - {{ key }}: {{ value }}
+      - Action ID "{{ key }}": {{ value }}
       {% endfor %}
-      Consider if the task needs further clarification, requires reasoning, can be executed by code, or should be divided.
-      Respond with the chosen action's id and explain your decision.
+      Assess if the task requires further clarification, logical reasoning, code execution, or subdivision.
+      Respond by specifying the action's ID and explain your decision rationale.
 
   - role: user
     content: |
-      Task goal: "{{ goal }}"
+      Task Goal: "{{ goal }}"
+      Task Details:
       {{ definition | indent(6) }}
+      Specific Requirements:
       {{ specifics | indent(6) }}
 
       {% if reason -%}
-      The reason to choose the action:
+      Reasoning for Action Choice:
       {{ reason | indent(6) }}
       {%- endif %}
 
@@ -26,14 +28,14 @@ functions:
     parameters:
       - name: action_key
         type: string
-        description: The key of the chosen action
+        description: The key of the action selected
         enum:
           {% for key in actions.keys() %}
-          - {{ key }}
+          - "{{ key }}"
           {% endfor %}
       - name: reason
         type: string
-        description: The reason of the choice
+        description: The rationale behind the action choice
     required:
       - action_key
       - reason

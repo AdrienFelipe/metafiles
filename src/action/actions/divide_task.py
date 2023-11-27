@@ -9,7 +9,7 @@ from task.task_execute import TaskHandler
 
 
 class DivideTask(Action):
-    description = "Subdivide the task into smaller tasks"
+    description = "Break down the task into smaller, manageable parts"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         agent_proxy = AgentProxy(agent)

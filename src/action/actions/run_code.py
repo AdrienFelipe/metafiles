@@ -17,7 +17,7 @@ MAX_ITERATIONS = 20
 
 
 class RunCode(Action):
-    description = "Execute a single atomic code function"
+    description = "Perform a specific code operation"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         command = CreateCodeCommand(agent, task)

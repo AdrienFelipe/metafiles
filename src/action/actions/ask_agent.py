@@ -8,7 +8,7 @@ from task.task import Task
 
 
 class AskAgent(Action):
-    description = "Ask a specialized agent to address a question or task"
+    description = "Deploy a specialized agent to handle a query or task"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         """Apply the action given a task and a reason."""

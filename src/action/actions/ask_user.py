@@ -7,7 +7,7 @@ from task.task import Task
 
 
 class AskUser(Action):
-    description = "Interface to ask the user for input"
+    description = "Request additional information from the user"
 
     def execute(self, agent: AgentInterface, task: Task, query: str = "") -> ActionResult:
         input = self.query_user(query)
