@@ -28,6 +28,6 @@ def test_ask_agent_with_prompt_message_response():
     message = "Agent response"
     agent.add_responses([PromptMessageResponse(message)])
 
-    response = AskAgentCommand(agent, task).ask()
+    response = AskAgentCommand(agent, task).ask("role expert")
     assert not response.is_failure(), f"Response should not fail - {response.message}"
     assert response.get_message() == message, f"Invalid response message - {response.message}"

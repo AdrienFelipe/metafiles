@@ -26,6 +26,12 @@ messages:
 
   - role: user
     content: |
+      {% if not task_is_root -%}
+      The overall goal to solve is "{{ task_root_goal }}"
+      And you are currently working on a subtask (id: {{ task_id }}) of it with hierarchy:
+        {{ task_hierarchy | indent(8) }}
+      {%- endif %}
+
       Here are the Task details the plan needs to address:
       - Goal: {{ goal | indent(8) }}
       - Definition:

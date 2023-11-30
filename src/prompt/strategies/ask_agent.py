@@ -33,7 +33,7 @@ class AskAgentStrategy(IPromptStrategy):
             "requirements": task.definition,
             "response": task.response,
             "role": self.role,
-            "sibling_tasks": task.get_siblings(),
+            "sibling_tasks": task.get_siblings_by_position(),
             "queries": self.queries,
             "dependencies_tasks": self.dependencies,
         }

@@ -36,7 +36,7 @@ def execute_task_callback(
     task: Task, task_id: str, reason: str
 ) -> Union[ExecuteTaskResponse, FailedTaskResponse]:
     try:
-        target_task = task.get_siblings()[int(task_id)]
+        target_task = task.get_siblings_by_position()[int(task_id)]
         return ExecuteTaskResponse(target_task, reason)
     except IndexError:
         return FailedTaskResponse(f"Task with id {task_id} not found")
@@ -55,7 +55,7 @@ def get_tasks_results_callback(
 ) -> Union[GetTasksResultsResponse, FailedTaskResponse]:
     # TODO: Add id safe check
     tasks_ids_list = [int(task_id) for task_id in tasks_ids.split(",")]
-    tasks = task.get_siblings(tasks_ids_list)
+    tasks = task.get_siblings_by_position(tasks_ids_list)
     if tasks:
         return GetTasksResultsResponse(tasks)
     return FailedTaskResponse(f"Tasks with ids {tasks_ids} not found")

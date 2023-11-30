@@ -40,7 +40,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "goal": task.goal,
             "requirements": task.definition,
             "code": task.code,
-            "sibling_tasks": task.get_siblings(),
+            "sibling_tasks": task.get_siblings_by_position(),
             "queries": self.queries,
             "dependencies_tasks": self.dependencies,
             "execution_logs": self.execution_logs,

@@ -26,13 +26,13 @@ class Task:
         self.definition = definition.strip()
         self.specifics = specifics.strip()
         self.plan = plan or []
+        self.code: str = ""
+        self.response: str = ""
         self.action = action
         self.parent = parent
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.depends_on = depends_on or []
-        self.code: str = ""
-        self.response: str = ""
         self.context: Dict[str, str] = {} if parent is None else parent.context
 
         if parent is not None:
@@ -95,6 +95,12 @@ class Task:
 
         return f"{parent.id}.{len(parent.children)}"
 
+    def root(self) -> Task:
+        if self.parent is None:
+            return self
+
+        return self.index["0"]
+
     def add_parent(self, parent: Task) -> None:
         parent.children.append(self)
         self.parent = parent
@@ -105,7 +111,13 @@ class Task:
             self.parent.children.remove(self)
         del self.index[self.id]
 
-    def get_siblings(self, positions: Optional[List[int]] = None) -> List[Task]:
+    def siblings(self) -> List[Task]:
+        if self.parent is None:
+            return [self]
+
+        return self.parent.children
+
+    def get_siblings_by_position(self, positions: Optional[List[int]] = None) -> List[Task]:
         if self.parent is None:
             return []
 

@@ -5,6 +5,7 @@ from prompt.callbacks.plan import create_plan_callback, validate_plan_callback
 from prompt.callbacks.query_user import query_user_callback
 from prompt.prompt_strategy import IPromptStrategy
 from task.task import Task
+from task.task_hierarchy_renderer import TaskHierarchyRenderer
 
 
 class CreatePlanStrategy(IPromptStrategy):
@@ -31,6 +32,9 @@ class CreatePlanStrategy(IPromptStrategy):
             "specifics": task.specifics,
             "reason": self.reason,
             "plan": task.plan,
+            "task_hierarchy": TaskHierarchyRenderer.render_hierarchy(task),
+            "task_root_goal": task.root().goal,
+            "task_is_root": task.root().id == task.id,
         }
 
     def callbacks(self) -> Dict[str, Callable]:

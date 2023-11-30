@@ -95,7 +95,7 @@ def setup_command_responses(
 
     elif function_name == "execute_task":
         task_index = 1
-        task.get_siblings()[task_index].action = ActionName.NO_ACTION
+        task.get_siblings_by_position()[task_index].action = ActionName.NO_ACTION
         callback_helper.arguments["task_id"] = f"{task_index}"
 
     elif function_name == "validate_code":
