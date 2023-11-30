@@ -19,6 +19,8 @@ messages:
       4. Each subtask is modular and cohesive, with potential as a standalone component
 
       Develop the Task into subtasks thoughtfully, ensuring each part is clear, concise, and possesses the potential for reapplication.
+      For each subtask, specify what should be its output for dependend tasks to use it as input
+      When having subtasks doing things not directly visible by their output, you should add in-between subtasks to verify everything was done as expected
 
       Note: The initial breakdown forms the foundation for further detail and development into reusable skills.
 

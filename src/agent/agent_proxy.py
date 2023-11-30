@@ -18,8 +18,8 @@ class AgentProxy:
     def __error_message(self, response: PromptResponse) -> str:
         return f"Unexpected response type: {type(response)} - {response.message}"
 
-    def ask_for_agent_roles(self, task: Task) -> ChooseAgentResponse:
-        response = self.agent.ask(PromptFactory.choose_agent(task))
+    def ask_for_agent_roles(self, task: Task, reason: str = "") -> ChooseAgentResponse:
+        response = self.agent.ask(PromptFactory.choose_agent(task, reason))
         if isinstance(response, ChooseAgentResponse):
             return response
 

@@ -18,8 +18,8 @@ class PromptFactory:
         return PromptFactory._create(task, ChooseActionStrategy(reason))
 
     @staticmethod
-    def choose_agent(task: Task) -> Prompt[ChooseAgentStrategy]:
-        return PromptFactory._create(task, ChooseAgentStrategy())
+    def choose_agent(task: Task, reason: str = "") -> Prompt[ChooseAgentStrategy]:
+        return PromptFactory._create(task, ChooseAgentStrategy(reason))
 
     @staticmethod
     def create_plan(task: Task, role: str, reason: str = "") -> Prompt[CreatePlanStrategy]:

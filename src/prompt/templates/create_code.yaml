@@ -29,9 +29,8 @@ messages:
       You can ask to see the output of previous tasks to better understand how you should build your code.
 
       #4 Rerun task (function: execute_task)
-      If you are not satisfied with the output of previous tasks, you can ask to rerun a task.
-      This will rerun the task and you will be able to see the output again.
-      You must provide a detailed reason for rerunning the task and what you would have expected as output.
+      If the output of a previous task is not the expected one, you can ask to re-run it.
+      You must provide a  reason for re-running the task detailling what is your expected output.
 
       #5 Divide the code in subtasks (function: divide_task)
       The code you are building might be too complex to be built in one go, or you might need to test it in parts, or search for documention.
@@ -116,12 +115,6 @@ messages:
       If not, take a step back to carefully review your code and think about why it is failing or not producing the expected output.
       Also, review change logs and outputs from previous versions to avoid reproducing the same mistakes.
       Remember that while your end goal is to produce working code, you also have other options available to help you do so.
-
-
-
-
-
-
 {% endif %}
 
 functions:
@@ -134,7 +127,7 @@ functions:
     required:
       - query
   - name: tasks_results
-    description: Display results of prior tasks
+    description: Display results of specific tasks
     parameters:
       - name: tasks_ids
         type: string

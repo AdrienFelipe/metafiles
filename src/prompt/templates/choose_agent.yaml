@@ -1,22 +1,30 @@
 messages:
   - role: system
     content: |
-      Which roles are best suited to address "{{ name }}"?
-      Please list the roles that would be experts in this area.
+      To effectively address "{{ goal }}", we need to identify the most suitable roles.
+      Please list the roles with specific expertise required for this task.
+      Additionally, describe the ideal characteristics for each role.
 
   - role: user
     content: |
-      Here are the specific requirements for the task:
-      {{ goal | indent(6) }}
+      Task Definition:
+      {{ definition | indent(8) }}
+
+      {% if specifics %}
+      Additional Specifics:
+      {{ specifics | indent(8) }}
+      {% endif %}
+
+      {% if reason %}
+      {{ reason | indent(6) }}
+      {% endif %}
 
 functions:
   - name: ask_agents
-    description: Forwards a question to the specified agent roles to gather their input.
+    description: Gathers input from designated agent roles based on their expertise.
     parameters:
       - name: roles
         type: string
-        description: A comma-separated list of roles (e.g., 'developer,designer,manager').
-    required:
-      - roles
+        description: A list of roles with specific expertise and characteristics (e.g., 'software engineer with strong debugging skills, graphic designer with creative vision').
 
 callback: ask_agents

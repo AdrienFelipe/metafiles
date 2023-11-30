@@ -32,6 +32,7 @@ class Task:
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.depends_on = depends_on or []
         self.code: str = ""
+        self.response: str = ""
         self.context: Dict[str, str] = {} if parent is None else parent.context
 
         if parent is not None:
@@ -79,8 +80,10 @@ class Task:
         data = yaml.safe_load(step)
         return Task(
             goal=data["goal"],
-            definition="\n".join(data.get("definition", "")),
-            specifics="\n".join(data.get("specifics", "")),
+            # TODO: Handle when definition is a list
+            definition=data.get("definition", ""),
+            # TODO: Handle when specifics is a list
+            specifics=data.get("specifics", ""),
             depends_on=data.get("depends_on", None),
             parent=parent_task,
         )
