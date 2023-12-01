@@ -11,11 +11,13 @@ from helpers.prompt_helper import (
 )
 from prompt.callbacks.choose_agent import ChooseAgentResponse
 from prompt.callbacks.code import CreateCodeResponse
+from prompt.callbacks.review_result import ReviewResultResponse
 from prompt.commands.create_code_command import CreateCodeCommand
 from prompt.prompt_factory import PromptFactory
-from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse
+from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptStatus
 from prompt.strategies.choose_agent import ChooseAgentStrategy
 from prompt.strategies.create_code import CreateCodeStrategy
+from prompt.strategies.review_result import ReviewResultStrategy
 from task.task import Task
 
 
@@ -88,7 +90,12 @@ def test_create_code_command_responses():
 def setup_command_responses(
     function_name: str, agent: FakeAgent, task: Task, callback_helper: PromptCallbackResponseHelper
 ) -> bool:
-    agent.add_strategy_responses({ChooseAgentStrategy: [ChooseAgentResponse(["Tester role"])]})
+    agent.add_strategy_responses(
+        {
+            ChooseAgentStrategy: [ChooseAgentResponse(["Tester role"])],
+            ReviewResultStrategy: [ReviewResultResponse(PromptStatus.COMPLETED)],
+        }
+    )
 
     if function_name == "tasks_results":
         callback_helper.arguments["tasks_ids"] = "0,1"

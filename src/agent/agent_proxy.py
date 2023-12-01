@@ -50,12 +50,6 @@ class AgentProxy:
             else:
                 return FailedCreatePlanResponse(self.__error_message(response))
 
-    def ask_to_filter_requirements(self, task: Task, sub_goal: str) -> str:
-        response = self.agent.ask(PromptFactory.filter_requirements(task, sub_goal))
-        if isinstance(response, PromptMessageResponse):
-            return response.message
-        raise UnexpectedResponseTypeException(type(response))
-
     def query_user(self, task: Task, query: str) -> ActionResult:
         action = action_registry.get_action(ActionName.ASK_USER)
         return action.execute(self.agent, task, query)

@@ -38,6 +38,10 @@ messages:
       {{ requirements | indent(8) }}
       {%- endif %}
 
+      {% if specifics -%}
+      {{ specifics | indent(8) }}
+      {%- endif %}
+
 {% if sibling_tasks|length > 0 %}
   - role: user
     content: |

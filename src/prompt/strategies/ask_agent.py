@@ -30,7 +30,8 @@ class AskAgentStrategy(IPromptStrategy):
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
             "goal": task.goal,
-            "requirements": task.definition,
+            "definition": task.definition,
+            "specifics": task.specifics,
             "response": task.response,
             "role": self.role,
             "sibling_tasks": task.get_siblings_by_position(),
