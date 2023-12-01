@@ -7,6 +7,10 @@ messages:
 
       When reviewing the result, consider the following:
       - Does the result accurately fulfill the task's requirements?
+      - Assess whether the result directly addresses the task's objectives.
+      - Evaluate the result in the context of the task. For instance, in a search task, focus on the title or summary of the search result.
+      - Avoid making assumptions beyond what is explicitly provided in the task's requirements.
+      - If the task involves retrieving specific information, confirm that the result matches the type of information requested.
       - Are there any discrepancies or issues that need addressing?
 
       Approve the result if it meets the objectives.
