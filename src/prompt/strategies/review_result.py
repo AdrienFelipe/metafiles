@@ -22,6 +22,7 @@ class ReviewResultStrategy(IPromptStrategy):
 
     def get_render_args(self, task: Task) -> Dict[str, Any]:
         return {
+            "task_type": task.action.name if task.action else "",
             "goal": task.goal,
             "definition": task.definition,
             "specifics": task.specifics,

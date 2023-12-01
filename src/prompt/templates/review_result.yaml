@@ -18,23 +18,20 @@ messages:
 
   - role: user
     content: |
-      You are reviewing the result for the following task:
-      - Goal: {{ goal | indent(8) }}
+      The task you are reviewing is a "{{ task_type }}" task, and has the following propeties:
+      - Goal:
+        {{ goal | indent(8) }}
+      {% if definition -%}
       - Requirements: 
-        {% if definition -%}
         {{ definition | indent(8) }}
-        {% else %}
-        Not specified
-        {%- endif %}
+      {%- endif %}
+      {% if specifics -%}
       - Specifics: 
-        {% if specifics -%}
         {{ specifics | indent(8) }}
-        {% else %}
-        Not specified
-        {%- endif %}
+      {%- endif %}
 
       Result of the task:
-      - {{ result | indent(8) }}
+        {{ result | indent(8) }}
 
       Please review the result carefully.
       If it meets the task's objectives and requirements, approve it.
