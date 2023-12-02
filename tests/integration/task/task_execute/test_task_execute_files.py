@@ -17,4 +17,4 @@ def test_task_execute_create_find_file():
     logger = TestLogger(name_suffix="test_task_execute_create_find_file")
     TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
-    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.is_completed(), "Incorrect status"

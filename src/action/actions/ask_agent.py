@@ -32,7 +32,7 @@ class AskAgent(Action):
                 task.response = response.get_message()
 
             if validated or len(roles) == 1:
-                return ActionResult(ActionResultStatus.SUCCESS, task.response)
+                return ActionResult(ActionResultStatus.COMPLETED, task.response)
 
             iteration += 1
 

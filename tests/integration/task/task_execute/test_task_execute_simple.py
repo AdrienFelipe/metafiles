@@ -14,7 +14,7 @@ def test_task_execute_print_hello():
     logger = TestLogger(name_suffix="test_task_execute_print_hello")
     TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
-    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.is_completed(), "Incorrect status"
     assert task.result.message == "Hello, World!", "Incorrect result"
 
 
@@ -28,7 +28,7 @@ def test_task_execute_ask_user_print_string():
     with patch("builtins.input", return_value="Hello, World User!"):
         TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
-    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.is_completed(), "Incorrect status"
     assert task.result.message == "Hello, World User!", "Incorrect result"
 
 
@@ -45,7 +45,7 @@ def test_task_execute_ask_two_steps_code():
     with patch("builtins.input", return_value="Just follow the instructions!"):
         TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
-    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.is_completed(), "Incorrect status"
     assert task.result.message == "Custom: Hello, World!", "Incorrect result"
 
 
@@ -61,5 +61,5 @@ def test_task_execute_search_wikipedia():
     with patch("builtins.input", return_value="Use the simplest free option"):
         TaskHandler(logger).execute(OpenAIAgent(logger), task)
 
-    assert task.result.is_successful(), "Incorrect status"
+    assert task.result.is_completed(), "Incorrect status"
     assert task.result.message == '"Hello, World!" program', "Incorrect result"

@@ -5,9 +5,7 @@ from task.task import Task
 
 
 class ChooseAgentResponse(PromptResponse):
-    def __init__(
-        self, roles: List[str], status: PromptStatus = PromptStatus.COMPLETED, message: str = ""
-    ):
+    def __init__(self, roles: List[str], status: PromptStatus = PromptStatus.OK, message: str = ""):
         super().__init__(status, message, {"roles": roles})
 
     def get_roles(self) -> List[str]:

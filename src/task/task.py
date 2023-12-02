@@ -7,6 +7,8 @@ import yaml
 from action.action_name import ActionName
 from action.action_result import ActionResult, ActionResultStatus
 
+DEFAULT_WORKDIR = "/workdir"
+
 
 class Task:
     result: ActionResult = ActionResult(ActionResultStatus.PENDING, "Task not executed yet")
@@ -20,6 +22,7 @@ class Task:
         plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
         depends_on: Optional[List[str]] = None,
+        workdir: Optional[str] = None,
     ):
         self.id = Task._build_id(parent)
         self.goal = goal.strip()
@@ -34,6 +37,7 @@ class Task:
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.depends_on = depends_on or []
         self.context: Dict[str, str] = {} if parent is None else parent.context
+        self.workdir: str = workdir or parent.workdir if parent else DEFAULT_WORKDIR
 
         if parent is not None:
             self.add_parent(parent)

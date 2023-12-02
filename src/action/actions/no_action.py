@@ -10,7 +10,7 @@ class NoAction(Action):
     description = "Do nothing"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        return ActionResult(ActionResultStatus.SUCCESS)
+        return ActionResult(ActionResultStatus.COMPLETED)
 
 
 action_registry.register_action(ActionName.NO_ACTION, NoAction)

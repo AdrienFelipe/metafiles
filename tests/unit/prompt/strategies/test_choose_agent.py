@@ -22,7 +22,7 @@ def test_choose_agent_agent_proxy_success():
 
     response = agent_proxy.ask_for_agent_roles(task)
     assert isinstance(response, ChooseAgentResponse)
-    assert response.is_completed(), "Response should be successful"
+    assert response.is_ok(), "Response should be successful"
     assert response.get_roles() == agent_roles, "Incorect roles"
 
 
@@ -34,7 +34,7 @@ def test_choose_agent_agent_proxy_invalid_callback():
 
     response = agent_proxy.ask_for_agent_roles(task)
     assert isinstance(response, FailedChooseAgentResponse)
-    assert not response.is_completed(), "Response should not be successful"
+    assert not response.is_ok(), "Response should not be successful"
     assert response.get_roles() == [], "Incorect roles"
     assert response.get_message(), "Expected non-empty message"
 
@@ -46,6 +46,6 @@ def test_choose_agent_agent_proxy_invalid_arguments():
 
     response = agent_proxy.ask_for_agent_roles(task)
     assert isinstance(response, FailedChooseAgentResponse)
-    assert not response.is_completed(), "Response should not be successful"
+    assert not response.is_ok(), "Response should not be successful"
     assert response.get_roles() == [], "Incorect roles"
     assert response.get_message(), "Expected non-empty message"

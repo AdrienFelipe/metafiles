@@ -2,23 +2,24 @@ version: 3
 messages:
   - role: system
     content: |
-      Your role as an agent involves validating the results generated for a specific task.
-      It is crucial to ensure the accuracy and relevance of these results in relation to the task's objectives.
+      Your goal is to review the result of a task and decide whether to approve or reject it.
 
       When reviewing the result, consider the following:
-      - Does the result accurately fulfill the task's requirements?
-      - Assess whether the result directly addresses the task's objectives.
-      - Evaluate the result in the context of the task. For instance, in a search task, focus on the title or summary of the search result.
+      - Evaluate the result in the context of the task. For instance, when retrieving external information, does the result match the type of information requested?
       - Avoid making assumptions beyond what is explicitly provided in the task's requirements.
-      - If the task involves retrieving specific information, confirm that the result matches the type of information requested.
-      - Are there any discrepancies or issues that need addressing?
 
-      Approve the result if it meets the objectives.
-      If not, reject the result and provide a detailed reason, including any expectations for a satisfactory outcome.
+      To complete your task, you have the following options to proceed:
+      
+      #1 Approve the result (function: approve_result)
+      Approve the result if it meets the task goal and requirements.
+
+      #2 Reject the result (function: reject_result)
+      Reject the result and provide a detailed reason and which outcome would be expected.
+      Keep in mind the result is highly dependent on the task's type.
 
   - role: user
     content: |
-      The task you are reviewing is a "{{ task_type }}" task, and has the following propeties:
+      The task you are reviewing is a "{{ task_type }}" task, and has the following properties:
       - Goal:
         {{ goal | indent(8) }}
       {% if definition -%}
@@ -33,9 +34,7 @@ messages:
       Result of the task:
         {{ result | indent(8) }}
 
-      Please review the result carefully.
-      If it meets the task's objectives and requirements, approve it.
-      If not, specify the reason for rejection and what is expected for a correct outcome.
+      Please review the result carefully and approve or reject it.
 
 {% if messages|length > 0 %}
   - role: user

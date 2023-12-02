@@ -38,7 +38,9 @@ class CreateCodeStrategy(IPromptStrategy):
         return {
             "task_id": task.id,
             "goal": task.goal,
-            "requirements": task.definition,
+            "definition": task.definition,
+            "specifics": task.specifics,
+            "reason": self.reason,
             "code": task.code,
             "sibling_tasks": task.get_siblings_by_position(),
             "queries": self.queries,

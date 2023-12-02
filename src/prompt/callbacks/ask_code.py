@@ -6,7 +6,7 @@ class AskForCodeResponse(PromptResponse):
     def __init__(
         self,
         reason: str,
-        status: PromptStatus = PromptStatus.COMPLETED,
+        status: PromptStatus = PromptStatus.OK,
     ):
         super().__init__(status, reason)
 

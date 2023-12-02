@@ -1,8 +1,10 @@
 import io
+import os
 import re
 import sys
 import traceback
-from typing import Any, Dict
+from contextlib import contextmanager
+from typing import Any, Dict, Iterator
 
 from action.action import Action
 from action.action_name import ActionName
@@ -20,36 +22,38 @@ class RunCode(Action):
     description = "Perform a specific code operation"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        command = CreateCodeCommand(agent, task)
+        code_command = CreateCodeCommand(agent, task)
         iteration_count = 0
         execution_result = None
 
         while iteration_count < MAX_ITERATIONS:
-            response = command.ask(reason)
+            response = code_command.ask(reason)
 
             if response.status == PromptStatus.POSTPONED:
                 return ActionResult(ActionResultStatus.PENDING, response.change_log())
 
-            if response.status == PromptStatus.COMPLETED and execution_result is not None:
-                return ActionResult(ActionResultStatus.SUCCESS, execution_result)
+            if response.status == PromptStatus.OK and execution_result is not None:
+                return ActionResult(ActionResultStatus.COMPLETED, execution_result)
 
             if response.code():
                 task.code = response.code()
                 # TODO: test the code on test data
                 # TODO: validate code is not harmful
-                execution_result = self.run_code(task.code, task.context)
-                command.strategy.log_execution(response.change_log(), execution_result)
+                execution_result = RunCode.exec(task.code, task.context, task.workdir)
+                code_command.strategy.log_execution(response.change_log(), execution_result)
 
             iteration_count += 1
 
-        return ActionResult(ActionResultStatus.FAILURE, response.get_message())
+        return ActionResult(ActionResultStatus.FAILURE, "Max iterations reached")
 
-    def run_code(self, code: str, context: Dict[str, Any]) -> str:
+    @staticmethod
+    def exec(code: str, context: Dict[str, Any], workdir: str) -> str:
         buffer = io.StringIO()
         sys.stdout = buffer
 
         try:
-            exec(code, context)
+            with RunCode.set_directory(workdir):
+                exec(code, context)
             printed_output = buffer.getvalue().strip()
             return printed_output
         except Exception:
@@ -75,6 +79,17 @@ class RunCode(Action):
             return f"An error occurred. {formatted_stack_trace}"
         finally:
             sys.stdout = sys.__stdout__
+
+    @staticmethod
+    @contextmanager
+    def set_directory(path: str) -> Iterator[None]:
+        os.makedirs(path, exist_ok=True)
+        original_path = os.getcwd()
+        try:
+            os.chdir(path)
+            yield
+        finally:
+            os.chdir(original_path)
 
 
 action_registry.register_action(ActionName.RUN_CODE, RunCode)

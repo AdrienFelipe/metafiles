@@ -19,18 +19,12 @@ class DivideTask(Action):
         roles = agent_proxy.ask_for_agent_roles(task).get_roles()
         # TODO: what happens if roles is empty?
 
-        # For each agent role
-        # TODO: limit the amount of iterations
-        while True:
-            initial_plan = task.plan
-            for role in roles:
-                # Prompt acting like agent to list first level of sub tasks to divide or refine it
-                plan = agent_proxy.ask_to_create_plan(task, role, reason).get_plan()
-                # TODO: validate plan is valid
-                task.plan = plan
+        for role in roles:
+            # Prompt acting like agent to list first level of sub tasks to divide or refine it
+            plan = agent_proxy.ask_to_create_plan(task, role, reason).get_plan()
+            # TODO: validate plan is valid
+            task.plan = plan
 
-            if task.plan == initial_plan:
-                break
         # TODO: Validate the answer is what was expected
         # TODO: should it be able to update the whole plan?
 

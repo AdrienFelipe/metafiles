@@ -11,7 +11,7 @@ class FailedTaskResponse(PromptResponse):
 
 class DivideTaskResponse(PromptResponse):
     def __init__(self, reason: str):
-        super().__init__(PromptStatus.COMPLETED, reason)
+        super().__init__(PromptStatus.POSTPONED, reason)
 
     def reason(self) -> str:
         return self.message
@@ -23,7 +23,7 @@ def divide_task_callback(task: Task, reason: str) -> DivideTaskResponse:
 
 class ExecuteTaskResponse(PromptResponse):
     def __init__(self, task: Task, reason: str):
-        super().__init__(PromptStatus.COMPLETED, reason, {"task": task})
+        super().__init__(PromptStatus.OK, reason, {"task": task})
 
     def reason(self) -> str:
         return self.message
@@ -44,7 +44,7 @@ def execute_task_callback(
 
 class GetTasksResultsResponse(PromptResponse):
     def __init__(self, tasks: List[Task]):
-        super().__init__(PromptStatus.COMPLETED, "", {"tasks": tasks})
+        super().__init__(PromptStatus.OK, "", {"tasks": tasks})
 
     def tasks(self) -> List[Task]:
         return self.data["tasks"]

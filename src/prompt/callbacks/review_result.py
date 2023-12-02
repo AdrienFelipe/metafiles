@@ -16,7 +16,7 @@ class FailedReviewResultResponse(ReviewResultResponse):
 
 
 def approve_result_callback(task: Task, **kwargs) -> ReviewResultResponse:
-    return ReviewResultResponse(PromptStatus.COMPLETED)
+    return ReviewResultResponse(PromptStatus.OK)
 
 
 def reject_result_callback(task: Task, reason: str, **kwargs) -> ReviewResultResponse:

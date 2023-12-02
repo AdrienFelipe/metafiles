@@ -2,14 +2,14 @@ from enum import Enum, auto
 
 
 class ActionResultStatus(Enum):
-    SUCCESS = auto()
+    COMPLETED = auto()
     FAILURE = auto()
     PENDING = auto()
 
     @property
     def icon(self):
         return {
-            ActionResultStatus.SUCCESS: "✅",
+            ActionResultStatus.COMPLETED: "✅",
             ActionResultStatus.FAILURE: "❌",
             ActionResultStatus.PENDING: "🚧",
         }[self]
@@ -28,9 +28,9 @@ class ActionResult:
         self.message = message
         self.data = data or {}
 
-    def is_successful(self) -> bool:
+    def is_completed(self) -> bool:
         """Return True if the action was successful."""
-        return self.status == ActionResultStatus.SUCCESS
+        return self.status == ActionResultStatus.COMPLETED
 
     def __str__(self) -> str:
         return f"Status: {self.status.name}, Message: {self.message}, Data: {self.data}"

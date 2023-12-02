@@ -3,7 +3,7 @@ from typing import Optional, TypeVar
 
 
 class PromptStatus(Enum):
-    COMPLETED = auto()
+    OK = auto()
     FAILURE = auto()
     PENDING = auto()
     POSTPONED = auto()
@@ -18,8 +18,8 @@ class PromptResponse:
     def get_message(self) -> str:
         return self.message
 
-    def is_completed(self) -> bool:
-        return self.status == PromptStatus.COMPLETED
+    def is_ok(self) -> bool:
+        return self.status == PromptStatus.OK
 
     def is_failure(self) -> bool:
         return self.status == PromptStatus.FAILURE
@@ -33,12 +33,12 @@ class PromptResponse:
 
 class PromptMessageResponse(PromptResponse):
     def __init__(self, message: str):
-        super().__init__(PromptStatus.COMPLETED, message)
+        super().__init__(PromptStatus.OK, message)
 
 
 class PromptCallbackResponse(PromptResponse):
     def __init__(self, function_name: str, function_arguments: dict):
-        super().__init__(PromptStatus.COMPLETED, function_name, function_arguments)
+        super().__init__(PromptStatus.OK, function_name, function_arguments)
 
     def callback_name(self) -> str:
         return self.message

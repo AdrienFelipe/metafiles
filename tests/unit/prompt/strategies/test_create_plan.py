@@ -42,7 +42,7 @@ def test_create_plan_agent_proxy_success():
 
     response = agent_proxy.ask_to_create_plan(task, "role")
     assert isinstance(response, CreatePlanResponse)
-    assert response.is_completed(), "Response should be successful"
+    assert response.is_ok(), "Response should be successful"
     assert response.get_plan() == plan, "Incorrect plan"
 
 
@@ -52,7 +52,7 @@ def test_create_plan_agent_proxy_failure():
 
     response = agent_proxy.ask_to_create_plan(task, "role")
     assert isinstance(response, FailedCreatePlanResponse)
-    assert not response.is_completed(), "Response should not be successful"
+    assert not response.is_ok(), "Response should not be successful"
     assert response.get_message(), "Expected non-empty message"
 
 
@@ -71,7 +71,7 @@ def test_create_plan_agent_proxy_scenario():
         response = agent_proxy.ask_to_create_plan(task, "some role")
 
     assert isinstance(response, CreatePlanResponse)
-    assert response.is_completed(), "Response should be successful"
+    assert response.is_ok(), "Response should be successful"
     assert response.get_plan() == plan, "Incorrect plan"
 
 
@@ -98,4 +98,4 @@ def test_create_plan_agent_proxy_responses_are_valid():
             response = agent_proxy.ask_to_create_plan(task, prompt.strategy.agent_role)
 
         assert isinstance(response, CreatePlanResponse)
-        assert response.is_completed(), f"Response should be successful: {response.message}"
+        assert response.is_ok(), f"Response should be successful: {response.message}"

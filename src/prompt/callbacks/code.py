@@ -39,7 +39,7 @@ class ValidateCodeResponse(CreateCodeResponse):
             # TODO: not sure this should be hardcoded here as empty
             change_log="",
             tasks_ids=[],
-            status=PromptStatus.COMPLETED,
+            status=PromptStatus.OK,
         )
 
     def code(self) -> str:
