@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -52,8 +52,8 @@ class Task:
 
         return Task(
             goal=data["goal"],
-            definition=data.get("definition", ""),
-            specifics=data.get("specifics", ""),
+            definition=Task.__get_as_string(data, "definition"),
+            specifics=Task.__get_as_string(data, "specifics"),
             depends_on=data.get("depends_on", None),
             parent=parent_task,
             plan=data.get("plan", None),
@@ -80,13 +80,24 @@ class Task:
         data = yaml.safe_load(step)
         return Task(
             goal=data["goal"],
-            # TODO: Handle when definition is a list
-            definition=data.get("definition", ""),
-            # TODO: Handle when specifics is a list
-            specifics=data.get("specifics", ""),
+            definition=Task.__get_as_string(data, "definition"),
+            specifics=Task.__get_as_string(data, "specifics"),
             depends_on=data.get("depends_on", None),
             parent=parent_task,
         )
+
+    @staticmethod
+    def __get_as_string(data: Dict[str, Any], key: str) -> str:
+        value = data.get(key, "")
+
+        if isinstance(value, list):
+            value = "\n".join(str(item) for item in value)
+        elif value is None:
+            value = "None"
+        elif not isinstance(value, str):
+            value = str(value)
+
+        return value
 
     @staticmethod
     def _build_id(parent: Optional[Task]) -> str:

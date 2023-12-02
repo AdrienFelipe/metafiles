@@ -1,4 +1,5 @@
 from action.action_registry import action_registry
+from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from core.logger.logger_interface import IExecutionLogger
@@ -20,9 +21,9 @@ class TaskHandler:
             {"goal": task.goal, "definition": task.definition, "specifics": task.specifics},
         )
         agent_proxy = AgentProxy(agent)
-        iteration_count = 0
+        iteration_count = 1
 
-        while iteration_count < MAX_ITERATIONS:
+        while not task.result.is_successful() and iteration_count < MAX_ITERATIONS:
             if task.action:
                 action_name = task.action
             else:
@@ -31,15 +32,19 @@ class TaskHandler:
 
             self._logger.log(f"🕹️ Action: {action_name}")
 
-            # TODO: validate action is valid (not NO_ACTION)
-
             # Now with task type, execute it's action
-            task.result = action_registry.get_action(action_name).execute(agent, task, reason)
+            try:
+                task.result = action_registry.get_action(action_name).execute(agent, task, reason)
+            except Exception as e:
+                self._logger.log(f"💥 Exception: {e}")
+                task.result = ActionResult(ActionResultStatus.FAILURE, str(e))
+
             result_review = ReviewResultCommand(agent, task).ask()
 
             if result_review.is_completed():
-                break
+                continue
 
+            task.result.status = ActionResultStatus.PENDING
             reason = result_review.reason()
             if iteration_count % ACTION_RESET_MODULO == 0:
                 task.action = None
