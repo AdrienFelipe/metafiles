@@ -33,16 +33,16 @@ class ExecuteTaskResponse(PromptResponse):
 
 
 def execute_task_callback(
-    task: Task, task_id: str, reason: str
+    task: Task, task_id: str, reason: str = ""
 ) -> Union[ExecuteTaskResponse, FailedTaskResponse]:
     try:
-        target_task = task.get_siblings_by_position()[int(task_id)]
+        target_task = task.index[task_id]
         return ExecuteTaskResponse(target_task, reason)
     except IndexError:
         return FailedTaskResponse(f"Task with id {task_id} not found")
 
 
-class GetTasksResultsResponse(PromptResponse):
+class AddTaskDependenciesResponse(PromptResponse):
     def __init__(self, tasks: List[Task]):
         super().__init__(PromptStatus.OK, "", {"tasks": tasks})
 
@@ -50,12 +50,12 @@ class GetTasksResultsResponse(PromptResponse):
         return self.data["tasks"]
 
 
-def get_tasks_results_callback(
+def add_task_depedencies_callback(
     task: Task, tasks_ids: str
-) -> Union[GetTasksResultsResponse, FailedTaskResponse]:
+) -> Union[AddTaskDependenciesResponse, FailedTaskResponse]:
     # TODO: Add id safe check
-    tasks_ids_list = [int(task_id) for task_id in tasks_ids.split(",")]
-    tasks = task.get_siblings_by_position(tasks_ids_list)
+    ids = tasks_ids.split(",")
+    tasks = task.get_tasks_by_ids(ids)
     if tasks:
-        return GetTasksResultsResponse(tasks)
+        return AddTaskDependenciesResponse(tasks)
     return FailedTaskResponse(f"Tasks with ids {tasks_ids} not found")

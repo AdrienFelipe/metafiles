@@ -4,9 +4,9 @@ from agent.agent_config import AgentConfig, ModelType
 from prompt.callbacks.code import create_code_callback, validate_code_callback
 from prompt.callbacks.query_user import query_user_callback
 from prompt.callbacks.task import (
+    add_task_depedencies_callback,
     divide_task_callback,
     execute_task_callback,
-    get_tasks_results_callback,
 )
 from prompt.prompt_strategy import IPromptStrategy
 from task.task import Task
@@ -16,7 +16,7 @@ class CreateCodeStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "create_code.yaml"
     _HANDLER_FUNCTIONS: Dict[str, Callable] = {
         "ask_user": query_user_callback,
-        "tasks_results": get_tasks_results_callback,
+        "tasks_results": add_task_depedencies_callback,
         "execute_task": execute_task_callback,
         "divide_task": divide_task_callback,
         "execute_code": create_code_callback,

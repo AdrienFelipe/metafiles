@@ -7,11 +7,15 @@ from prompt.callbacks.code import (
     ValidateCodeResponse,
 )
 from prompt.callbacks.query_user import QueryUserResponse
-from prompt.callbacks.task import DivideTaskResponse, ExecuteTaskResponse, GetTasksResultsResponse
+from prompt.callbacks.task import (
+    AddTaskDependenciesResponse,
+    DivideTaskResponse,
+    ExecuteTaskResponse,
+)
 from prompt.prompt_command import PromptCommand
 from prompt.prompt_result import PromptMessageResponse
 from prompt.strategies.create_code import CreateCodeStrategy
-from task.task_execute import TaskHandler
+from task.task_handler import TaskHandler
 
 MAX_ITERATIONS = 20
 
@@ -30,7 +34,7 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
                     self.agent, self.task, response.query()
                 )
                 self.strategy.add_query(response.query(), answer.message)
-            elif isinstance(response, GetTasksResultsResponse):
+            elif isinstance(response, AddTaskDependenciesResponse):
                 self.strategy.add_dependencies(response.tasks())
             elif isinstance(response, ExecuteTaskResponse):
                 TaskHandler(self.agent.logger()).execute(

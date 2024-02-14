@@ -21,7 +21,7 @@ class Task:
         parent: Optional[Task] = None,
         plan: Optional[List[str]] = None,
         action: Optional[ActionName] = None,
-        depends_on: Optional[List[str]] = None,
+        depends_on: Optional[Dict[str, Task]] = None,
         workdir: Optional[str] = None,
     ):
         self.id = Task._build_id(parent)
@@ -35,7 +35,7 @@ class Task:
         self.parent = parent
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
-        self.depends_on = depends_on or []
+        self.depends_on: Dict[str, Task] = depends_on or {}
         self.context: Dict[str, str] = {} if parent is None else parent.context
         self.workdir: str = workdir or parent.workdir if parent else DEFAULT_WORKDIR
 
@@ -58,8 +58,6 @@ class Task:
             goal=data["goal"],
             definition=Task.__get_as_string(data, "definition"),
             specifics=Task.__get_as_string(data, "specifics"),
-            depends_on=data.get("depends_on", None),
-            parent=parent_task,
             plan=data.get("plan", None),
             action=action,
         )
@@ -82,13 +80,20 @@ class Task:
     @staticmethod
     def from_plan_step(step: str, parent_task: Optional[Task] = None) -> Task:
         data = yaml.safe_load(step)
-        return Task(
+        task = Task(
             goal=data["goal"],
             definition=Task.__get_as_string(data, "definition"),
             specifics=Task.__get_as_string(data, "specifics"),
-            depends_on=data.get("depends_on", None),
             parent=parent_task,
         )
+
+        # In a plan step, dependencies are expected to be relative to sibling index positions
+        depends_on = data.get("depends_on", None)
+        if depends_on is not None:
+            dependencies = [dep for dep in task.get_siblings_by_position(depends_on)]
+            task.add_dependencies(dependencies)
+
+        return task
 
     @staticmethod
     def __get_as_string(data: Dict[str, Any], key: str) -> str:
@@ -147,3 +152,7 @@ class Task:
 
     def get_tasks_by_ids(self, ids: List[str]) -> List[Task]:
         return [self.index[task_id] for task_id in ids if self.index.get(task_id)]
+
+    def add_dependencies(self, tasks: List[Task]) -> None:
+        for task in tasks:
+            self.depends_on[task.id] = task

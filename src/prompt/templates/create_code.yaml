@@ -25,13 +25,14 @@ messages:
       Don't leave any detail to chance; ask for more information. You must be sure everything is clear before you start building your code.
       This is your only option to communicate with the user.
 
-      #3 Check the output of previous tasks (function: tasks_results)
-      The code you are generating is part of a broader goal resolution process and it might need the output from previous tasks as input.
-      You can ask to see the output of previous tasks to better understand how you should build your code.
+      #3 Add previous tasks as dependency (function: add_dependency)
+      The reponse you must provide is part of a broader goal resolution process and you might need the output of previous tasks as context.
+      You can add dependency tasks to visualise their output to help build your response.
+      The task might not yet be executed and you will have to ask for it to be executed.
 
-      #4 Rerun task (function: execute_task)
+      #4 Execute or re-execute a task (function: execute_task)
       If the output of a previous task is not the expected one, you can ask to re-run it.
-      You must provide a  reason for re-running the task detailling what is your expected output.
+      You must provide a reason for re-running the task detailling what is your expected output.
 
       #5 Divide the code in subtasks (function: divide_task)
       The code you are building might be too complex to be built in one go, or you might need to test it in parts, or search for documention.
@@ -55,33 +56,13 @@ messages:
 
   - role: user
     content: |
-      - Task goal:
-        {{ goal | indent(8) }}
-      {% if definition -%}
-      - Task details: 
-        {{ definition | indent(8) }}
-      {%- endif %}
-      {% if specifics -%}
-      - Task specifics: 
-        {{ specifics | indent(8) }}
-      {%- endif %}
+      {% filter indent(6) %}{% include 'blocks/task_description.yaml' %}{% endfilter %}
+      {% filter indent(6) %}{% include 'blocks/task_predecessors.yaml' %}{% endfilter %}
 
       {% if reason -%}
       You are asked to build or run the following code because:
         {{ reason | indent(8) }}
       {%- endif %}
-
-{% if sibling_tasks|length > 0 %}
-  - role: user
-    content: |
-      Tasks executed so far from which you can use the result or ask for it (task.id: task.name):
-      {% for task in sibling_tasks -%}
-      - {{ loop.index0 }}: {{ task.goal }}
-        {% if loop.index0 in dependencies_tasks -%}
-        result: {{ task.result | indent(8) }}
-        {%- endif %}
-      {%- endfor %}
-{% endif %}
 
 {% if queries|length > 0 %}
   - role: user

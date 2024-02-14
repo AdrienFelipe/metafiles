@@ -1,0 +1,18 @@
+  - role: user
+    content: |
+      Current dependencies:
+      {%- for task in predecessor_tasks %}
+      - {{ task.id }}: {{ task.goal }}
+      {%- endfor %}
+      
+      Tasks executed so far from which you can use the result or ask for it (task.id: task.name):
+      {%- for task in sibling_tasks %}
+      - {{ task.id }}: {{ task.goal }}
+        {%- if task.id in dependencies_tasks -%}
+        {%- if task.result -%}
+        result: {{ task.result | indent(8) }}
+        {%- else -%}
+        result: task not yet executed
+        {%- endif -%}
+        {%- endif -%}
+      {%- endfor %}

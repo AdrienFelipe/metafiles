@@ -2,7 +2,7 @@ from action.action_name import ActionName
 from action.action_registry import action_registry
 from prompt.callbacks.ask_code import AskForCodeResponse
 from prompt.callbacks.query_user import QueryUserResponse
-from prompt.callbacks.task import ExecuteTaskResponse, GetTasksResultsResponse
+from prompt.callbacks.task import AddTaskDependenciesResponse, ExecuteTaskResponse
 from prompt.callbacks.validate_response import ValidateResponse
 from prompt.prompt_command import PromptCommand
 from prompt.prompt_result import (
@@ -12,9 +12,9 @@ from prompt.prompt_result import (
     PromptResponse,
 )
 from prompt.strategies.ask_agent import AskAgentStrategy
-from task.task_execute import TaskHandler
+from task.task_handler import TaskHandler
 
-MAX_ITERATIONS = 20
+MAX_ITERATIONS = 5
 
 
 class AskAgentCommand(PromptCommand[AskAgentStrategy]):
@@ -31,8 +31,8 @@ class AskAgentCommand(PromptCommand[AskAgentStrategy]):
                     self.agent, self.task, response.query()
                 )
                 self.strategy.add_query(response.query(), answer.message)
-            elif isinstance(response, GetTasksResultsResponse):
-                self.strategy.add_dependencies(response.tasks())
+            elif isinstance(response, AddTaskDependenciesResponse):
+                self.task.add_dependencies(response.tasks())
             elif isinstance(response, ExecuteTaskResponse):
                 TaskHandler(self.agent.logger()).execute(
                     self.agent, response.task(), response.reason()
@@ -40,6 +40,8 @@ class AskAgentCommand(PromptCommand[AskAgentStrategy]):
             elif isinstance(response, AskForCodeResponse):
                 self.task.action = ActionName.RUN_CODE
                 return PostponeResponse(response.reason())
+            else:
+                self.strategy.add_message(PromptCommand._error_message(response))
 
             iteration_count += 1
 

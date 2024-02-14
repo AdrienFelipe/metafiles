@@ -16,21 +16,17 @@ def smart_string_presenter(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
 
 
-yaml.add_representer(str, smart_string_presenter)
-
-
 # For yaml logs to be human readable
 def enum_representer(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", data.name)
-
-
-yaml.add_representer(PromptStatus, enum_representer)
 
 
 def task_representer(dumper, task: Task):
     return dumper.represent_scalar("tag:yaml.org,2002:str", f"[{task.id}] {task.goal}")
 
 
+yaml.add_representer(str, smart_string_presenter)
+yaml.add_representer(PromptStatus, enum_representer)
 yaml.add_representer(Task, task_representer)
 
 

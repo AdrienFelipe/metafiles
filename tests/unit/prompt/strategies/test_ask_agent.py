@@ -16,8 +16,8 @@ def test_ask_agent_callbacks():
     prompt = Prompt(task, AskAgentStrategy())
 
     specials = {
-        "tasks_ids": "0, 1",
-        "task_id": "1",
+        "tasks_ids": "0.0, 0.1",
+        "task_id": "0.1",
     }
     assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt, specials)
 

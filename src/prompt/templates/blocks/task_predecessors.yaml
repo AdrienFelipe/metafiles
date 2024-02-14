@@ -1,0 +1,21 @@
+{% if dependencies_tasks|length > 0 -%}
+- Task dependencies:
+  {%- for task_id in dependencies_tasks %}
+  · {{ task_id }}
+  {%- endfor %}
+{%- endif %}
+
+{% if predecessor_tasks|length > 0 -%}
+- Predecessor tasks and their results:
+  {%- for task in predecessor_tasks %}
+  · Task ID: {{ task.id }}
+    Goal: {{ task.goal }}
+    {%- if task.id in dependencies_tasks %}
+    Result status: {{ task.result.status }}
+    Result output: {{ task.result.message }}
+    Note: This is a dependency task.
+    {%- else %}
+    Note: This task is not a dependency.
+    {%- endif %}
+  {%- endfor %}
+{%- endif %}

@@ -6,7 +6,7 @@ from core.logger.logger_interface import IExecutionLogger
 from core.service.service_container import ServiceContainer
 from core.service.service_registry import services_registry
 from task.task import Task
-from task.task_execute import TaskHandler
+from task.task_handler import TaskHandler
 
 
 def bootstrap() -> None:

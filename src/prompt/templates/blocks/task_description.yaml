@@ -1,0 +1,8 @@
+- Task id: {{ task_id }}
+- Task goal: {{ goal | indent(2) }}
+{% if definition -%}
+- Task details: {{ definition | indent(2) }}
+{%- endif %}
+{% if specifics -%}
+- Task specifics: {{ specifics | indent(2) }}
+{%- endif %}

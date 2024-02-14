@@ -28,8 +28,8 @@ class TaskHandler:
 
             self._logger.log(f"🕹️ Action: {task.action}")
 
-            # Now with task type, execute it's action
             try:
+                # Now with task type, execute it's action
                 task.result = action_registry.get_action(task.action).execute(agent, task, reason)
             except Exception as e:
                 self._logger.log(f"💥 Exception: {e}")

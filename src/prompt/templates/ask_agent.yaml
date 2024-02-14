@@ -17,43 +17,29 @@ messages:
       #3 Ask for More Information (function: ask_user)
       If the information provided by the user is insufficient to give a complete answer, ask for more details. Ensure your questions are specific and relevant to the user's query.
 
-      #4 Check the output of previous tasks (function: tasks_results)
-      The reponse you must provide is part of a broader goal resolution process and you might need the output of previous tasks as context.
-      You can ask to see the output of desired tasks to help build your response.
+      #4 Add Tasks as Dependencies (Function: add_dependency)
+      The response you must provide is part of a broader goal resolution process, and you might need the output of previous tasks as context.
+      You can add dependency tasks to visualize their output to help build your response.
+      The task might not yet be executed or be what you expect; in this case, ask for it to be executed.
+      IF the user asks you to add a dependency, asses whether it was already added and maybe just re-run it.
 
-      #5 Rerun task (function: execute_task)
-      If the output of a previous task is not the expected one, you can ask to re-run it.
-      You must provide a  reason for re-running the task detailling what is your expected output.
+      #5 Execute or Re-execute a Task (Function: execute_task)
+      If the output of a dependency task is not the expected one, you can ask to re-run it.
+      You must provide a reason for re-running the task, detailing what your expected output is.
 
       {% if response -%}
-      #6 Validate Previous Response (function: validate_response)
+      #6 Validate Previous Response (function: approve_response)
       Carefuly review the response, and if it properly answers the task, validate that response.
       {%- endif %}
 
   - role: user
     content: |
-      {{ goal | indent(8) }}
+      Provide a text response that directly addresses the following task:
+      {% filter indent(6) %}{% include 'blocks/task_description.yaml' %}{% endfilter %}
+      {% filter indent(6) %}{% include 'blocks/task_predecessors.yaml' %}{% endfilter %}
 
-      {% if requirements -%}
-      {{ requirements | indent(8) }}
-      {%- endif %}
-
-      {% if specifics -%}
-      {{ specifics | indent(8) }}
-      {%- endif %}
-
-{% if sibling_tasks|length > 0 %}
-  - role: user
-    content: |
-      Tasks executed so far from which you can use the result or ask for it (task.id: task.name):
-      {% for task in sibling_tasks -%}
-      - {{ loop.index0 }}: {{ task.goal }}
-        {% if loop.index0 in dependencies_tasks -%}
-        result: {{ task.result | indent(8) }}
-        {%- endif %}
-      {%- endfor %}
-{% endif %}
-
+      Now take a step back and review the task description and the task dependencies before asking to add dependencies or execute tasks.
+      If you have all the information you need, format your answer exactly as required by the task and output it without providing any other explanation.
 {% if queries|length > 0 %}
   - role: user
     content: |
@@ -68,8 +54,16 @@ messages:
 {% if response %}
   - role: assistant
     content: |
-      My response is:
+      I have suggested the following response:
       {{ response | indent(6) }}
+{% endif %}
+
+{% if messages %}
+  - role: system
+    content: |
+      {% for message in messages -%}
+      {{ message | indent(6) }}
+      {%- endfor %}
 {% endif %}
 
 functions:
@@ -90,26 +84,29 @@ functions:
     required:
       - reason
 {% if response %}
-  - name: validate_response
-    description: Validates the current response based on its adequacy in addressing the user's query. No arguments are required.
+  - name: approve_response
+    description: |
+      Approves the current response based on its adequacy in addressing the user's query.
+      No arguments are required.
 {% endif %}
-  - name: tasks_results
-    description: Display results of specific tasks
+  - name: add_dependency
+    description: |
+      Adds tasks as new dependencies.
     parameters:
       - name: tasks_ids
         type: string
-        description: Comma-separated list of task IDs whose outputs are desired
+        description: Comma-separated list of task IDs to add as dependencies
     required:
       - tasks_ids
   - name: execute_task
-    description: Execute a task again, providing a reason to modify it
+    description: Execute a dependency task again, providing a reason for modification
     parameters:
       - name: task_id
         type: string
-        description: The id of the task to re-run
+        description: The ID of the task to execute
       - name: reason
         type: string
-        description: A detailled reason for rerunning the task
+        description: A detailed reason for executing or re-executing the task
     required:
       - task_id
       - reason

@@ -1,19 +1,16 @@
 messages:
   - role: system
     content: |
-      To effectively address "{{ goal }}", we need to identify the most suitable roles.
-      Please list the roles with specific expertise required for this task.
-      Additionally, describe the ideal characteristics for each role.
+      Your goal is to identify the most suitable profession or role to help solve the user's task.
+      Suggest one or more professions, detailing their unique qualifications and skills valuable for the task.
+
+      For example:
+      - A software engineer known for exceptional problem-solving abilities and mastery of design patterns
+      - A graphic designer recognized for creative vision and effective communication skills
 
   - role: user
     content: |
-      Task Definition:
-      {{ definition | indent(8) }}
-
-      {% if specifics %}
-      Additional Specifics:
-      {{ specifics | indent(8) }}
-      {% endif %}
+      {% filter indent(6) %}{% include 'blocks/task_description.yaml' %}{% endfilter %}
 
       {% if reason %}
       {{ reason | indent(6) }}
@@ -21,10 +18,10 @@ messages:
 
 functions:
   - name: ask_agents
-    description: Gathers input from designated agent roles based on their expertise.
+    description: Collects insights from various professionals based on their areas of expertise.
     parameters:
       - name: roles
         type: string
-        description: A list of roles with specific expertise and characteristics (e.g., 'software engineer with strong debugging skills, graphic designer with creative vision').
+        description: A list of roles, separated by commas, each defined by their specific skills and attributes.
 
 callback: ask_agents

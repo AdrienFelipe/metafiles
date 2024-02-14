@@ -5,7 +5,7 @@ from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task.task import Task
-from task.task_execute import TaskHandler
+from task.task_handler import TaskHandler
 
 
 class DivideTask(Action):
@@ -21,9 +21,8 @@ class DivideTask(Action):
 
         for role in roles:
             # Prompt acting like agent to list first level of sub tasks to divide or refine it
-            plan = agent_proxy.ask_to_create_plan(task, role, reason).get_plan()
+            task.plan = agent_proxy.ask_to_create_plan(task, role, reason).get_plan()
             # TODO: validate plan is valid
-            task.plan = plan
 
         # TODO: Validate the answer is what was expected
         # TODO: should it be able to update the whole plan?

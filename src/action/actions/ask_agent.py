@@ -19,19 +19,17 @@ class AskAgent(Action):
         iteration = 0
         agent_proxy = AgentProxy(agent)
         roles = agent_proxy.ask_for_agent_roles(task, reason).get_roles()
+        agent_command = AskAgentCommand(agent, task)
 
         while iteration < MAX_ITERATIONS:
-            validated = True
             for role in roles:
-                response = AskAgentCommand(agent, task).ask(role)
-
-                if isinstance(response, PostponeResponse):
-                    return ActionResult(ActionResultStatus.PENDING, response.get_message())
-
-                validated = validated and isinstance(response, ValidateResponse)
+                response = agent_command.ask(role)
                 task.response = response.get_message()
 
-            if validated or len(roles) == 1:
+                if isinstance(response, PostponeResponse):
+                    return ActionResult(ActionResultStatus.PENDING, task.response)
+
+            if isinstance(response, ValidateResponse):
                 return ActionResult(ActionResultStatus.COMPLETED, task.response)
 
             iteration += 1

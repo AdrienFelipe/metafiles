@@ -1,7 +1,7 @@
 from agent.agents.openai_agent import OpenAIAgent
 from core.logger.test_logger import TestLogger
 from task.task import Task
-from task.task_execute import TaskHandler
+from task.task_handler import TaskHandler
 
 
 def test_task_execute_create_find_file():

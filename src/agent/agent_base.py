@@ -41,7 +41,9 @@ class BaseAgent(AgentInterface):
                 try:
                     return callback(prompt.task, **response.callback_arguments())
                 except Exception as e:
-                    return FailedPromptResponse(f"Error in callback function: {e}")
+                    return FailedPromptResponse(
+                        f"Error in callback function [{response.callback_name()}]: {e}"
+                    )
             else:
                 message = f"Agent chose a non-defined function: {response.callback_name()}"
                 print(message)
