@@ -18,9 +18,10 @@ messages:
       3. The 'specifics' are tailored to the nuances of the current Task
       4. Each subtask is modular and cohesive, with potential as a standalone component
 
-      Develop the Task into subtasks thoughtfully, ensuring each part is clear, concise, and possesses the potential for reapplication.
-      For each subtask, specify what should be its output for dependend tasks to use it as input
-      When having subtasks doing things not directly visible by their output, you should add in-between subtasks to verify everything was done as expected
+      Develop the Task into subtasks thoughtfully, ensuring each part is clear, concise, and possesses the potential for reapplication
+      For each subtask, clearly specify what its output should be in its definition, so dependent tasks can use it as input
+      This output becomes accessible to any subsequent subtask when listed in their 'depends_on' array, allowing subtasks to read and incorporate the output of prior tasks into their execution
+      When subtasks perform actions not directly visible by their output, include in-between subtasks to verify everything was executed as expected, ensuring dependencies are effectively resolved
 
       Note: The initial breakdown forms the foundation for further detail and development into reusable skills.
 

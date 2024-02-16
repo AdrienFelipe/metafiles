@@ -35,12 +35,13 @@ class Task:
         self.parent = parent
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
+        self.index[self.id] = self
         self.depends_on: Dict[str, Task] = depends_on or {}
         self.context: Dict[str, str] = {} if parent is None else parent.context
         self.workdir: str = workdir or parent.workdir if parent else DEFAULT_WORKDIR
 
         if parent is not None:
-            self.add_parent(parent)
+            self.add_relation(parent)
 
     @staticmethod
     def from_yaml(file_path: str, parent_task: Optional[Task] = None) -> Task:
@@ -121,15 +122,9 @@ class Task:
 
         return self.index["0"]
 
-    def add_parent(self, parent: Task) -> None:
+    def add_relation(self, parent: Task) -> None:
         parent.children.append(self)
         self.parent = parent
-        self.index[self.id] = self
-
-    def remove_from_parent(self) -> None:
-        if self.parent is not None:
-            self.parent.children.remove(self)
-        del self.index[self.id]
 
     def siblings(self) -> List[Task]:
         if self.parent is None:

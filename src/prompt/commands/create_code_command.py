@@ -35,7 +35,10 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
                 )
                 self.strategy.add_query(response.query(), answer.message)
             elif isinstance(response, AddTaskDependenciesResponse):
-                self.strategy.add_dependencies(response.tasks())
+                self.task.add_dependencies(response.tasks())
+                for task in response.tasks():
+                    if not task.result.is_completed():
+                        TaskHandler(self.agent.logger()).execute(self.agent, task)
             elif isinstance(response, ExecuteTaskResponse):
                 TaskHandler(self.agent.logger()).execute(
                     self.agent, response.task(), response.reason()

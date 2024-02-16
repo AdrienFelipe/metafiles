@@ -12,16 +12,25 @@ def test_task_direct_dependency():
     result_3 = "final"
     expected_result = f"1: {result_1}, 2: {result_2}, 3: {result_3}"
 
-    parent_task = Task("Concatenate strings", "Obtain 3 different results and concatenate them as '1: [result 1], 2: [result 2], 3: [result 3]'") 
-    Task("Obtain result 1", f"This task should return the number '{result_1}'", parent=parent_task)
-    Task("Obtain result 2", "Double the number returned by previous task and return it", parent=parent_task)
+    parent_task = Task(
+        "Concatenate multiple results",
+        "Obtain 3 different results and concatenate them as '1: [result 1], 2: [result 2], 3: [result 3]'",
+    )
+    Task("Output Value1", f"This task should return the number '{result_1}'", parent=parent_task)
+    Task(
+        "Output Value2",
+        "Double the number returned by previous task and return it",
+        parent=parent_task,
+    )
 
     task = Task(
-        "Return concatenated results",
+        "Concatenate results 1, 2 and 3",
         f"""
-        Result 3 is '{result_3}'
-        Read results from previous tasks and concatenate the results as:
-        '1: [task 1 value], 2: [task 2 value], 3: [result 3]'
+        Value1 and Value2 are the respective outputs from the two previous tasks
+        Value 3 is equal to '{result_3}'
+        Add corresponding dependencies and show the result as:
+        '1: [Value1], 2: [Value2], 3: [Value3]'
+        
         """,
         parent=parent_task,
     )

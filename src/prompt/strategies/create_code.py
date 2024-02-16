@@ -10,6 +10,7 @@ from prompt.callbacks.task import (
 )
 from prompt.prompt_strategy import IPromptStrategy
 from task.task import Task
+from task.task_predecessor_finder import TaskPredecessorFinder
 
 
 class CreateCodeStrategy(IPromptStrategy):
@@ -45,6 +46,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "sibling_tasks": task.get_siblings_by_position(),
             "queries": self.queries,
             "dependencies_tasks": self.dependencies,
+            "predecessor_tasks": TaskPredecessorFinder.generate(task),
             "execution_logs": self.execution_logs,
             "messages": self.messages,
         }
@@ -60,9 +62,6 @@ class CreateCodeStrategy(IPromptStrategy):
 
     def add_query(self, question: str, answer: str) -> None:
         self.queries.append(Query(question, answer))
-
-    def add_dependencies(self, tasks: List[Task]) -> None:
-        self.dependencies.extend(tasks)
 
     def add_message(self, message: str) -> None:
         self.messages.append(message)

@@ -67,11 +67,9 @@ messages:
 {% if queries|length > 0 %}
   - role: user
     content: |
-      Clarifications to questions you had:
+      Clarifications for your inquiries:
       {% for query in queries -%}
-      - {{ query.question }}:
-        {{ query.answer }}
-      
+      - {{ query.question }}: {{ query.answer }}
       {%- endfor %}
 {% endif %}
 
@@ -128,7 +126,7 @@ functions:
     required:
       - tasks_ids
   - name: execute_task
-    description: Execute a task again, providing a reason to modify it
+    description: If a task's output is not as expected, or was not executed, you can ask to re-run it
     parameters:
       - name: task_id
         type: string

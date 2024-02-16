@@ -8,8 +8,7 @@ messages:
       You have the following options to proceed:
 
       #1 Respond to the User (reply)
-      Provide a text response that directly addresses the user's query or issue.
-      Ensure clarity and accuracy in your response.
+      Directly address the user's query with a text response, ensuring clarity and accuracy.
 
       #2 Escalate to a Code Task (function: escalate_to_code)
       If the problem cannot be adequately solved through a text response and requires a coding solution, escalate it to a code task. Clearly state the reason for escalation.

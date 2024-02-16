@@ -15,7 +15,7 @@ from prompt.prompt_strategy import IPromptStrategy
 class OpenAIAgent(BaseAgent):
     MODEL_MAP = {
         ModelType.FAST: "gpt-3.5-turbo",
-        ModelType.CAPABLE: "gpt-4",
+        ModelType.CAPABLE: "gpt-4-turbo-preview",
     }
 
     def __init__(self, logger: IExecutionLogger):

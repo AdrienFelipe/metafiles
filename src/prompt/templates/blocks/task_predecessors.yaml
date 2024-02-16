@@ -1,21 +1,8 @@
-{% if dependencies_tasks|length > 0 -%}
-- Task dependencies:
-  {%- for task_id in dependencies_tasks %}
-  · {{ task_id }}
-  {%- endfor %}
-{%- endif %}
-
 {% if predecessor_tasks|length > 0 -%}
-- Predecessor tasks and their results:
+- Predecessor tasks and their results: |
+  | Task ID | Goal | Status | Result Output | Is Dependency |
+  |---------|------|--------|---------------|---------------|
   {%- for task in predecessor_tasks %}
-  · Task ID: {{ task.id }}
-    Goal: {{ task.goal }}
-    {%- if task.id in dependencies_tasks %}
-    Result status: {{ task.result.status }}
-    Result output: {{ task.result.message }}
-    Note: This is a dependency task.
-    {%- else %}
-    Note: This task is not a dependency.
-    {%- endif %}
+  | {{ task.id }} | {{ task.goal }} | {% if task.id in dependencies_tasks %}{{ task.result.status }}{% else %}N/A{% endif %} | {% if task.id in dependencies_tasks %}{{ task.result.message }}{% else %}N/A{% endif %} | {% if task.id in dependencies_tasks %}Yes{% else %}No{% endif %} |
   {%- endfor %}
-{%- endif %}
+{%- endif -%}
