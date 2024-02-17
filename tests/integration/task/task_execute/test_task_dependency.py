@@ -1,12 +1,10 @@
 from agent.agents.openai_agent import OpenAIAgent
-from core.logger.test_logger import TestLogger
+from core.logger.logger_interface import IExecutionLogger
 from task.task import Task
-from task.task_handler import TaskHandler
+from task.task_handler_interface import ITaskHandler
 
 
-def test_task_direct_dependency():
-    logger = TestLogger(name_suffix="test_task_direct_dependency")
-
+def test_task_direct_dependency(task_handler: ITaskHandler, logger: IExecutionLogger):
     result_1 = 32
     result_2 = result_1 * 2
     result_3 = "final"
@@ -37,7 +35,7 @@ def test_task_direct_dependency():
 
     Task("A following task that should not appear as available for dependency", parent=parent_task)
 
-    TaskHandler(logger).execute(OpenAIAgent(logger), task)
+    task_handler.execute(OpenAIAgent(logger), task)
 
     assert task.result.is_completed(), "Incorrect status"
     assert task.result.message == expected_result, "Incorrect result"

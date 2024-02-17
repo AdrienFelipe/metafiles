@@ -4,7 +4,7 @@ from agent.agent_interface import AgentInterface
 from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import FailedPromptResponse, PromptCallbackResponse, PromptResponse
-from prompt.prompt_strategy import IPromptStrategy
+from prompt.prompt_strategy import TStrategy
 
 
 class BaseAgent(AgentInterface):
@@ -14,7 +14,7 @@ class BaseAgent(AgentInterface):
     def logger(self):
         return self._logger
 
-    def ask(self, prompt: Prompt[IPromptStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
+    def ask(self, prompt: Prompt[TStrategy]) -> Union[PromptResponse, FailedPromptResponse]:
         try:
             self._logger.log(
                 "➡️ Sending prompt", {"strategy": prompt.strategy, "prompt": prompt.messages()}
@@ -33,7 +33,7 @@ class BaseAgent(AgentInterface):
             return FailedPromptResponse(f"Error parsing response: {e}")
 
     def _handle_response(
-        self, prompt: Prompt[IPromptStrategy], response: PromptResponse
+        self, prompt: Prompt[TStrategy], response: PromptResponse
     ) -> PromptResponse:
         if isinstance(response, PromptCallbackResponse):
             callback = prompt.strategy.callbacks().get(response.callback_name())

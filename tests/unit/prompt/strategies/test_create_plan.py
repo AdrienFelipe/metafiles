@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 from agent.agent_proxy import AgentProxy
 from agent.agents.fake_agent import FakeAgent
-from core.logger.no_logger import NoLogger
+from core.logger.logger_interface import IExecutionLogger
+from core.service.service_container import ServiceContainer
 from helpers.prompt_callback_response_helper import PromptCallbackResponseHelper
 from helpers.prompt_helper import (
     assert_prompt_callbacks_are_valid,
@@ -15,30 +16,28 @@ from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse
 from task.task import Task
 
 
-def test_create_plan_callbacks():
+def test_create_plan_callbacks(logger: IExecutionLogger):
     task = Task("test", "test")
     prompt = PromptFactory.create_plan(task, "role")
     arguments = PromptCallbackResponseHelper.simple()
-    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt, arguments)
+    assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, arguments)
 
 
-def test_create_plan_callbacks_with_plan():
+def test_create_plan_callbacks_with_plan(logger: IExecutionLogger):
     callback_helper = PromptCallbackResponseHelper().with_plan()
     task = Task("test", "test")
     task.plan = callback_helper.get_plan()
 
     prompt = PromptFactory.create_plan(task, "role")
-    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt, callback_helper.arguments)
+    assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, callback_helper.arguments)
 
 
-def test_create_plan_agent_proxy_success():
+def test_create_plan_agent_proxy_success(container: ServiceContainer, logger: IExecutionLogger):
     callback_helper = PromptCallbackResponseHelper().with_plan()
     plan = callback_helper.get_plan()
 
-    agent = FakeAgent(
-        NoLogger(), [PromptCallbackResponse("update_plan", callback_helper.arguments)]
-    )
-    agent_proxy, task = AgentProxy(agent), Task("test", "test")
+    agent = FakeAgent(logger, [PromptCallbackResponse("update_plan", callback_helper.arguments)])
+    agent_proxy, task = AgentProxy(container, agent), Task("test", "test")
 
     response = agent_proxy.ask_to_create_plan(task, "role")
     assert isinstance(response, CreatePlanResponse)
@@ -46,9 +45,9 @@ def test_create_plan_agent_proxy_success():
     assert response.get_plan() == plan, "Incorrect plan"
 
 
-def test_create_plan_agent_proxy_failure():
-    agent = FakeAgent(NoLogger(), [PromptCallbackResponse("invalid_callback", {})])
-    agent_proxy, task = AgentProxy(agent), Task("test", "test")
+def test_create_plan_agent_proxy_failure(container: ServiceContainer, logger: IExecutionLogger):
+    agent = FakeAgent(logger, [PromptCallbackResponse("invalid_callback", {})])
+    agent_proxy, task = AgentProxy(container, agent), Task("test", "test")
 
     response = agent_proxy.ask_to_create_plan(task, "role")
     assert isinstance(response, FailedCreatePlanResponse)
@@ -56,7 +55,7 @@ def test_create_plan_agent_proxy_failure():
     assert response.get_message(), "Expected non-empty message"
 
 
-def test_create_plan_agent_proxy_scenario():
+def test_create_plan_agent_proxy_scenario(container: ServiceContainer, logger: IExecutionLogger):
     callback_helper = PromptCallbackResponseHelper().with_plan()
     plan = callback_helper.get_plan()
     responses = [
@@ -64,8 +63,8 @@ def test_create_plan_agent_proxy_scenario():
         PromptMessageResponse("some answer"),
         PromptCallbackResponse("update_plan", callback_helper.arguments),
     ]
-    agent = FakeAgent(NoLogger(), responses)
-    agent_proxy, task = AgentProxy(agent), Task("test", "test")
+    agent = FakeAgent(logger, responses)
+    agent_proxy, task = AgentProxy(container, agent), Task("test", "test")
 
     with patch("builtins.input", return_value="user response"):
         response = agent_proxy.ask_to_create_plan(task, "some role")
@@ -75,9 +74,11 @@ def test_create_plan_agent_proxy_scenario():
     assert response.get_plan() == plan, "Incorrect plan"
 
 
-def test_create_plan_agent_proxy_responses_are_valid():
-    agent = FakeAgent(NoLogger())
-    agent_proxy, task = AgentProxy(agent), Task("test", "test")
+def test_create_plan_agent_proxy_responses_are_valid(
+    container: ServiceContainer, logger: IExecutionLogger
+):
+    agent = FakeAgent(logger)
+    agent_proxy, task = AgentProxy(container, agent), Task("test", "test")
     prompt = PromptFactory.create_plan(task, "role")
     specials = PromptCallbackResponseHelper.simple()
     callback_response = get_callback_response(prompt, "update_plan", specials)

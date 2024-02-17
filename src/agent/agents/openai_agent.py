@@ -9,7 +9,7 @@ from agent.agent_config import ModelType
 from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptResponse
-from prompt.prompt_strategy import IPromptStrategy
+from prompt.prompt_strategy import TStrategy
 
 
 class OpenAIAgent(BaseAgent):
@@ -22,7 +22,7 @@ class OpenAIAgent(BaseAgent):
         super().__init__(logger)
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    def send_query(self, prompt: Prompt[IPromptStrategy]) -> PromptResponse:
+    def send_query(self, prompt: Prompt[TStrategy]) -> PromptResponse:
         config = prompt.strategy.agent_config()
         args = {
             "model": OpenAIAgent.MODEL_MAP[config.model],

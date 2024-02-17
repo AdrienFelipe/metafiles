@@ -34,7 +34,6 @@ yaml.add_representer(Task, task_representer)
 class FileLogger(IExecutionLogger):
     _lock: threading.Lock = threading.Lock()
     _base_directory: str
-    _subdir_name: Optional[str]
     _filepath: str
 
     def __init__(
@@ -44,12 +43,14 @@ class FileLogger(IExecutionLogger):
         subdir_name: Optional[str] = None,
     ) -> None:
         super().__init__(container=container)
-        self._subdir_name = subdir_name
         self._base_directory = (
             os.path.join(log_directory, subdir_name) if subdir_name else log_directory
         )
         self._create_log_directory()
         self._filepath = self._build_filepath()
+
+    def add_subdir(self, subdir_name: str) -> None:
+        self._base_directory = os.path.join(self._base_directory, subdir_name)
 
     def _create_log_directory(self) -> None:
         if not os.path.exists(self._base_directory):

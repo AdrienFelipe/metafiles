@@ -1,10 +1,10 @@
 from agent.agents.openai_agent import OpenAIAgent
-from core.logger.test_logger import TestLogger
+from core.logger.logger_interface import IExecutionLogger
 from task.task import Task
-from task.task_handler import TaskHandler
+from task.task_handler_interface import ITaskHandler
 
 
-def test_task_execute_create_find_file():
+def test_task_execute_create_find_file(task_handler: ITaskHandler, logger: IExecutionLogger):
     task = Task(
         "Find a file named 'hello_world.txt'",
         """You MUST do the following in multiple tasks:
@@ -14,7 +14,6 @@ def test_task_execute_create_find_file():
         4. Confirm that the file 'hello_world.txt' exists
         """,
     )
-    logger = TestLogger(name_suffix="test_task_execute_create_find_file")
-    TaskHandler(logger).execute(OpenAIAgent(logger), task)
+    task_handler.execute(OpenAIAgent(logger), task)
 
     assert task.result.is_completed(), "Incorrect status"

@@ -1,10 +1,10 @@
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional, Sequence, Type
 
 from agent.agent_base import BaseAgent
 from core.logger.logger_interface import IExecutionLogger
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptMessageResponse, PromptResponse
-from prompt.prompt_strategy import IPromptStrategy
+from prompt.prompt_strategy import IPromptStrategy, TStrategy
 
 DEFAULT_STRATEGY_KEY = object()
 
@@ -15,7 +15,7 @@ class FakeAgent(BaseAgent):
     def __init__(
         self,
         logger: IExecutionLogger,
-        responses: Optional[List[PromptResponse]] = None,
+        responses: Optional[Sequence[PromptResponse]] = None,
         keep_last: bool = False,
     ):
         super().__init__(logger)
@@ -24,9 +24,9 @@ class FakeAgent(BaseAgent):
         if responses is not None:
             self.add_responses(responses)
 
-    def add_responses(self, responses: List[PromptResponse], reset: bool = False) -> None:
+    def add_responses(self, responses: Sequence[PromptResponse], reset: bool = False) -> None:
         if reset:
-            self.responses[DEFAULT_STRATEGY_KEY] = responses
+            self.responses[DEFAULT_STRATEGY_KEY] = list(responses)
         else:
             self.responses.setdefault(DEFAULT_STRATEGY_KEY, []).extend(responses)
 
@@ -36,7 +36,7 @@ class FakeAgent(BaseAgent):
         for strategy, strategy_responses in responses.items():
             self.responses.setdefault(strategy, []).extend(strategy_responses)
 
-    def send_query(self, prompt: Prompt) -> PromptResponse:
+    def send_query(self, prompt: Prompt[TStrategy]) -> PromptResponse:
         responses = self.responses.get(
             type(prompt.strategy), self.responses.get(DEFAULT_STRATEGY_KEY)
         )

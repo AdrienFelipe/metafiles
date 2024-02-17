@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 from action.action_name import ActionName
 from agent.agents.fake_agent import FakeAgent
-from core.logger.no_logger import NoLogger
+from core.logger.logger_interface import IExecutionLogger
+from core.service.service_container import ServiceContainer
 from helpers.prompt_callback_response_helper import PromptCallbackResponseHelper
 from helpers.prompt_helper import (
     assert_prompt_callbacks_are_valid,
@@ -21,7 +22,7 @@ from prompt.strategies.review_result import ReviewResultStrategy
 from task.task import Task
 
 
-def test_create_code_callbacks():
+def test_create_code_callbacks(logger: IExecutionLogger):
     parent_task = Task("Parent task", "Parent task definition")
     Task("Previous task 1", "Previous task 1 definition", parent=parent_task)
     Task("Previous task 2", "Previous task 2 definition", parent=parent_task)
@@ -33,14 +34,14 @@ def test_create_code_callbacks():
         "tasks_ids": "0.0, 0.1",
         "task_id": "0.1",
     }
-    assert_prompt_callbacks_are_valid(FakeAgent(NoLogger()), prompt, specials)
+    assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, specials)
 
 
-def test_create_code_command_responses():
+def test_create_code_command_responses(container: ServiceContainer, logger: IExecutionLogger):
     prompt = PromptFactory.create_code(Task("dummy"))
 
     for function in prompt.functions():
-        function_name = function["name"]
+        function_name = str(function["name"])
 
         # Use a multi-level task
         parent_task = Task("Parent task", "Parent task definition")
@@ -48,7 +49,7 @@ def test_create_code_command_responses():
         Task("Previous task 2", "Previous task 2 definition", parent=parent_task)
         task = Task("Task goal", "Task definition", parent=parent_task)
 
-        agent = FakeAgent(NoLogger(), keep_last=True)
+        agent = FakeAgent(logger, keep_last=True)
         callback_helper = PromptCallbackResponseHelper().with_code()
         # Add a default wildcard response
         agent.add_responses([PromptMessageResponse("Default response")])
@@ -70,7 +71,7 @@ def test_create_code_command_responses():
 
         try:
             with patch("builtins.input", return_value="This is a test!"):
-                result = CreateCodeCommand(agent, task).ask()
+                result = CreateCodeCommand(container, agent, task).ask()
         except Exception as e:
             assert False, f"{function_name} should not raise an exception: {e}"
 
@@ -114,10 +115,12 @@ def setup_command_responses(
     return True
 
 
-def test_create_code_with_prompt_message_response():
+def test_create_code_with_prompt_message_response(
+    container: ServiceContainer, logger: IExecutionLogger
+):
     task = Task("Task goal", "Task definition")
     prompt = PromptFactory.create_code(task)
-    agent = FakeAgent(NoLogger(), keep_last=True)
+    agent = FakeAgent(logger, keep_last=True)
 
     callback_helper = PromptCallbackResponseHelper().with_code()
     agent.add_responses(
@@ -127,6 +130,6 @@ def test_create_code_with_prompt_message_response():
         ]
     )
 
-    response = CreateCodeCommand(agent, task).ask()
+    response = CreateCodeCommand(container, agent, task).ask()
     assert not response.is_failure(), f"Response should not fail - {response.message}"
     assert response.code() == callback_helper.get_code(), f"Invalid code - {response.message}"

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Optional, Union
+from typing import Any, Dict, Generic, List, Union
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -28,7 +28,7 @@ class Prompt(Generic[TStrategy]):
     def messages(self) -> List[Dict[str, str]]:
         return self.parsed_content.get("messages", [])
 
-    def functions(self) -> Optional[List[Dict[str, Dict]]]:
+    def functions(self) -> List[Dict[str, Dict]]:
         yaml_functions = self.parsed_content.get("functions", [])
 
         if not yaml_functions:
