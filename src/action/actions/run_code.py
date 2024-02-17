@@ -8,7 +8,6 @@ from typing import Any, Dict, Iterator
 
 from action.action import Action
 from action.action_name import ActionName
-from action.action_registry import action_registry
 from action.action_result import ActionResult, ActionResultStatus
 from agent.agent_interface import AgentInterface
 from prompt.commands.create_code_command import CreateCodeCommand
@@ -19,10 +18,11 @@ MAX_ITERATIONS = 20
 
 
 class RunCode(Action):
+    action_name = ActionName.RUN_CODE
     description = "Perform a specific code operation"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        code_command = CreateCodeCommand(agent, task)
+        code_command = CreateCodeCommand(self._container, agent, task)
         iteration_count = 0
         execution_result = None
 
@@ -90,6 +90,3 @@ class RunCode(Action):
             yield
         finally:
             os.chdir(original_path)
-
-
-action_registry.register_action(ActionName.RUN_CODE, RunCode)

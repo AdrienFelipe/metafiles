@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict
 
-from action.action_registry import action_registry
+from action.action_registry import ActionRegistry
 from agent.agent_config import AgentConfig, ModelType
 from prompt.callbacks.choose_action import choose_action_callback
 from prompt.prompt_strategy import IPromptStrategy
@@ -26,7 +26,7 @@ class ChooseActionStrategy(IPromptStrategy):
             "definition": task.definition,
             "specifics": task.specifics,
             "reason": self.reason,
-            "actions": action_registry.get_registered_actions(),
+            "actions": ActionRegistry.get_registered_actions(),
         }
 
     def callbacks(self) -> Dict[str, Callable]:

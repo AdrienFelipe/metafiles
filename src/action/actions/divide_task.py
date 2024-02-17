@@ -1,6 +1,5 @@
 from action.action import Action
 from action.action_name import ActionName
-from action.action_registry import action_registry
 from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
@@ -9,10 +8,11 @@ from task.task_handler import TaskHandler
 
 
 class DivideTask(Action):
+    action_name = ActionName.DIVIDE_TASK
     description = "Break down the task into smaller, manageable parts"
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
-        agent_proxy = AgentProxy(agent)
+        agent_proxy = AgentProxy(self._container, agent)
 
         # Prompt which agents would best know about the task to know what to do
         # TODO: add skills to the agent role response
@@ -36,6 +36,3 @@ class DivideTask(Action):
         # TODO: this should check the sub results
         # TODO: update prompt and rest of code as division result comes from last task
         return sub_task.result
-
-
-action_registry.register_action(ActionName.DIVIDE_TASK, DivideTask)

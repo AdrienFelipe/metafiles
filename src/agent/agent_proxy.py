@@ -1,7 +1,8 @@
 from action.action_name import ActionName
-from action.action_registry import action_registry
+from action.action_registry_interface import IActionRegistry
 from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
+from core.service.service_container import ServiceContainer
 from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseActionResponse
 from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse, ValidatePlanResponse
@@ -12,7 +13,8 @@ from task.task import Task
 
 
 class AgentProxy:
-    def __init__(self, agent: AgentInterface):
+    def __init__(self, container: ServiceContainer, agent: AgentInterface):
+        self._action_registry = container.get_service(IActionRegistry)
         self.agent = agent
 
     def __error_message(self, response: PromptResponse) -> str:
@@ -51,7 +53,7 @@ class AgentProxy:
                 return FailedCreatePlanResponse(self.__error_message(response))
 
     def query_user(self, task: Task, query: str) -> ActionResult:
-        action = action_registry.get_action(ActionName.ASK_USER)
+        action = self._action_registry.get_action(ActionName.ASK_USER)
         return action.execute(self.agent, task, query)
 
 

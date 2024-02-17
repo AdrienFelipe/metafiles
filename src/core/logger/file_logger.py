@@ -6,6 +6,7 @@ from typing import Dict, Optional
 import yaml
 
 from core.logger.logger_interface import IExecutionLogger
+from core.service.service_container import ServiceContainer
 from prompt.prompt_result import PromptStatus
 from task.task import Task
 
@@ -36,7 +37,13 @@ class FileLogger(IExecutionLogger):
     _subdir_name: Optional[str]
     _filepath: str
 
-    def __init__(self, log_directory: str = "logs", subdir_name: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        container: ServiceContainer,
+        log_directory: str = "logs",
+        subdir_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(container=container)
         self._subdir_name = subdir_name
         self._base_directory = (
             os.path.join(log_directory, subdir_name) if subdir_name else log_directory

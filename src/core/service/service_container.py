@@ -10,6 +10,6 @@ class ServiceContainer:
 
     def get_service(self, service_key: Type[TService]) -> TService:
         if service_key not in self._instances:
-            self._instances[service_key] = self._services_registry[service_key]()
+            self._instances[service_key] = self._services_registry[service_key](self)
 
         return self._instances[service_key]

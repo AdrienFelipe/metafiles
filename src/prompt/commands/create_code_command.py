@@ -1,5 +1,4 @@
 from action.action_name import ActionName
-from action.action_registry import action_registry
 from prompt.callbacks.code import (
     CreateCodeResponse,
     FailedCreateCodeResponse,
@@ -15,7 +14,6 @@ from prompt.callbacks.task import (
 from prompt.prompt_command import PromptCommand
 from prompt.prompt_result import PromptMessageResponse
 from prompt.strategies.create_code import CreateCodeStrategy
-from task.task_handler import TaskHandler
 
 MAX_ITERATIONS = 20
 
@@ -30,7 +28,7 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
             if isinstance(response, (CreateCodeResponse, ValidateCodeResponse)):
                 return response
             elif isinstance(response, QueryUserResponse):
-                answer = action_registry.get_action(ActionName.ASK_USER).execute(
+                answer = self._action_registry.get_action(ActionName.ASK_USER).execute(
                     self.agent, self.task, response.query()
                 )
                 self.strategy.add_query(response.query(), answer.message)
@@ -38,11 +36,9 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
                 self.task.add_dependencies(response.tasks())
                 for task in response.tasks():
                     if not task.result.is_completed():
-                        TaskHandler(self.agent.logger()).execute(self.agent, task)
+                        self._task_handler.execute(self.agent, task)
             elif isinstance(response, ExecuteTaskResponse):
-                TaskHandler(self.agent.logger()).execute(
-                    self.agent, response.task(), response.reason()
-                )
+                self._task_handler.execute(self.agent, response.task(), response.reason())
             elif isinstance(response, DivideTaskResponse):
                 self.task.action = ActionName.DIVIDE_TASK
                 return NoCodeResponse(response.reason())

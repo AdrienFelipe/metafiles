@@ -30,7 +30,7 @@ def test_task_direct_dependency():
         Value 3 is equal to '{result_3}'
         Add corresponding dependencies and show the result as:
         '1: [Value1], 2: [Value2], 3: [Value3]'
-        
+
         """,
         parent=parent_task,
     )
