@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Tuple, Type
 
 from action.action_registry import ActionRegistry
 from action.action_registry_interface import IActionRegistry
@@ -10,9 +10,9 @@ from core.service.service_type import IService
 from task.task_handler import TaskHandler
 from task.task_handler_interface import ITaskHandler
 
-services_registry: Dict[Type[IService], Type[IService]] = {
-    IExecutionLogger: FileLogger,
-    ITaskHandler: TaskHandler,
-    IContext: InMemoryContext,
-    IActionRegistry: ActionRegistry,
+services_registry: Dict[Type[IService], Tuple[Type[IService], ...]] = {
+    IExecutionLogger: (FileLogger,),
+    ITaskHandler: (TaskHandler,),
+    IContext: (InMemoryContext,),
+    IActionRegistry: (ActionRegistry,),
 }
