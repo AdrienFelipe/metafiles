@@ -19,7 +19,7 @@ def test_task_execute_print_hello(task_handler: ITaskHandler, logger: IExecution
 
 def test_task_execute_ask_user_print_string(task_handler: ITaskHandler, logger: IExecutionLogger):
     task = Task(
-        "Ask the user for a string and print it using code",
+        "Ask the user for a string and print it as is using code",
         "You don't need details about the task, just create the code that is asked",
     )
 

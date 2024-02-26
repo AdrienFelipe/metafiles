@@ -77,9 +77,11 @@ messages:
   - role: assistant
     content: |
       I suggest the following code (versions #{{ execution_logs|length }}):
+      ```python
       {%- for line in code.split('\n') %}
         {{ loop.index }}: {{ line }}
       {%- endfor -%}
+      ```
 {% endif %}
 
 {% if execution_logs|length > 0 %}

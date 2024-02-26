@@ -32,7 +32,9 @@ messages:
       {%- endif %}
 
       Result of the task:
+      ```output
         {{ result | indent(8) }}
+      ```
 
       Please review the result carefully and approve or reject it.
 

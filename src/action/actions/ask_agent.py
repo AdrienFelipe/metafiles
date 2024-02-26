@@ -22,12 +22,11 @@ class AskAgent(Action):
         agent_command = AskAgentCommand(self._container, agent, task)
 
         while iteration < MAX_ITERATIONS:
-            for role in roles:
-                response = agent_command.ask(role)
-                task.response = response.get_message()
+            response = agent_command.ask(roles)
+            task.response = response.get_message()
 
-                if isinstance(response, PostponeResponse):
-                    return ActionResult(ActionResultStatus.PENDING, task.response)
+            if isinstance(response, PostponeResponse):
+                return ActionResult(ActionResultStatus.PENDING, task.response)
 
             if isinstance(response, ValidateResponse):
                 return ActionResult(ActionResultStatus.COMPLETED, task.response)

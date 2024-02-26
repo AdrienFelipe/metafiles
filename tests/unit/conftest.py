@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 import pytest
 
 from core.logger.logger_interface import IExecutionLogger
@@ -10,7 +8,7 @@ from core.service.service_registry import services_registry
 
 @pytest.fixture(scope="function")
 def container():
-    services = deepcopy(services_registry)
+    services = services_registry.copy()
     services[IExecutionLogger] = (NoLogger,)
 
     yield ServiceContainer(services)

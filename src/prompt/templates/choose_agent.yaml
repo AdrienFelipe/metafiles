@@ -1,12 +1,12 @@
 messages:
   - role: system
     content: |
-      Your goal is to identify the most suitable profession or role to help solve the user's task.
-      Suggest one or more professions, detailing their unique qualifications and skills valuable for the task.
+      Your goal is to craft a description that encapsulates the qualities, skills, or qualifications necessary for solving the user's task with high quality and accuracy.
+      Describe the ideal attributes and care that should be put into the task.
 
       For example:
-      - A software engineer known for exceptional problem-solving abilities and mastery of design patterns
-      - A graphic designer recognized for creative vision and effective communication skills
+      - an individual with deep analytical skills, exceptional problem-solving abilities, and a keen eye for detail
+      - a professional possessing comprehensive knowledge in their field, outstanding communication skills, and a dedication to delivering high-quality results
 
   - role: user
     content: |
@@ -18,10 +18,10 @@ messages:
 
 functions:
   - name: ask_agents
-    description: Collects insights from various professionals based on their areas of expertise.
+    description: Collects insights based on required qualities, skills, and qualifications for high-quality and accurate task resolution.
     parameters:
       - name: roles
         type: string
-        description: A list of roles, separated by commas, each defined by their specific skills and attributes.
+        description: Descriptions of required attributes and care to be taken, separated by commas.
 
 callback: ask_agents

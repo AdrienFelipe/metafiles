@@ -4,7 +4,6 @@ from action.action_result import ActionResult
 from agent.agent_interface import AgentInterface
 from agent.agent_proxy import AgentProxy
 from task.task import Task
-from task.task_handler import TaskHandler
 
 
 class DivideTask(Action):
@@ -14,15 +13,10 @@ class DivideTask(Action):
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         agent_proxy = AgentProxy(self._container, agent)
 
-        # Prompt which agents would best know about the task to know what to do
-        # TODO: add skills to the agent role response
+        # Prompt which roles and skills the agent should have
         roles = agent_proxy.ask_for_agent_roles(task).get_roles()
         # TODO: what happens if roles is empty?
-
-        for role in roles:
-            # Prompt acting like agent to list first level of sub tasks to divide or refine it
-            task.plan = agent_proxy.ask_to_create_plan(task, role, reason).get_plan()
-            # TODO: validate plan is valid
+        task.plan = agent_proxy.ask_to_create_plan(task, roles, reason).get_plan()
 
         # TODO: Validate the answer is what was expected
         # TODO: should it be able to update the whole plan?
@@ -30,7 +24,7 @@ class DivideTask(Action):
         # Apply sub-tasks
         for step in task.plan:
             sub_task = Task.from_plan_step(step, task)
-            TaskHandler(agent.logger()).execute(agent, sub_task)
+            self._task_handler.execute(agent, sub_task)
             # TODO: check sub result and advise what to do next <---------
 
         # TODO: this should check the sub results

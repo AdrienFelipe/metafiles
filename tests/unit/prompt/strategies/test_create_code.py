@@ -93,7 +93,7 @@ def setup_command_responses(
 ) -> bool:
     agent.add_strategy_responses(
         {
-            ChooseAgentStrategy: [ChooseAgentResponse(["Tester role"])],
+            ChooseAgentStrategy: [ChooseAgentResponse("Tester role")],
             ReviewResultStrategy: [ReviewResultResponse(PromptStatus.OK)],
         }
     )
