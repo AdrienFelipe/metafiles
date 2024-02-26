@@ -8,7 +8,7 @@ from task.task import Task
 
 class DivideTask(Action):
     action_name = ActionName.DIVIDE_TASK
-    description = "Break down the task into smaller, manageable parts"
+    description = "Break down the task into smaller, manageable parts. Use this for complex tasks that benefit from being broken down to ensure clarity and completeness."
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         agent_proxy = AgentProxy(self._container, agent)

@@ -13,7 +13,7 @@ MAX_ITERATIONS = 5
 
 class AskAgent(Action):
     action_name = ActionName.ASK_AGENT
-    description = "Ask a specialized agent to respond to the task by text"
+    description = "Ask a specialized agent to respond to the task by text. Choose this if the task requires specialized knowledge beyond general coding or logical reasoning."
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         iteration = 0

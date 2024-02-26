@@ -19,7 +19,7 @@ MAX_ITERATIONS = 20
 
 class RunCode(Action):
     action_name = ActionName.RUN_CODE
-    description = "Perform a specific code operation"
+    description = "Perform a specific code operation. If the task is a straightforward coding task, this is often the most direct approach."
 
     def execute(self, agent: AgentInterface, task: Task, reason: str = "") -> ActionResult:
         code_command = CreateCodeCommand(self._container, agent, task)

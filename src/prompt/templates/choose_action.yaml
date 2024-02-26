@@ -6,6 +6,7 @@ messages:
       {% for key, value in actions.items() -%}
       - Action ID "{{ key }}": {{ value }}
       {% endfor %}
+
       Assess if the task requires further clarification, logical reasoning, code execution, or subdivision.
       Respond by specifying the action's ID and explain your decision rationale.
 
