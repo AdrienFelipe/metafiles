@@ -7,6 +7,7 @@ from prompt.callbacks.choose_action import ChooseActionResponse, FailedChooseAct
 from prompt.callbacks.choose_agent import ChooseAgentResponse, FailedChooseAgentResponse
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse, ValidatePlanResponse
 from prompt.callbacks.query_user import QueryUserResponse
+from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptMessageResponse, PromptResponse
 from task.task import Task
@@ -15,27 +16,29 @@ from task.task import Task
 class AgentProxy:
     def __init__(self, container: ServiceContainer, agent: AgentInterface):
         self._action_registry = container.get_service(IActionRegistry)
+        self._context = container.get_service(IPromptContext)
+
         self.agent = agent
 
     def __error_message(self, response: PromptResponse) -> str:
         return f"Unexpected response type: {type(response)} - {response.message}"
 
     def ask_for_agent_roles(self, task: Task, reason: str = "") -> ChooseAgentResponse:
-        response = self.agent.ask(PromptFactory.choose_agent(task, reason))
+        response = self.agent.ask(PromptFactory.choose_agent(task, self._context, reason))
         if isinstance(response, ChooseAgentResponse):
             return response
 
         return FailedChooseAgentResponse(self.__error_message(response))
 
     def ask_to_choose_action(self, task: Task, reason: str = "") -> ChooseActionResponse:
-        response = self.agent.ask(PromptFactory.choose_action(task, reason))
+        response = self.agent.ask(PromptFactory.choose_action(task, self._context, reason))
         if isinstance(response, ChooseActionResponse):
             return response
 
         return FailedChooseActionResponse(self.__error_message(response))
 
     def ask_to_create_plan(self, task: Task, role: str, reason: str = "") -> CreatePlanResponse:
-        prompt = PromptFactory.create_plan(task, role, reason)
+        prompt = PromptFactory.create_plan(task, self._context, role, reason)
 
         # TODO: add maximum number of retries
         while True:

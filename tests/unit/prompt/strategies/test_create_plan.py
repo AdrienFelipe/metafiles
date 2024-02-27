@@ -11,24 +11,25 @@ from helpers.prompt_helper import (
     prompt_function_to_callback_arguments,
 )
 from prompt.callbacks.plan import CreatePlanResponse, FailedCreatePlanResponse
+from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse
 from task.task import Task
 
 
-def test_create_plan_callbacks(logger: IExecutionLogger):
+def test_create_plan_callbacks(logger: IExecutionLogger, prompt_context: IPromptContext):
     task = Task("test", "test")
-    prompt = PromptFactory.create_plan(task, "role")
+    prompt = PromptFactory.create_plan(task, prompt_context, "role")
     arguments = PromptCallbackResponseHelper.simple()
     assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, arguments)
 
 
-def test_create_plan_callbacks_with_plan(logger: IExecutionLogger):
+def test_create_plan_callbacks_with_plan(logger: IExecutionLogger, prompt_context: IPromptContext):
     callback_helper = PromptCallbackResponseHelper().with_plan()
     task = Task("test", "test")
     task.plan = callback_helper.get_plan()
 
-    prompt = PromptFactory.create_plan(task, "role")
+    prompt = PromptFactory.create_plan(task, prompt_context, "role")
     assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, callback_helper.arguments)
 
 
@@ -75,11 +76,11 @@ def test_create_plan_agent_proxy_scenario(container: ServiceContainer, logger: I
 
 
 def test_create_plan_agent_proxy_responses_are_valid(
-    container: ServiceContainer, logger: IExecutionLogger
+    container: ServiceContainer, logger: IExecutionLogger, prompt_context: IPromptContext
 ):
     agent = FakeAgent(logger)
     agent_proxy, task = AgentProxy(container, agent), Task("test", "test")
-    prompt = PromptFactory.create_plan(task, "role")
+    prompt = PromptFactory.create_plan(task, prompt_context, "role")
     specials = PromptCallbackResponseHelper.simple()
     callback_response = get_callback_response(prompt, "update_plan", specials)
 

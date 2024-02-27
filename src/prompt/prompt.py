@@ -3,14 +3,16 @@ from typing import Any, Dict, Generic, List, Union
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt_strategy import TStrategy
 from task.task import Task
 
 
 class Prompt(Generic[TStrategy]):
-    def __init__(self, task: Task, strategy: TStrategy):
+    def __init__(self, task: Task, strategy: TStrategy, context: IPromptContext):
         self.task = task
         self.strategy: TStrategy = strategy
+        self.context = context
 
         self.env = Environment(loader=FileSystemLoader("/app/prompt/templates"))
         self.template = self.env.get_template(self.strategy.get_template_name())

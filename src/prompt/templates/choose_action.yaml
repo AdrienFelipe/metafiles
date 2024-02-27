@@ -1,3 +1,4 @@
+version: 3
 messages:
   - role: system
     content: |
@@ -5,7 +6,7 @@ messages:
       To address the user's task, choose the most suitable action:
       {% for key, value in actions.items() -%}
       - Action ID "{{ key }}": {{ value }}
-      {% endfor %}
+      {%- endfor %}
 
       Assess if the task requires further clarification, logical reasoning, code execution, or subdivision.
       Respond by specifying the action's ID and explain your decision rationale.

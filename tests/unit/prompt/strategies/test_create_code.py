@@ -14,6 +14,7 @@ from prompt.callbacks.choose_agent import ChooseAgentResponse
 from prompt.callbacks.code import CreateCodeResponse
 from prompt.callbacks.review_result import ReviewResultResponse
 from prompt.commands.create_code_command import CreateCodeCommand
+from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt_factory import PromptFactory
 from prompt.prompt_result import PromptCallbackResponse, PromptMessageResponse, PromptStatus
 from prompt.strategies.choose_agent import ChooseAgentStrategy
@@ -22,12 +23,12 @@ from prompt.strategies.review_result import ReviewResultStrategy
 from task.task import Task
 
 
-def test_create_code_callbacks(logger: IExecutionLogger):
+def test_create_code_callbacks(logger: IExecutionLogger, prompt_context: IPromptContext):
     parent_task = Task("Parent task", "Parent task definition")
     Task("Previous task 1", "Previous task 1 definition", parent=parent_task)
     Task("Previous task 2", "Previous task 2 definition", parent=parent_task)
     task = Task("Task goal", "Task definition", parent=parent_task)
-    prompt = PromptFactory.create_code(task)
+    prompt = PromptFactory.create_code(task, prompt_context)
 
     specials = {
         "code": "print('ok')",
@@ -37,8 +38,10 @@ def test_create_code_callbacks(logger: IExecutionLogger):
     assert_prompt_callbacks_are_valid(FakeAgent(logger), prompt, specials)
 
 
-def test_create_code_command_responses(container: ServiceContainer, logger: IExecutionLogger):
-    prompt = PromptFactory.create_code(Task("dummy"))
+def test_create_code_command_responses(
+    container: ServiceContainer, logger: IExecutionLogger, prompt_context: IPromptContext
+):
+    prompt = PromptFactory.create_code(Task("dummy"), prompt_context)
 
     for function in prompt.functions():
         function_name = str(function["name"])
@@ -116,10 +119,10 @@ def setup_command_responses(
 
 
 def test_create_code_with_prompt_message_response(
-    container: ServiceContainer, logger: IExecutionLogger
+    container: ServiceContainer, logger: IExecutionLogger, prompt_context: IPromptContext
 ):
     task = Task("Task goal", "Task definition")
-    prompt = PromptFactory.create_code(task)
+    prompt = PromptFactory.create_code(task, prompt_context)
     agent = FakeAgent(logger, keep_last=True)
 
     callback_helper = PromptCallbackResponseHelper().with_code()

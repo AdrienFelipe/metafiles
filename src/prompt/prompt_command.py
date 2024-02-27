@@ -4,6 +4,7 @@ from typing import Generic
 from action.action_registry_interface import IActionRegistry
 from agent.agent_interface import AgentInterface
 from core.service.service_container import ServiceContainer
+from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt import Prompt
 from prompt.prompt_result import PromptResponse, TPromptResponse
 from prompt.prompt_strategy import TStrategy
@@ -18,12 +19,14 @@ class PromptCommand(ABC, Generic[TStrategy]):
         # self._container = container
         self._action_registry = container.get_service(IActionRegistry)
         self._task_handler = container.get_service(ITaskHandler)
+        self._context = container.get_service(IPromptContext)
+
         self.agent = agent
         self.task = task
         self.strategy = self._define_strategy()
 
     def _ask_agent(self) -> PromptResponse:
-        prompt = Prompt(self.task, self.strategy)
+        prompt = Prompt(self.task, self.strategy, self._context)
         return self.agent.ask(prompt)
 
     @abstractmethod
