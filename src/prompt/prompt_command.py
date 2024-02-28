@@ -33,7 +33,7 @@ class PromptCommand(ABC, Generic[TStrategy]):
         except Exception as e:
             response = FailedPromptResponse(str(e))
         self._context.add_agent_query(prompt, response)
-        
+
         return response
 
     @abstractmethod

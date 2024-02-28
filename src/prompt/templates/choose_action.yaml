@@ -14,9 +14,9 @@ messages:
       {% endif %}
 
       Carefully review the task details provided by the user, choose the most suitable action:
-      {% for key, value in actions.items() %}
+      {%- for key, value in actions.items() %}
       - Action key "{{ key }}": {{ value }}
-      {% endfor %}
+      {%- endfor %}
 
       Assess if the task requires further clarification, logical reasoning, code execution, or subdivision.
       Respond by specifying the action's key and explain your decision rationale.

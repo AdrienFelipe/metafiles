@@ -1,6 +1,7 @@
 import datetime
 import os
 import threading
+import traceback
 from typing import Dict, Optional
 
 import yaml
@@ -72,8 +73,18 @@ class FileLogger(IExecutionLogger):
 
             return filepath
 
-    def log(self, message: str, data: Optional[Dict] = None) -> None:
+    def log(
+        self, message: str, data: Optional[Dict] = None, exc: Optional[Exception] = None
+    ) -> None:
         with open(self._filepath, "a") as file:
+            # To print the timestamp without quotes
             file.write(f"{datetime.datetime.now().isoformat()}: {message}\n")
+
+            if exc:
+                if data is None:
+                    data = {}
+                exc_info = traceback.format_exc()
+                data["traceback"] = exc_info
+
             if data:
-                file.write(yaml.dump(data, sort_keys=False, width=999))
+                file.write(yaml.dump(data, sort_keys=False, width=999, allow_unicode=True))

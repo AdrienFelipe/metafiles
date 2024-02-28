@@ -38,7 +38,7 @@ class TaskHandler(ITaskHandler):
                     agent, task, reason
                 )
             except Exception as e:
-                self._logger.log(f"💥 Exception: {e}")
+                self._logger.log(f"💥 Exception: {e}", exc=e)
                 task.result = ActionResult(ActionResultStatus.FAILURE, str(e))
 
             if task.result.is_completed():

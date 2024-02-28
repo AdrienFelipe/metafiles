@@ -29,7 +29,7 @@ class BaseAgent(AgentInterface):
 
             return response
         except Exception as e:
-            self._logger.log(f"💥 Error: {e}")
+            self._logger.log(f"💥 Agent error: {e}", exc=e)
             return FailedPromptResponse(f"Error parsing response: {e}")
 
     def _handle_response(

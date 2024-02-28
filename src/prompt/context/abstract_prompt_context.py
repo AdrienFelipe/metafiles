@@ -4,7 +4,7 @@ from core.service.service_container import ServiceContainer
 from prompt.context.interaction import Interaction, InteractionType
 from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt import Prompt
-from prompt.prompt_result import PromptCallbackResponse, PromptResponse
+from prompt.prompt_result import PromptResponse
 
 
 class AbstractPromptContext(IPromptContext, ABC):
@@ -21,8 +21,10 @@ class AbstractPromptContext(IPromptContext, ABC):
         message = response.message.replace("\n", " ")
         if len(message) > 30:
             message = response.message[:27] + "..."
-            
-        message = f"{prompt_type} > {response_type}: \"{message}\""
-        
-        interaction = Interaction(InteractionType.AGENT_QUERY, prompt.task, message, response.status.name)
+
+        message = f'{prompt_type} > {response_type}: "{message}"'
+
+        interaction = Interaction(
+            InteractionType.AGENT_QUERY, prompt.task, message, response.status.name
+        )
         self._add_interaction(interaction)
