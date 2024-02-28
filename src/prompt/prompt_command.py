@@ -6,7 +6,7 @@ from agent.agent_interface import AgentInterface
 from core.service.service_container import ServiceContainer
 from prompt.context.prompt_context_interface import IPromptContext
 from prompt.prompt import Prompt
-from prompt.prompt_result import PromptResponse, TPromptResponse
+from prompt.prompt_result import FailedPromptResponse, PromptResponse, TPromptResponse
 from prompt.prompt_strategy import TStrategy
 from task.task import Task
 from task.task_handler_interface import ITaskHandler
@@ -27,7 +27,14 @@ class PromptCommand(ABC, Generic[TStrategy]):
 
     def _ask_agent(self) -> PromptResponse:
         prompt = Prompt(self.task, self.strategy, self._context)
-        return self.agent.ask(prompt)
+
+        try:
+            response = self.agent.ask(prompt)
+        except Exception as e:
+            response = FailedPromptResponse(str(e))
+        self._context.add_agent_query(prompt, response)
+        
+        return response
 
     @abstractmethod
     def _define_strategy(self) -> TStrategy:

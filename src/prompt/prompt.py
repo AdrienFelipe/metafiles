@@ -12,14 +12,14 @@ class Prompt(Generic[TStrategy]):
     def __init__(self, task: Task, strategy: TStrategy, context: IPromptContext):
         self.task = task
         self.strategy: TStrategy = strategy
-        self.context = context
 
         self.env = Environment(loader=FileSystemLoader("/app/prompt/templates"))
         self.template = self.env.get_template(self.strategy.get_template_name())
-        self.parsed_content = yaml.safe_load(self._render_template())
+        self.parsed_content = yaml.safe_load(self._render_template(context))
 
-    def _render_template(self) -> str:
+    def _render_template(self, context: IPromptContext) -> str:
         render_args = self.strategy.get_render_args(self.task)
+        render_args["context"] = context
         return self.template.render(**render_args)
 
     def add_message(self, role: str, message: str):

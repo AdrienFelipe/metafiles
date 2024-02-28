@@ -1,0 +1,9 @@
+{%- set interactions = context.get_interactions() %}
+{%- if interactions %}
+
+To help you make an informed decision based on past responses and actions taken.
+Below the log of previous interactions you had, so that you avoid going in loops with your next answer:
+{%- for interaction in interactions %}
+- {{ interaction }}
+{%- endfor %}
+{%- endif %}

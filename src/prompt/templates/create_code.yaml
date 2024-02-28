@@ -14,6 +14,8 @@ messages:
       Respond either code or text, but not both at the same time.
       The code you provide must always include a print statement to ensure that there is visible output for validation purposes.
 
+      {%- filter indent(6) %}{% include 'blocks/context_log.yaml' %}{% endfilter %}
+
       To complete your task, you have the following options to proceed:
 
       #1 Think deeply about the problem (reply)

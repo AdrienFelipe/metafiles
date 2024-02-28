@@ -31,7 +31,10 @@ class AgentProxy:
         return FailedChooseAgentResponse(self.__error_message(response))
 
     def ask_to_choose_action(self, task: Task, reason: str = "") -> ChooseActionResponse:
-        response = self.agent.ask(PromptFactory.choose_action(task, self._context, reason))
+        prompt = PromptFactory.choose_action(task, self._context, reason)
+        response = self.agent.ask(prompt)
+        self._context.add_agent_query(prompt, response)
+
         if isinstance(response, ChooseActionResponse):
             return response
 
