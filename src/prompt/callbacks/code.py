@@ -12,17 +12,17 @@ class CreateCodeResponse(PromptResponse):
         tasks_ids: List[str],
         status: PromptStatus = PromptStatus.PENDING,
     ):
-        data = {"tasks_ids": tasks_ids, "change_log": change_log}
-        super().__init__(status, code, data)
+        data = {"tasks_ids": tasks_ids, "code": code}
+        super().__init__(status, change_log, data)
 
     def code(self) -> str:
-        return self.message
+        return self.data["code"]
 
     def tasks_ids(self) -> List[str]:
         return self.data["tasks_ids"]
 
     def change_log(self) -> str:
-        return self.data["change_log"]
+        return self.message
 
 
 def create_code_callback(

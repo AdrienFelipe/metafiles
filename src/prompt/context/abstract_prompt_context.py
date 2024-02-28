@@ -19,8 +19,8 @@ class AbstractPromptContext(IPromptContext, ABC):
         prompt_type = prompt.strategy.__class__.__name__
         response_type = response.__class__.__name__
         message = response.message.replace("\n", " ")
-        if len(message) > 30:
-            message = response.message[:27] + "..."
+        if len(message) > 50:
+            message = response.message[:47] + "..."
 
         message = f'{prompt_type} > {response_type}: "{message}"'
 

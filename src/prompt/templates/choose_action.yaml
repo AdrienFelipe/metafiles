@@ -13,7 +13,7 @@ messages:
       {% endfor %}
       {% endif %}
 
-      Carefully review the task details provided by the user, choose the most suitable action:
+      Carefully review the task details provided by the user, and choose the most suitable action:
       {%- for key, value in actions.items() %}
       - Action key "{{ key }}": {{ value }}
       {%- endfor %}
