@@ -17,7 +17,7 @@ class CreateCodeStrategy(IPromptStrategy):
     _TEMPLATE_NAME = "create_code.yaml"
     _HANDLER_FUNCTIONS: Dict[str, Callable] = {
         "ask_user": query_user_callback,
-        "tasks_results": add_task_depedencies_callback,
+        "add_dependency": add_task_depedencies_callback,
         "execute_task": execute_task_callback,
         "divide_task": divide_task_callback,
         "execute_code": create_code_callback,

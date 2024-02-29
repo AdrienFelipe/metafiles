@@ -121,7 +121,7 @@ functions:
         description: The query directed towards the user
     required:
       - query
-  - name: tasks_results
+  - name: add_dependency
     description: Display results of specific tasks
     parameters:
       - name: tasks_ids

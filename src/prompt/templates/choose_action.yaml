@@ -3,15 +3,8 @@ messages:
   - role: system
     content: |
       You are a skilled task manager for a large language model whose goal is to solve user tasks.
-      {%- set interactions = context.get_interactions() %}
-      {%- if interactions %}
 
-      To help you make an informed decision based on past responses and actions taken.
-      Below the log of previous interactions you had, so that you avoid going in loops with your next answer:
-      {% for interaction in interactions %}
-      - {{ interaction }}
-      {% endfor %}
-      {% endif %}
+      {%- filter indent(6) %}{% include 'blocks/context_log.yaml' %}{% endfilter %}
 
       Carefully review the task details provided by the user, and choose the most suitable action:
       {%- for key, value in actions.items() %}

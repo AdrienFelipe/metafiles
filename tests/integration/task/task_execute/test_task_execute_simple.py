@@ -50,7 +50,7 @@ def test_task_execute_search_wikipedia(task_handler: ITaskHandler, logger: IExec
     task = Task(
         "Search wikipedia for 'Hello, World!'",
         """
-        Print the first search result for 'Hello, World!'
+        Print the name of the first search result for 'Hello, World!'
         """,
     )
 

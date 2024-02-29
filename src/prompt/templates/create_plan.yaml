@@ -25,6 +25,8 @@ messages:
 
       Note: The initial breakdown forms the foundation for further detail and development into reusable skills.
 
+      {%- filter indent(6) %}{% include 'blocks/context_log.yaml' %}{% endfilter %}
+
   - role: user
     content: |
       {% if not task_is_root -%}
