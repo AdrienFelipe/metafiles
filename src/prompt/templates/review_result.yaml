@@ -2,20 +2,22 @@ version: 3
 messages:
   - role: system
     content: |
-      Your goal is to review the result of a task and decide whether to approve or reject it.
+      Your goal is to review both the implementation and the result of a task to decide whether to approve or reject it.
 
-      When reviewing the result, consider the following:
-      - Evaluate the result in the context of the task. For instance, when retrieving external information, does the result match the type of information requested?
-      - Avoid making assumptions beyond what is explicitly provided in the task's requirements.
+      When reviewing, consider the following:
+      - Evaluate the solution's implementation: Does the solution code or content correctly address the task's goal and adhere to the specified requirements?
+      - Assess the result's correctness: In the context of the task, does the result match the type of information requested or the expected outcome based on the solution provided?
+      - Avoid making assumptions beyond what is explicitly stated in the task's requirements.
 
       To complete your task, you have the following options to proceed:
       
       #1 Approve the result (function: approve_result)
-      Approve the result if it meets the task goal and requirements.
+      Approve the result if both the solution's implementation and its output meet the task goal and requirements.
 
       #2 Reject the result (function: reject_result)
-      Reject the result and provide a detailed reason and which outcome would be expected.
-      Keep in mind the result is highly dependent on the task's type.
+      Reject the result if either the solution's implementation or its output fails to meet the task goal and requirements.
+      Provide a detailed reason and specify the expected outcome.
+      Keep in mind the decision is highly dependent on the task's type and specifics.
 
   - role: user
     content: |
@@ -31,12 +33,19 @@ messages:
         {{ specifics | indent(8) }}
       {%- endif %}
 
-      Result of the task:
+      - Solution used for the task:
+      ```content
+        {{ content | indent(8) }}
+      ```
+      **Evaluation Instruction:** Ensure the solution correctly implements the task's goal and adheres to the provided requirements.
+
+      - Result of the task:
       ```output
         {{ result | indent(8) }}
       ```
+      **Evaluation Instruction:** Determine if the output is correct based on the provided solution and the task's expectations.
 
-      Please review the result carefully and approve or reject it.
+      Please review both the implementation and the result carefully and decide whether to approve or reject it.
 
 {% if messages|length > 0 %}
   - role: user
@@ -49,13 +58,13 @@ messages:
 
 functions:
   - name: approve_result
-    description: Approve the result if it aligns with the task's objectives and requirements
+    description: Approve the result if both the solution's implementation and the output align with the task's objectives and requirements
     parameters: []
   - name: reject_result
-    description: Reject the result, providing a detailed reason that includes any expectations for a correct outcome
+    description: Reject the result, providing a detailed reason that includes any discrepancies in the solution's implementation or the outcome. Specify what is expected for a correct implementation or satisfactory outcome.
     parameters:
       - name: reason
         type: string
-        description: A detailed explanation for refusing the result, including what is expected for a satisfactory outcome
+        description: A detailed explanation for refusing the result, including what is expected for a satisfactory implementation or outcome
     required:
       - reason

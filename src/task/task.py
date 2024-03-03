@@ -151,3 +151,12 @@ class Task:
     def add_dependencies(self, tasks: List[Task]) -> None:
         for task in tasks:
             self.depends_on[task.id] = task
+
+    def get_content(self) -> str:
+        if self.action is ActionName.RUN_CODE:
+            return self.code
+
+        if self.action is ActionName.DIVIDE_TASK:
+            return "\n".join(self.plan)
+
+        return self.response
