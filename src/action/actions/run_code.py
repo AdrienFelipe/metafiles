@@ -4,7 +4,7 @@ import re
 import sys
 import traceback
 from contextlib import contextmanager
-from typing import Any, Callable, Dict, Iterator
+from typing import Any, Dict, Iterator
 
 from action.action import Action
 from action.action_name import ActionName
@@ -53,13 +53,10 @@ class RunCode(Action):
         # Override `input` function to capture input requests
         if "input" not in task.context:
 
-            def input_override(task: Task) -> Callable[[str], str]:
-                def input(question: str) -> str:
-                    return AskUser.query(task, question)
+            def custom_input(question: str) -> str:
+                return AskUser.query(task, question)
 
-                return input
-
-            task.context["input"] = input_override(task)
+            task.context["input"] = custom_input
 
     @staticmethod
     def exec(code: str, context: Dict[str, Any], workdir: str) -> str:
