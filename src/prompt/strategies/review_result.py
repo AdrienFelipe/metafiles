@@ -26,6 +26,7 @@ class ReviewResultStrategy(IPromptStrategy):
             "goal": task.goal,
             "definition": task.definition,
             "specifics": task.specifics,
+            "queries": task.queries,
             "content": task.get_content(),
             "result": task.result.message if task.result else "",
             "messages": self.messages,

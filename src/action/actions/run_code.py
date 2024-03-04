@@ -4,11 +4,12 @@ import re
 import sys
 import traceback
 from contextlib import contextmanager
-from typing import Any, Dict, Iterator
+from typing import Any, Callable, Dict, Iterator
 
 from action.action import Action
 from action.action_name import ActionName
 from action.action_result import ActionResult, ActionResultStatus
+from action.actions.ask_user import AskUser
 from agent.agent_interface import AgentInterface
 from prompt.commands.create_code_command import CreateCodeCommand
 from prompt.prompt_result import PromptStatus
@@ -37,6 +38,7 @@ class RunCode(Action):
 
             if response.code():
                 task.code = response.code()
+                RunCode.override_context(task)
                 # TODO: test the code on test data
                 # TODO: validate code is not harmful
                 execution_result = RunCode.exec(task.code, task.context, task.workdir)
@@ -45,6 +47,19 @@ class RunCode(Action):
             iteration_count += 1
 
         return ActionResult(ActionResultStatus.FAILURE, "Max iterations reached")
+
+    @staticmethod
+    def override_context(task: Task) -> None:
+        # Override `input` function to capture input requests
+        if "input" not in task.context:
+
+            def input_override(task: Task) -> Callable[[str], str]:
+                def input(question: str) -> str:
+                    return AskUser.query(task, question)
+
+                return input
+
+            task.context["input"] = input_override(task)
 
     @staticmethod
     def exec(code: str, context: Dict[str, Any], workdir: str) -> str:

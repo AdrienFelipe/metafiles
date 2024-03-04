@@ -27,7 +27,6 @@ class CreateCodeStrategy(IPromptStrategy):
     def __init__(self) -> None:
         super().__init__()
         self.reason: str = ""
-        self.queries: List[Query] = []
         self.dependencies: List[Task] = []
         self.execution_logs: List[ExecutionLog] = []
         self.messages: List[str] = []
@@ -44,7 +43,7 @@ class CreateCodeStrategy(IPromptStrategy):
             "reason": self.reason,
             "code": task.code,
             "sibling_tasks": task.get_siblings_by_position(),
-            "queries": self.queries,
+            "queries": task.queries,
             "dependencies_tasks": self.dependencies,
             "predecessor_tasks": TaskPredecessorFinder.generate(task),
             "execution_logs": self.execution_logs,
@@ -60,19 +59,11 @@ class CreateCodeStrategy(IPromptStrategy):
     def set_reason(self, reason: str) -> None:
         self.reason = reason
 
-    def add_query(self, question: str, answer: str) -> None:
-        self.queries.append(Query(question, answer))
-
     def add_message(self, message: str) -> None:
         self.messages.append(message)
 
     def log_execution(self, change_log: str, output: str) -> None:
         self.execution_logs.append(ExecutionLog(change_log, output))
-
-
-class Query(NamedTuple):
-    question: str
-    answer: str
 
 
 class ExecutionLog(NamedTuple):

@@ -9,7 +9,7 @@ messages:
       - Assess the result's correctness: In the context of the task, does the result match the type of information requested or the expected outcome based on the solution provided?
       - Avoid making assumptions beyond what is explicitly stated in the task's requirements.
 
-      To complete your task, you have the following options to proceed:
+      To complete your task, you only have the following two options to proceed:
       
       #1 Approve the result (function: approve_result)
       Approve the result if both the solution's implementation and its output meet the task goal and requirements.
@@ -31,6 +31,15 @@ messages:
       {% if specifics -%}
       - Specifics: 
         {{ specifics | indent(8) }}
+      {%- endif %}
+
+      {%- if queries|length > 0 -%}
+      - Questions answered:
+      {%- for query in queries %}
+        · {{ query.question | indent(10) }}
+          > {{ query.answer | indent(10) }}
+
+      {%- endfor -%}
       {%- endif %}
 
       - Solution used for the task:

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import yaml
 
 from action.action_name import ActionName
 from action.action_result import ActionResult, ActionResultStatus
+from task.value_objects.user_query import UserQuery
 
 DEFAULT_WORKDIR = "/workdir"
 
@@ -31,13 +32,16 @@ class Task:
         self.plan = plan or []
         self.code: str = ""
         self.response: str = ""
+        self.queries: List[UserQuery] = []
         self.action = action
         self.parent = parent
         self.children: List[Task] = []
         self.index: Dict[str, Task] = {} if parent is None else parent.index
         self.index[self.id] = self
         self.depends_on: Dict[str, Task] = depends_on or {}
-        self.context: Dict[str, str] = {} if parent is None else parent.context
+        self.context: Dict[str, Union[str, Callable[..., Any]]] = (
+            {} if parent is None else parent.context
+        )
         self.workdir: str = workdir or parent.workdir if parent else DEFAULT_WORKDIR
 
         if parent is not None:

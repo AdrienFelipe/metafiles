@@ -6,7 +6,6 @@ from prompt.callbacks.query_user import query_user_callback
 from prompt.callbacks.task import add_task_depedencies_callback, execute_task_callback
 from prompt.callbacks.validate_response import validate_response_callback
 from prompt.prompt_strategy import IPromptStrategy
-from prompt.strategies.create_code import Query
 from task.task import Task
 from task.task_predecessor_finder import TaskPredecessorFinder
 
@@ -24,7 +23,6 @@ class AskAgentStrategy(IPromptStrategy):
     def __init__(self) -> None:
         super().__init__()
         self.role: str = ""
-        self.queries: List[Query] = []
         self.dependencies: List[Task] = []
         self.messages: List[str] = []
 
@@ -42,14 +40,11 @@ class AskAgentStrategy(IPromptStrategy):
             "role": self.role,
             "messages": self.messages,
             "predecessor_tasks": TaskPredecessorFinder.generate(task),
-            "queries": self.queries,
+            "queries": task.queries,
         }
 
     def set_role(self, role: str) -> None:
         self.role = role
-
-    def add_query(self, question: str, answer: str) -> None:
-        self.queries.append(Query(question, answer))
 
     def add_message(self, message: str) -> None:
         self.messages.append(message)

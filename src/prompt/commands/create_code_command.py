@@ -1,4 +1,5 @@
 from action.action_name import ActionName
+from action.actions.ask_user import AskUser
 from prompt.callbacks.code import (
     CreateCodeResponse,
     FailedCreateCodeResponse,
@@ -28,10 +29,7 @@ class CreateCodeCommand(PromptCommand[CreateCodeStrategy]):
             if isinstance(response, (CreateCodeResponse, ValidateCodeResponse)):
                 return response
             elif isinstance(response, QueryUserResponse):
-                answer = self._action_registry.get_action(ActionName.ASK_USER).execute(
-                    self.agent, self.task, response.query()
-                )
-                self.strategy.add_query(response.query(), answer.message)
+                AskUser.query(self.task, response.query())
             elif isinstance(response, AddTaskDependenciesResponse):
                 self.task.add_dependencies(response.tasks())
                 for task in response.tasks():

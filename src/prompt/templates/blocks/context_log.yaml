@@ -6,4 +6,7 @@ Below the log of previous interactions you had, so that you avoid going in loops
 {%- for interaction in interactions %}
 - {{ interaction }}
 {%- endfor %}
+
+If you see the log repeating itself, it's a good sign that you might be going in circles and need to change your approach.
+In this case use a function response and use one different from the previous ones.
 {%- endif %}
